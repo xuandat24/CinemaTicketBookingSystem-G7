@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Xác nhận mã OTP</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <style>
+        .otp-container { max-width: 400px; margin: 100px auto; padding: 30px; background: #f8f9fa; border-radius: 10px; }
+    </style>
+</head>
+<body>
+<div class="otp-container text-center shadow">
+    <h3 class="mb-4">Xác nhận Email</h3>
+    <p>Mã xác nhận đã được gửi đến Email của bạn. Vui lòng kiểm tra và nhập vào bên dưới.</p>
+
+    <form id="otpForm">
+        <input type="text" id="otpCode" class="form-control form-control-lg text-center mb-3"
+               placeholder="Nhập 6 số" maxlength="6" required>
+
+        <div id="errorMsg" class="text-danger mb-3"></div>
+
+        <button type="submit" class="btn btn-primary w-100">Xác nhận đăng ký</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById("otpForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const otp = document.getElementById("otpCode").value;
+        const errorDiv = document.getElementById("errorMsg");
+
+        try {
+            // Gọi đến API xử lý OTP trong AuthController
+            const response = await fetch("/api/auth/verify-google-otp?otp=" + otp, {
+                method: "POST"
+            });
+
+            if(response.ok) {
+                const data = await response.json();
+                // Lưu Token và về trang chủ
+                localStorage.setItem("jwtToken", data.token);
+                alert("Đăng ký thành công!");
+                window.location.href = "/";
+            } else {
+                const errorText = await response.text();
+                errorDiv.innerText = "Mã xác nhận không đúng hoặc đã hết hạn!";
+            }
+        } catch (err) {
+            errorDiv.innerText = "Có lỗi xảy ra, vui lòng thử lại!";
+        }
+    });
+</script>
+</body>
+</html>

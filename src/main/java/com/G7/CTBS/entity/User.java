@@ -11,22 +11,41 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
-    
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "roleId")
     private Role role;
-    
+
+    @Column(nullable = false, length = 50)
     private String firstName;
+
+    @Column(nullable = false, length = 50)
     private String lastName;
+
+    @Column(nullable = false, unique = true, length = 50)
+    private String userName;
+
+    @Column(nullable = false, length = 250)
     private String password;
+
+    @Column(nullable = false)
     private String phone;
+
+    @Column(nullable = false, unique = true, length = 100)
     private String email;
+
+    @Column(nullable = false)
     private LocalDateTime createdAt;
-    
+
     @OneToMany(mappedBy = "user")
     private List<Booking> bookings;
+
+    public String getFullName() {
+        return lastName + " " + firstName;
+    }
 }

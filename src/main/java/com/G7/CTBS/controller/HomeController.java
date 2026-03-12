@@ -18,8 +18,16 @@ public class HomeController {
     public String login() {
         return "user/login";
     }
+    @GetMapping("/register")
+    public String register() {
+        return "user/register";
+    }
     @GetMapping("/")
     public String home() {
         return "index";
+    }
+    @GetMapping("/verify-otp")
+    public String verifyOtpPage() {
+        return "verify-otp"; // Trả về file verify-otp.html trong thư mục templates
     }
 }
