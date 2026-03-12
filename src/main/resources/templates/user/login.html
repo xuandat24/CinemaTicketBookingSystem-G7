@@ -3,93 +3,89 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Login</title>
-
+    <title>Đăng nhập | Movie Theme</title>
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/css/font-awesome.min.css}">
     <link rel="stylesheet" th:href="@{/css/global.css}">
-    <link rel="stylesheet" th:href="@{/css/blog.css}">
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
-
 </head>
-
-<body>
-
-<div class="main_o main">
-    <div class="main_o1 bg_back">
-
-        <section id="header">
-            <div th:replace="~{layout/navbar :: navbar}"></div>
-        </section>
-
-        <section id="center" class="centre_o pt-5 pb-5">
-            <div class="container-xl">
-                <div class="row centre_o1 text-center">
-                    <div class="col-md-12">
-                        <h1 class="text-white font_60">Login</h1>
-                    </div>
+<body class="login-body">
+<div class="login-wrapper">
+    <div class="login-card">
+        <div class="login-side-left">
+            <div class="login-slideshow">
+                <div class="login-slide active" style="background-image: url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=2070')"></div>
+                <div class="login-slide" style="background-image: url('https://images.unsplash.com/photo-1478720568477-152d9b164e26?q=80&w=2070')"></div>
+                <div class="login-slide" style="background-image: url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=2025')"></div>
+                <div class="login-slideshow-overlay">
+                    <h2 class="fw-bold text-white">MOVIE THEME</h2>
+                    <p class="text-white-50">Unlimited movies, TV shows, and more</p>
                 </div>
-            </div>
-        </section>
-
-    </div>
-</div>
-
-<section id="login" class="p_3">
-    <div class="container-xl">
-        <div class="row login_1">
-            <div class="col-md-12">
-
-                <div class="login_1m p-5 px-4 w-50 mx-auto bg-light">
-
-                    <form id="loginForm">
-
-                        <h6 class="mb-3 fw-bold">Email / Username</h6>
-                        <input class="form-control" id="username" name="username" placeholder="Email or Username" type="text" required>
-
-                        <h6 class="mb-3 fw-bold mt-4">Password</h6>
-                        <input class="form-control" id="password" name="password" placeholder="Password" type="password" required>
-
-                        <div class="login_1mi row mt-3">
-                            <div class="col-md-6 col-6">
-                                <div class="form-check">
-                                    <input type="checkbox" class="form-check-input" name="remember-me">
-                                    <label class="form-check-label">Remember Me</label>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-6 text-end">
-                                <h6><a class="col_oran" href="#">Forgot Password?</a></h6>
-                            </div>
-                        </div>
-
-                        <button class="button d-block text-center w-100 mt-4" type="submit">
-                            LOGIN
-                        </button>
-
-                        <div class="text-center mt-3">
-                            <p class="mb-2 text-muted">Or</p>
-                            <a th:href="@{/oauth2/authorization/google}" class="btn btn-outline-danger w-100 d-flex align-items-center justify-content-center py-2" style="border-radius: 0; border: 1px solid #dc3545;">
-                                <i class="fa fa-google me-2"></i> Login with Google
-                            </a>
-                        </div>
-
-                    </form>
-
-                    <p class="mt-4 mb-0 text-center">
-                        Don't have an account?
-                        <a class="fw-bold col_oran" th:href="@{/register}">Create New Account</a>
-                    </p>
-
-                </div>
-
             </div>
         </div>
-    </div>
-</section>
 
-<footer th:replace="~{layout/footer :: footer}"></footer>
+        <div class="login-side-right">
+            <a th:href="@{/}" class="login-brand">
+                <i class="fa fa-modx"></i> <span>MovieTheme</span>
+            </a>
+
+            <div class="mb-4 mt-5">
+                <div class="d-flex align-items-center mb-1">
+                    <h2 class="fw-bold m-0">Sign In</h2>
+                    <div class="login-cute-camera ms-3">
+                        <div class="login-cam-body">
+                            <div class="login-cam-lens"></div>
+                            <div class="login-cam-roll" style="left:0"></div>
+                            <div class="login-cam-roll" style="left:12px"></div>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-muted small">Welcome back! Please enter your details.</p>
+            </div>
+
+            <form id="loginForm">
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Username or Email</label>
+                    <input type="text" id="username" class="form-control shadow-none" placeholder="Enter your email" required>
+                </div>
+
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between">
+                        <label class="form-label small fw-bold">Password</label>
+                        <a href="#" class="small text-decoration-none col_oran">Forgot password?</a>
+                    </div>
+                    <input type="password" id="password" class="form-control shadow-none" placeholder="••••••••" required>
+                </div>
+
+                <button type="submit" class="login-btn-submit w-100 mb-3">SIGN IN</button>
+
+                <div class="login-divider"><span>OR</span></div>
+
+                <a th:href="@{/oauth2/authorization/google}" class="login-btn-google w-100">
+                    <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" alt="Google">
+                    Sign in with Google
+                </a>
+
+                <p class="text-center mt-4 mb-0 small text-muted">
+                    Don't have an account?
+                    <a th:href="@{/register}" class="fw-bold text-dark text-decoration-none">Sign up for free</a>
+                </p>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    let current = 0;
+    const slides = document.querySelectorAll('.login-slide');
+    setInterval(() => {
+        if(slides.length > 0) {
+            slides[current].classList.remove('active');
+            current = (current + 1) % slides.length;
+            slides[current].classList.add('active');
+        }
+    }, 4000);
+</script>
+<footer th:replace="layout/footer :: footer"></footer>
+
 <script th:src="@{/js/auth.js}"></script>
 </body>
-</html>
+</html>>

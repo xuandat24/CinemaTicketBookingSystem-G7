@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>User Profile | Movie Theme</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+</head>
+<body class="prof-body">
+
+<div th:replace="~{layout/navbar :: navbar}"></div>
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="prof-card text-center p-4 mb-4 shadow-sm bg-white" style="border-radius: 20px;">
+                <div class="prof-avatar-wrapper mb-3">
+                    <img src="https://via.placeholder.com/150" alt="Avatar" class="prof-avatar shadow-sm" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover;">
+                </div>
+                <h4 class="fw-bold mb-0" id="display-fullname-top">User Profile</h4>
+                <p class="text-muted small">Account Management</p>
+            </div>
+
+            <div class="prof-card p-3 shadow-sm bg-white" style="border-radius: 20px;">
+                <div class="nav flex-column nav-pills" id="profile-tabs" role="tablist">
+                    <button class="nav-link active mb-2 text-start" id="tab-settings-link" data-bs-toggle="pill" data-bs-target="#content-settings" type="button" role="tab">
+                        <i class="fa fa-user me-2"></i> Account Settings
+                    </button>
+                    <button class="nav-link mb-2 text-start text-dark" id="tab-history-link" data-bs-toggle="pill" data-bs-target="#content-history" type="button" role="tab">
+                        <i class="fa fa-ticket me-2"></i> Booking History
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="tab-content" id="profile-tabs-content">
+
+                <div class="tab-pane fade show active" id="content-settings" role="tabpanel">
+                    <div class="prof-card p-4 shadow-sm bg-white" style="border-radius: 20px;">
+                        <h4 class="fw-bold mb-4">Edit Profile</h4>
+                        <form id="profileUpdateForm">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label small fw-bold">First Name</label>
+                                    <input type="text" id="p-firstName" class="form-control" placeholder="First Name">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label small fw-bold">Last Name</label>
+                                    <input type="text" id="p-lastName" class="form-control" placeholder="Last Name">
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold">Username</label>
+                                <input type="text" id="p-userName" class="form-control" placeholder="Username">
+                            </div>
+                            <button type="submit" class="btn btn-dark w-100 py-2" style="background: #d96c2c; border:none; border-radius: 10px;">
+                                SAVE CHANGES
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="content-history" role="tabpanel">
+                    <div class="prof-card p-4 shadow-sm bg-white" style="border-radius: 20px;">
+                        <h4 class="fw-bold mb-4">Booking History</h4>
+
+                        <div class="booking-list">
+                            <div class="p-3 mb-3 border rounded-3 d-flex align-items-center" style="border-left: 5px solid #d96c2c !important;">
+                                <div class="me-3">
+                                    <i class="fa fa-film fa-2x text-muted"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="fw-bold mb-0">No transaction found</h6>
+                                    <p class="text-muted small mb-0">Your recent ticket purchases will appear here.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div> </div> </div> </div> <footer th:replace="~{layout/footer :: footer}"></footer>
+
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

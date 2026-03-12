@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
+
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -881,6 +882,33 @@
 
 </section>
 <footer th:replace="~{layout/footer :: footer}"></footer>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const params = new URLSearchParams(window.location.search);
+        const t = params.get('token');
+        let u = params.get('username');
+
+        if (t) {
+            // Giải mã URL (biến %20 thành dấu cách)
+            if (u) {
+                u = decodeURIComponent(u.replace(/\+/g, ' '));
+            } else {
+                u = "Google User"; // Dự phòng
+            }
+
+            // Lưu vào kho
+            localStorage.setItem("jwtToken", t);
+            localStorage.setItem("username", u);
+
+            // Xóa URL cho sạch và tải lại trang ngay lập tức
+            window.history.replaceState({}, document.title, window.location.pathname);
+            window.location.reload();
+        }
+    });
+</script>
+
+<script th:src="@{/js/auth.js}"></script>
+
 
 <!-- Video Modal -->
 <div class="modal fade" id="templateVideoModal" tabindex="-1" aria-labelledby="videoModalLabel" aria-hidden="true">
@@ -905,8 +933,10 @@
     </div>
 </div>
 <!-- JavaScript to pause the video when modal is closed -->
+
 <script>
     var templateVideoModal = document.getElementById('templateVideoModal');
+
     templateVideoModal.addEventListener('hide.bs.modal', function () {
         var iframe = document.getElementById('youtubeVideo');
         iframe.src = '';
@@ -918,47 +948,7 @@
     });
 </script>
 
-<script src="../static/js/common.js"></script>
-<script>
-    checkLogin()
-</script>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        // Lấy toàn bộ tham số trên thanh URL (ví dụ: ?token=abc.xyz...)
-        const urlParams = new URLSearchParams(window.location.search);
-        const token = urlParams.get('token');
 
-        // Nếu tìm thấy chữ 'token' trên URL
-        if (token) {
-            // 1. Lưu token vào localStorage
-            localStorage.setItem("jwtToken", token);
-
-            // 2. Xóa token khỏi thanh địa chỉ cho đẹp và bảo mật
-            // Biến http://localhost:8080/?token=... thành http://localhost:8080/
-            window.history.replaceState({}, document.title, window.location.pathname);
-
-            // 3. Thông báo cho người dùng
-            alert("Đăng nhập bằng Google thành công!");
-        }
-    });
-</script>
-<script>
-    window.addEventListener('load', function() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const token = urlParams.get('token');
-
-        if (token) {
-            // Lưu mã JWT vào LocalStorage
-            localStorage.setItem("jwtToken", token);
-
-            // Xóa token trên thanh địa chỉ để bảo mật
-            window.history.replaceState({}, document.title, window.location.pathname);
-
-            alert("Đăng nhập bằng Google thành công!");
-            location.reload(); // Tải lại trang để cập nhật trạng thái UI
-        }
-    });
-</script>
 </body>
 
 

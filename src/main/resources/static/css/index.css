@@ -317,6 +317,17 @@ padding-left:20px;
 padding-right:20px; 
  }
  }
+@media (min-width: 992px) {
+    .nav-item.dropdown:hover .dropdown-menu {
+        display: block;
+        margin-top: 0;
+    }
+}
+
+#nav-user .fa-user {
+    margin-right: 5px;
+    color: #007bff; /* Màu icon tùy chọn */
+}
 @media (min-width:1201px) and (max-width:1320px) {
 .join_1li1 span {
 width: 70px;

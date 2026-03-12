@@ -43,7 +43,7 @@ color:#d96c2c!important;
 color: #d96c2c!important;
  }
 
- 
+
 .button{
 transition: 0.3s;
 padding: 16px 40px 18px 40px;
@@ -144,7 +144,121 @@ opacity:1;
 background-color:#f5d8c7; 
  }
 
+/* =========================================
+   LOGIN & REGISTER PAGE CSS (Đã đóng gói để không lỗi Index)
+   ========================================= */
 
+.login-body {
+    background-color: #f8f9fa !important;
+}
+
+.login-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.login-card {
+    display: flex;
+    width: 100%;
+    max-width: 1050px;
+    height: 650px;
+    background: #fff;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+
+/* Bên trái: Slideshow */
+.login-side-left {
+    flex: 1.3;
+    position: relative;
+    background: #000;
+}
+
+.login-slideshow { width: 100%; height: 100%; position: relative; }
+
+.login-slide {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transition: opacity 1.2s ease-in-out;
+}
+.login-slide.active { opacity: 1; }
+
+.login-slideshow-overlay {
+    position: absolute;
+    bottom: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(transparent, rgba(0,0,0,0.8));
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 50px;
+    z-index: 10;
+}
+
+/* Bên phải: Form */
+.login-side-right {
+    flex: 1;
+    padding: 60px 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    background: white;
+}
+
+.login-brand {
+    position: absolute;
+    top: 40px; left: 50px;
+    text-decoration: none !important;
+}
+.login-brand i { color: #d96c2c; font-size: 26px; }
+.login-brand span { color: #333; font-weight: 800; font-size: 22px; margin-left: 10px; }
+
+/* Animation Máy Quay Cute */
+.login-cute-camera { position: relative; width: 35px; height: 30px; }
+.login-cam-body { width: 25px; height: 18px; background: #d96c2c; border-radius: 4px; position: absolute; bottom: 0; }
+.login-cam-lens { width: 9px; height: 11px; background: #333; position: absolute; right: -7px; top: 3px; border-radius: 2px; border: 2px solid #d96c2c; }
+.login-cam-roll {
+    width: 12px; height: 12px; background: #222; border: 2px solid #d96c2c;
+    border-radius: 50%; position: absolute; top: -10px;
+    animation: loginSpinCam 2s linear infinite;
+}
+
+@keyframes loginSpinCam { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+/* Form Elements */
+.login-side-right .form-control {
+    border-radius: 12px; padding: 14px; background: #f8f9fa; border: 1px solid #eee; font-size: 15px;
+}
+.login-btn-submit {
+    background: #222; color: #fff; border-radius: 12px; padding: 14px; font-weight: 700; border: none; transition: 0.3s;
+}
+.login-btn-submit:hover { background: #d96c2c; transform: translateY(-2px); color: white; }
+
+.login-divider {
+    text-align: center; position: relative; margin: 25px 0;
+}
+.login-divider::before { content: ""; position: absolute; top: 50%; left: 0; width: 100%; height: 1px; background: #eee; }
+.login-divider span { position: relative; background: #fff; padding: 0 15px; color: #999; font-size: 13px; }
+
+.login-btn-google {
+    border: 1px solid #ddd; border-radius: 12px; padding: 12px; display: flex; align-items: center; justify-content: center;
+    text-decoration: none; color: #555; font-weight: 600; font-size: 15px;
+}
+.login-btn-google img { width: 20px; margin-right: 12px; }
+
+@media (max-width: 768px) {
+    .login-side-left { display: none; }
+    .login-side-right { padding: 60px 25px; }
+    .login-brand { left: 25px; }
+}
 .font_14{
 font-size:14px; 
  }
@@ -176,7 +290,159 @@ width: 100px;
 background-color:#d96c2c;
 }
 
+/* =========================================
+   REGISTER PAGE CSS (Prefix: reg-)
+   ========================================= */
 
+.reg-body {
+    background: linear-gradient(45deg, #f3f4f7 0%, #e2e5ec 100%) !important;
+}
+
+.reg-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+}
+
+.reg-card {
+    display: flex;
+    width: 100%;
+    max-width: 1100px;
+    background: #fff;
+    border-radius: 30px;
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+}
+
+/* Bên trái: Ảnh nền và hiệu ứng */
+.reg-side-left {
+    flex: 1;
+    background-image: url('https://images.unsplash.com/photo-1517604401157-538a9663ecf3?q=80&w=2070');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    padding: 60px;
+    display: flex;
+    align-items: flex-end;
+}
+
+.reg-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(to top, rgba(217,108,44, 0.9), rgba(0,0,0,0.3));
+}
+
+.reg-content { position: relative; z-index: 2; }
+
+.reg-badge {
+    background: rgba(255,255,255,0.2);
+    backdrop-filter: blur(5px);
+    color: #fff;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    display: inline-block;
+    margin-bottom: 20px;
+}
+
+/* Animation Vé phim bay */
+.movie-ticket-animation {
+    margin-top: 40px;
+}
+.ticket {
+    font-size: 50px;
+    color: #fff;
+    animation: floatTicket 3s ease-in-out infinite;
+}
+
+@keyframes floatTicket {
+    0%, 100% { transform: translateY(0) rotate(-10deg); }
+    50% { transform: translateY(-20px) rotate(10deg); }
+}
+
+/* Bên phải: Form */
+.reg-side-right {
+    flex: 1.2;
+    padding: 60px;
+    background: #fff;
+    position: relative;
+}
+
+.reg-brand {
+    position: absolute;
+    top: 30px; right: 60px;
+    text-decoration: none !important;
+}
+.reg-brand i { color: #d96c2c; font-size: 24px; }
+.reg-brand span { color: #333; font-weight: 800; font-size: 20px; margin-left: 8px; }
+
+.reg-side-right .form-control {
+    border-radius: 12px;
+    padding: 12px 15px;
+    border: 1px solid #eee;
+    background: #fcfcfc;
+    font-size: 0.9rem;
+    transition: 0.3s;
+}
+
+.reg-side-right .form-control:focus {
+    border-color: #d96c2c;
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(217,108,44, 0.1);
+}
+
+.reg-btn-submit {
+    background: #d96c2c;
+    color: #fff;
+    border-radius: 12px;
+    padding: 14px;
+    font-weight: 700;
+    border: none;
+    transition: 0.3s;
+}
+
+.reg-btn-submit:hover {
+    background: #222;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(217,108,44, 0.2);
+}
+
+.reg-divider {
+    text-align: center; position: relative; margin: 25px 0;
+}
+.reg-divider::before { content: ""; position: absolute; top: 50%; left: 0; width: 100%; height: 1px; background: #eee; }
+.reg-divider span { position: relative; background: #fff; padding: 0 15px; color: #bbb; font-size: 12px; }
+
+.reg-btn-google {
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #444;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.reg-btn-google:hover { background: #f8f9fa; }
+.reg-btn-google img { width: 18px; margin-right: 12px; }
+
+.x-small { font-size: 11px; }
+
+@media (max-width: 992px) {
+    .reg-side-right { padding: 40px; }
+}
+
+@media (max-width: 768px) {
+    .reg-side-left { display: none; }
+    .reg-card { max-width: 500px; border-radius: 20px; }
+    .reg-brand { right: 40px; }
+}
 .p_3{
 padding-top:30px;
 padding-bottom:30px; 
@@ -185,7 +451,128 @@ padding-bottom:30px;
 .border_1{
 border:1px solid #f5d8c7;
  }
+/* =========================================
+   USER PROFILE PAGE CSS (Prefix: prof-)
+   ========================================= */
 
+.prof-body {
+    background-color: #f4f7f6 !important;
+}
+
+.prof-card {
+    background: #fff;
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+.prof-avatar-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.prof-avatar {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 5px solid #fff;
+}
+
+.prof-upload-btn {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background: #d96c2c;
+    color: #fff;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 3px solid #fff;
+    transition: 0.3s;
+}
+
+.prof-upload-btn:hover {
+    background: #222;
+    transform: scale(1.1);
+}
+
+.prof-body .form-control {
+    border-radius: 10px;
+    padding: 12px 15px;
+    border: 1px solid #eee;
+    background: #fcfcfc;
+}
+
+.prof-body .form-control:focus {
+    border-color: #d96c2c;
+    box-shadow: 0 0 0 4px rgba(217,108,44, 0.1);
+    background: #fff;
+}
+
+.prof-body .nav-pills .nav-link {
+    border-radius: 10px;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+.prof-body .nav-pills .nav-link.active {
+    background-color: rgba(217,108,44, 0.1);
+    color: #d96c2c;
+}
+
+.prof-body .nav-pills .nav-link:hover:not(.active) {
+    background-color: #f8f9fa;
+}
+
+@media (max-width: 768px) {
+    .prof-card { margin-bottom: 20px; }
+}
+
+/* CSS cho Booking History */
+.booking-item {
+    background: #fff;
+    transition: 0.3s;
+    border-left: 4px solid #d96c2c !important; /* Tạo điểm nhấn màu cam */
+}
+
+.booking-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1) !important;
+}
+
+.movie-poster-sm img {
+    width: 60px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.text-orange {
+    color: #d96c2c;
+}
+
+/* Badge tùy chỉnh */
+.bg-success-light {
+    background-color: rgba(40, 167, 69, 0.1);
+}
+.bg-secondary-light {
+    background-color: rgba(108, 117, 125, 0.1);
+}
+
+/* Tùy chỉnh tab bootstrap cho khớp style */
+.prof-body .nav-pills .nav-link {
+    color: #333;
+    padding: 12px 20px;
+}
+.prof-body .nav-pills .nav-link.active {
+    background-color: #d96c2c !important;
+    color: #fff !important;
+}
 .carousel_p .carousel-indicators {
 bottom: -60px!important;
 }

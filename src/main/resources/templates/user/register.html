@@ -1,106 +1,93 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Register</title>
-
+    <title>Đăng ký | Movie Theme</title>
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/css/font-awesome.min.css}">
     <link rel="stylesheet" th:href="@{/css/global.css}">
-    <link rel="stylesheet" th:href="@{/css/blog.css}">
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
-
 </head>
+<body class="reg-body">
+<div class="reg-wrapper">
+    <div class="reg-card">
+        <div class="reg-side-left d-none d-md-flex">
+            <div class="reg-overlay"></div>
+            <div class="reg-content">
+                <div class="reg-badge">NEW MEMBER</div>
+                <h1 class="text-white fw-bold">JOIN THE<br>COMMUNITY</h1>
+                <p class="text-white-50 mt-3">Get your all-access pass to the best cinematic experience.</p>
 
-<body>
-
-<div class="main_o main">
-    <div class="main_o1 bg_back">
-
-        <section id="header">
-            <div th:replace="layout/navbar :: navbar"></div>
-        </section>
-
-        <section id="center" class="centre_o pt-5 pb-5">
-            <div class="container-xl">
-                <div class="row centre_o1 text-center">
-                    <div class="col-md-12">
-                        <h1 class="text-white font_60">Register</h1>
+                <div class="movie-ticket-animation">
+                    <div class="ticket">
+                        <i class="fa fa-ticket"></i>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
 
+        <div class="reg-side-right">
+            <a th:href="@{/}" class="reg-brand">
+                <i class="fa fa-modx"></i> <span>MovieTheme</span>
+            </a>
+
+            <div class="reg-header mb-4">
+                <h2 class="fw-bold m-0">Create Account</h2>
+                <p class="text-muted small">Welcome new member CTBS</p>
+            </div>
+
+            <form id="registerForm">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label small fw-bold">First Name</label>
+                        <input type="text" id="firstName" class="form-control" placeholder="John" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label small fw-bold">Last Name</label>
+                        <input type="text" id="lastName" class="form-control" placeholder="Doe" required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Email Address</label>
+                    <input type="email" id="email" class="form-control" placeholder="john@example.com" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Username</label>
+                    <input type="text" id="userName" class="form-control" placeholder="johndoe123" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Phone</label>
+                    <input type="text" id="phone" class="form-control" placeholder="johndoe123" required>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label small fw-bold">Password</label>
+                    <input type="password" id="password" class="form-control" placeholder="Minimum 8 characters" required>
+                </div>
+
+                <button type="submit" class="reg-btn-submit w-100 mb-3">GET STARTED</button>
+
+                <div class="reg-divider"><span>OR</span></div>
+
+                <a th:href="@{/oauth2/authorization/google}" class="reg-btn-google w-100">
+                    <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" alt="Google">
+                    Sign up with Google
+                </a>
+
+                <p class="text-center mt-4 mb-0 small text-muted">
+                    Already have an account?
+                    <a th:href="@{/login}" class="fw-bold col_oran text-decoration-none">Log in here</a>
+                </p>
+            </form>
+        </div>
     </div>
 </div>
 
-<section id="login" class="p_3">
-    <div class="container-xl">
-        <div class="row login_1">
-            <div class="col-md-12">
 
-                <div class="login_1m p-5 px-4 w-50 mx-auto bg-light">
-
-                    <form id="registerForm">
-                        <h6 class="mb-3 fw-bold">First Name</h6>
-                        <input class="form-control" id="firstName" type="text">
-                        <div id="error-firstName" class="text-danger small mt-1"></div>
-
-                        <h6 class="mb-3 fw-bold mt-4">Last Name</h6>
-                        <input class="form-control" id="lastName" type="text">
-                        <div id="error-lastName" class="text-danger small mt-1"></div>
-
-                        <h6 class="mb-3 fw-bold mt-4">Username</h6>
-                        <input class="form-control" id="userName" type="text">
-                        <div id="error-userName" class="text-danger small mt-1"></div>
-
-                        <h6 class="mb-3 fw-bold mt-4">Phone Number</h6>
-                        <input class="form-control" id="phone" type="text">
-                        <div id="error-phone" class="text-danger small mt-1"></div>
-
-                        <h6 class="mb-3 fw-bold mt-4">Email</h6>
-                        <input class="form-control" id="email" type="email">
-                        <div id="error-email" class="text-danger small mt-1"></div>
-
-                        <h6 class="mb-3 fw-bold mt-4">Password</h6>
-                        <input class="form-control" id="password" type="password">
-                        <div id="error-password" class="text-danger small mt-1"></div>
-
-                        <div id="errorMsg" class="text-danger fw-bold mt-3"></div>
-
-                        <button class="button d-block text-center w-100 mt-4" type="submit">
-                            Register
-                        </button>
-                    </form>
-
-                        <div class="text-center mt-3">
-                            <p class="mb-2 text-muted">Or</p>
-                            <a th:href="@{/oauth2/authorization/google}" class="btn ...">
-                                <i class="fa fa-google me-2"></i> Sign up with Google
-                            </a>
-                        </div>
-
-                    </form>
-
-                    <p class="mt-4 mb-0 text-center">
-                        Already have an account?
-                        <a class="fw-bold col_oran" th:href="@{/login}">Login</a>
-                    </p>
-
-                </div>
-
-            </div>
-        </div>
-    </div>
-</section>
-
-<footer th:replace="layout/footer :: footer"></footer>
-
+<footer th:replace="~{layout/footer :: footer}"></footer>
 <script th:src="@{/js/auth.js}"></script>
-
 </body>
 </html>

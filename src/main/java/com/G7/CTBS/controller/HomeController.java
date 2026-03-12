@@ -30,4 +30,8 @@ public class HomeController {
     public String verifyOtpPage() {
         return "verify-otp"; // Trả về file verify-otp.html trong thư mục templates
     }
+    @GetMapping("/profile")
+    public String profilePage() {
+        return "user/profile"; // Phải trùng tên với file profile.html trong thư mục templates
+    }
 }

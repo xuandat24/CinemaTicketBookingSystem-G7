@@ -18,6 +18,8 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.Random;
 
@@ -34,18 +36,25 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest req, HttpServletResponse res, Authentication authentication) throws IOException {
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
+
         String email = oAuth2User.getAttribute("email");
+        String name = oAuth2User.getAttribute("name");
 
-        String firstName = oAuth2User.getAttribute("given_name");
-        String lastName = oAuth2User.getAttribute("family_name");
-        if (firstName == null) firstName = oAuth2User.getAttribute("name");
-        if (firstName == null) firstName = "Google";
-        if (lastName == null) lastName = "User";
+        String firstName = "";
+        String lastName = "";
 
-        Optional<User> account = userRepository.findByEmail(email);
+        if (name != null && name.contains(" ")) {
+            firstName = name.substring(0, name.lastIndexOf(" "));
+            lastName = name.substring(name.lastIndexOf(" ") + 1);
+        } else {
+            firstName = name != null ? name : email;
+            lastName = "";
+        }
+
+        Optional<User> account = userRepository.findByUserNameOrEmail(email, email);
 
         if (account.isEmpty()) {
-            // Bổ sung đầy đủ các trường bắt buộc để không lỗi Database sau này
+            // TRƯỜNG HỢP 1: CHƯA CÓ TÀI KHOẢN -> GỬI OTP XÁC THỰC
             UserCreateRequest pendingUser = UserCreateRequest.builder()
                     .email(email)
                     .userName(email) // Dùng email làm username mặc định
@@ -61,7 +70,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
             String otp = String.valueOf(new Random().nextInt(899999) + 100000);
             session.setAttribute("OTP_CODE", otp);
-            session.setAttribute("OTP_TIME", System.currentTimeMillis()); // Bắt buộc phải có cái này
+            session.setAttribute("OTP_TIME", System.currentTimeMillis());
 
             try {
                 emailService.sendOtpEmail(email, otp);
@@ -71,12 +80,22 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 System.err.println("Lỗi gửi mail: " + e.getMessage());
             }
 
-            res.sendRedirect("http://localhost:8080/verify-otp");
+            res.sendRedirect("/verify-otp");
         } else {
-            // Xử lý trường hợp đã có tài khoản (Đăng nhập thẳng)
             User user = account.get();
             String token = authenticationService.tokenGeneration(user.getUserName());
-            res.sendRedirect("http://localhost:8080/?token=" + token);
+            String rawName = user.getUserName();
+
+// 1. Đề phòng trường hợp Google không trả về tên
+            if (rawName == null || rawName.isEmpty()) {
+                rawName = "Google User";
+            }
+
+// 2. Mã hóa khoảng trắng và dấu tiếng Việt an toàn cho URL
+            String encodedName = URLEncoder.encode(rawName, StandardCharsets.UTF_8.toString());
+
+// 3. Gửi Redirect
+            res.sendRedirect("/?token=" + token + "&username=" + encodedName);
         }
     }
 }

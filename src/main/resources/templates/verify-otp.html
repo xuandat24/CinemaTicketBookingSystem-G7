@@ -30,20 +30,24 @@
         const errorDiv = document.getElementById("errorMsg");
 
         try {
-            // Gọi đến API xử lý OTP trong AuthController
+            // Gọi đến API xử lý OTP
             const response = await fetch("/api/auth/verify-google-otp?otp=" + otp, {
                 method: "POST"
             });
 
             if(response.ok) {
                 const data = await response.json();
-                // Lưu Token và về trang chủ
+
+                // LƯU CẢ TOKEN VÀ USERNAME VÀO KHO
                 localStorage.setItem("jwtToken", data.token);
+                localStorage.setItem("username", data.username); // BẠN THÊM DÒNG NÀY VÀO LÀ XONG!
+
                 alert("Đăng ký thành công!");
-                window.location.href = "/";
+                window.location.href = "/"; // Về trang chủ, auth.js sẽ tự động lấy thông tin ra và hiện tên
             } else {
-                const errorText = await response.text();
-                errorDiv.innerText = "Mã xác nhận không đúng hoặc đã hết hạn!";
+                // ... (phần dưới báo lỗi giữ nguyên)
+                const errorData = await response.json();
+                errorDiv.innerText = errorData.message || "Mã xác nhận không đúng hoặc đã hết hạn!";
             }
         } catch (err) {
             errorDiv.innerText = "Có lỗi xảy ra, vui lòng thử lại!";

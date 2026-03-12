@@ -19,7 +19,7 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/login", "/register", "/verify-otp","/api/auth/**").permitAll()
+                        .requestMatchers("/", "/login", "/register", "/verify-otp","/api/auth/**","/profile").permitAll()
                         .requestMatchers("/css/**", "/js/**", "/img/**", "/fonts/**").permitAll()
 
                         // Cho phép các endpoint của OAuth2 để không bị chặn khi bấm nút

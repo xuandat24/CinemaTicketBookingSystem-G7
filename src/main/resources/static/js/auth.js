@@ -1,5 +1,5 @@
 // ==========================================
-// 1. XỬ LÝ ĐĂNG NHẬP (LOGIN)
+// 1. XỬ LÝ ĐĂNG NHẬP BẰNG TÀI KHOẢN (LOGIN THƯỜNG)
 // ==========================================
 const loginForm = document.getElementById("loginForm");
 
@@ -7,7 +7,6 @@ if (loginForm) {
     loginForm.addEventListener("submit", async function(e){
         e.preventDefault();
 
-        // Lấy dữ liệu từ form login.html
         const username = document.getElementById("username").value;
         const password = document.getElementById("password").value;
 
@@ -15,10 +14,7 @@ if (loginForm) {
             const response = await fetch("/api/auth/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    userName: username,
-                    password: password
-                })
+                body: JSON.stringify({ userName: username, password: password })
             });
 
             if(!response.ok){
@@ -27,8 +23,10 @@ if (loginForm) {
             }
 
             const data = await response.json();
-            // Lưu token
+
+            // Lưu thông tin vào LocalStorage
             localStorage.setItem("jwtToken", data.token);
+            localStorage.setItem("username", username);
 
             alert("Đăng nhập thành công!");
             window.location.href = "/"; // Chuyển về trang chủ
@@ -37,36 +35,6 @@ if (loginForm) {
         }
     });
 }
-document.addEventListener("DOMContentLoaded", function() {
-    const navLogin = document.getElementById('nav-login');
-    const navUser = document.getElementById('nav-user');
-    const displayUsername = document.getElementById('display-username');
-    const btnLogout = document.getElementById('btn-logout');
-
-    // 1. Kiểm tra trạng thái đăng nhập
-    const savedUsername = localStorage.getItem('username'); // Hoặc key bạn đã đặt khi login
-
-    if (savedUsername) {
-        // Nếu có user: Ẩn nút Login, hiện Dropdown Username
-        if(navLogin) navLogin.style.display = 'none';
-        if(navUser) navUser.style.display = 'block';
-        if(displayUsername) displayUsername.innerText = savedUsername;
-    } else {
-        // Nếu không có: Hiện nút Login, ẩn Dropdown
-        if(navLogin) navLogin.style.display = 'block';
-        if(navUser) navUser.style.display = 'none';
-    }
-
-    // 2. Xử lý sự kiện Logout
-    if (btnLogout) {
-        btnLogout.addEventListener('click', function(e) {
-            e.preventDefault();
-            localStorage.removeItem('username'); // Xóa dữ liệu
-            // localStorage.clear(); // Hoặc xóa hết nếu cần
-            window.location.reload(); // Load lại trang để cập nhật giao diện
-        });
-    }
-});
 
 // ==========================================
 // 2. XỬ LÝ ĐĂNG KÝ (REGISTER)
@@ -77,19 +45,17 @@ if (registerForm) {
     registerForm.addEventListener("submit", async function (e) {
         e.preventDefault();
 
-        // 1. Xóa tất cả thông báo lỗi cũ trước khi gửi yêu cầu mới
         document.querySelectorAll('.text-danger').forEach(el => el.innerText = '');
         const generalError = document.getElementById("errorMsg");
         if (generalError) generalError.innerText = '';
 
-        // 2. Thu thập dữ liệu
         const formData = {
-            firstName: document.getElementById("firstName").value,
-            lastName: document.getElementById("lastName").value,
-            userName: document.getElementById("userName").value,
-            phone: document.getElementById("phone").value,
-            email: document.getElementById("email").value,
-            password: document.getElementById("password").value,
+            firstName: document.getElementById("firstName")?.value || "",
+            lastName: document.getElementById("lastName")?.value || "",
+            userName: document.getElementById("userName")?.value || "",
+            phone: document.getElementById("phone")?.value || "",
+            email: document.getElementById("email")?.value || "",
+            password: document.getElementById("password")?.value || "",
             roleId: 2
         };
 
@@ -101,25 +67,18 @@ if (registerForm) {
             });
 
             if (!response.ok) {
-                const errorData = await response.json(); // Bây giờ 100% là JSON
-
-                // 1. Nếu có lỗi chi tiết từng trường (Validation)
+                const errorData = await response.json();
                 if (errorData.errors) {
                     errorData.errors.forEach(err => {
                         const errorDiv = document.getElementById(`error-${err.field}`);
                         if (errorDiv) errorDiv.innerText = err.defaultMessage;
                     });
                 }
-
-                // 2. Hiển thị thông báo lỗi tổng quát (Dùng cho cả lỗi logic và lỗi validation)
-                const generalError = document.getElementById("errorMsg");
-                if (generalError) generalError.innerText = errorData.message;
-
+                if (generalError) generalError.innerText = errorData.message || "Đăng ký thất bại.";
                 return;
             }
 
-            // NẾU THÀNH CÔNG
-            alert("Đăng ký thành công!");
+            alert("Đăng ký thành công! Vui lòng đăng nhập.");
             window.location.href = "/login";
 
         } catch (error) {
@@ -130,16 +89,66 @@ if (registerForm) {
 }
 
 // ==========================================
-// 3. CÁC HÀM TIỆN ÍCH DÙNG CHUNG (Để ở ngoài cùng)
+// 3. BẮT URL GOOGLE (CHẠY NGAY LẬP TỨC ĐỂ KHÔNG BỊ TRỄ)
 // ==========================================
-function logout() {
-    localStorage.removeItem("jwtToken");
-    window.location.href = "/login";
+const urlParams = new URLSearchParams(window.location.search);
+const tokenFromUrl = urlParams.get('token');
+let usernameFromUrl = urlParams.get('username');
+
+if (tokenFromUrl) {
+    // Giải mã tên hiển thị (tránh lỗi font chữ tiếng Việt hoặc dấu cộng)
+    if (usernameFromUrl) {
+        usernameFromUrl = decodeURIComponent(usernameFromUrl.replace(/\+/g, ' '));
+    } else {
+        usernameFromUrl = "Google User";
+    }
+
+    // Lưu vào kho LocalStorage ngay lập tức
+    localStorage.setItem("jwtToken", tokenFromUrl);
+    localStorage.setItem("username", usernameFromUrl);
+
+    // Xóa tham số trên thanh địa chỉ URL cho sạch đẹp
+    window.history.replaceState({}, document.title, window.location.pathname);
 }
 
-function checkLogin() {
-    const token = localStorage.getItem("jwtToken");
-    if (!token) {
-        window.location.href = "/login";
+// ==========================================
+// 4. QUẢN LÝ GIAO DIỆN NAVBAR (ĐỢI HTML LOAD XONG MỚI CHẠY)
+// ==========================================
+document.addEventListener("DOMContentLoaded", function() {
+    const navLogin = document.getElementById('nav-login');
+    const navUser = document.getElementById('nav-user');
+    const displayUsername = document.getElementById('display-username');
+    const btnLogout = document.getElementById('btn-logout');
+
+    // Lấy giá trị từ LocalStorage
+    const savedUsername = localStorage.getItem('username');
+    const savedToken = localStorage.getItem('jwtToken');
+
+    // Hàm cắt ngắn tên
+    function shortenName(name) {
+        if (!name || name === "null") return "User";
+        if (name.includes('@')) name = name.split('@')[0];
+        if (name.length > 12) return name.substring(0, 12) + "...";
+        return name;
     }
-}
+
+    // Cập nhật UI
+    if (savedToken && savedUsername && savedUsername !== "null") {
+        if (navLogin) navLogin.style.display = 'none';
+        if (navUser) navUser.style.display = 'block';
+        if (displayUsername) displayUsername.innerText = shortenName(savedUsername);
+    } else {
+        if (navLogin) navLogin.style.display = 'block';
+        if (navUser) navUser.style.display = 'none';
+    }
+
+    // Xử lý nút đăng xuất
+    if (btnLogout) {
+        btnLogout.addEventListener('click', function(e) {
+            e.preventDefault();
+            localStorage.removeItem("jwtToken");
+            localStorage.removeItem("username");
+            window.location.href = "/";
+        });
+    }
+});
