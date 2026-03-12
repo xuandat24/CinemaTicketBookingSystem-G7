@@ -22,4 +22,9 @@ public class HomeController {
     public String home() {
         return "index";
     }
+
+    @GetMapping("/movie-seats")
+    public String movieSeats() {
+        return "movie-seats";
+    }
 }
