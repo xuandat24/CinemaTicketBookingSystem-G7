@@ -12,6 +12,7 @@ public class UserDTO {
     private Long roleId; // Chỉ lấy ID của Role
     private String firstName;
     private String lastName;
+    private String userName;
     private String phone;
     private String email;
     private LocalDateTime createdAt;

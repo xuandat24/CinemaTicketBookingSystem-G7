@@ -1,57 +1,91 @@
 package com.G7.CTBS.controller;
 
-import com.G7.CTBS.dto.LoginRequest;
-import com.G7.CTBS.dto.RegisterRequest;
+import com.G7.CTBS.dto.AuthenticationRequest;
+import com.G7.CTBS.dto.AutheticationResponse;
+import com.G7.CTBS.dto.UserCreateRequest;
 import com.G7.CTBS.entity.User;
-import com.G7.CTBS.repository.UserRepository;
-import com.G7.CTBS.security.JwtUtil;
-import com.G7.CTBS.service.AuthService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import com.G7.CTBS.service.AuthenticationService;
+import com.G7.CTBS.service.UserService;
+import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.Map;
 
-@RestController
+@RestController // BẮT BUỘC dùng RestController khi làm việc với API/JSON
 @RequestMapping("/api/auth")
+@RequiredArgsConstructor // Tự động tạo Constructor cho UserService và AuthenticationService
 public class AuthController {
 
-    @Autowired
-    private AuthService authService;
+    private final UserService userService;
+    private final AuthenticationService authenticationService;
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private JwtUtil jwtUtil;
-
+    // 1. API Đăng ký (Đã chạy tốt)
     @PostMapping("/register")
-    public User register(@RequestBody RegisterRequest request) {
-        return authService.register(request);
+    public ResponseEntity<?> register(@RequestBody @Valid UserCreateRequest request) {
+        try {
+            userService.create(request);
+            return ResponseEntity.ok("Đăng ký thành công!");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
+    // 2. API ĐĂNG NHẬP (BỔ SUNG ĐOẠN NÀY)
     @PostMapping("/login")
-    public Map<String, String> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<?> login(@RequestBody AuthenticationRequest request) {
+        try {
+            // Gọi service để kiểm tra tài khoản/mật khẩu và tạo JWT Token
+            AutheticationResponse response = authenticationService.authenticated(request);
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            // Nếu sai mật khẩu hoặc tài khoản không tồn tại, trả về lỗi 400
+            return ResponseEntity.badRequest().body(Map.of("message", "Tên đăng nhập hoặc mật khẩu không chính xác!"));
+        }
+    }
 
-        User user = userRepository.findByEmail(request.getEmail()).orElse(null);
+    // 2. API Đăng nhập (Login)
+    @PostMapping("/verify-google-otp")
+    public ResponseEntity<?> verify(@RequestParam("otp") String userOtp, HttpSession session) {
+        // 1. Lấy dữ liệu từ Session
+        System.out.println("Verify - Session ID: " + session.getId());
+        String serverOtp = (String) session.getAttribute("OTP_CODE");
+        Long createTime = (Long) session.getAttribute("OTP_TIME");
 
-        if (user == null) {
-            throw new RuntimeException("User not found");
+        // 2. Kiểm tra nếu Session mất hoặc hết hạn
+        if (serverOtp == null || createTime == null) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Mã xác thực không tồn tại!"));
         }
 
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid password");
+        // 3. Kiểm tra hết hạn thực tế (5 phút)
+        if (System.currentTimeMillis() - createTime > 300000) {
+            session.removeAttribute("OTP_CODE");
+            session.removeAttribute("PENDING_USER_DATA");
+            return ResponseEntity.badRequest().body(Map.of("message", "Mã OTP đã hết hạn!"));
         }
 
-        String token = jwtUtil.generateToken(user.getEmail());
+        // 4. So khớp OTP
+        if (serverOtp.equals(userOtp)) {
+            // Lấy thông tin user từ Session ra để lưu vào DB
+            UserCreateRequest userData = (UserCreateRequest) session.getAttribute("PENDING_USER_DATA");
 
-        Map<String, String> response = new HashMap<>();
-        response.put("token", token);
+            if (userData != null) {
+                // SỬA TẠI ĐÂY: Dùng biến instance 'userService' thay vì Class 'UserService'
+                userService.create(userData);
 
-        return response;
+                // Xóa dữ liệu tạm sau khi đăng ký thành công
+                session.removeAttribute("PENDING_USER_DATA");
+                session.removeAttribute("OTP_CODE");
+                session.removeAttribute("OTP_TIME");
+
+                return ResponseEntity.ok(Map.of("message", "Xác thực và tạo tài khoản thành công!"));
+            }
+            return ResponseEntity.badRequest().body(Map.of("message", "Không tìm thấy dữ liệu đăng ký!"));
+        } else {
+            // SỬA TẠI ĐÂY: Thêm return cho trường hợp OTP sai để hết lỗi "Missing return statement"
+            return ResponseEntity.badRequest().body(Map.of("message", "Mã OTP không chính xác!"));
+        }
     }
 }

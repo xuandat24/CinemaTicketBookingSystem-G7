@@ -42,7 +42,7 @@
     </div>
     <div class="main_1 clearfix position-absolute top-0 w-100">
         <section id="header">
-            <div th:replace="layout/navbar :: navbar"></div>
+            <div th:replace="~{layout/navbar :: navbar}"></div>
         </section>
     </div>
     <div class="main_2 clearfix">
@@ -181,7 +181,7 @@
             <div class="col-md-4">
                 <div class="join_1l position-relative">
                     <div class="join_1li">
-                        <img src="img/4.jpg" class="w-100" alt="abc">
+                        <img th:src="@{/img/4.jpg}" class="w-100" alt="abc">
                     </div>
                     <div class="join_1li1 p-4 bg_backo position-absolute w-100 h-100 top-0">
                         <div class="join_1li1n row">
@@ -220,7 +220,7 @@
             <div class="col-md-3 col-sm-6">
                 <div class="trend_2i position-relative">
                     <div class="trend_2i1">
-                        <img src="img/5.jpg" class="w-100" alt="abc">
+                        <img th:src="@{/img/5.jpg}" class="w-100" alt="abc">
                     </div>
                     <div class="trend_2i2 bg_back position-absolute w-100 h-100 top-0 px-4">
                         <h6 class="font_14 text-light">Comedy / 180 Mins </h6>
@@ -232,7 +232,7 @@
             <div class="col-md-3 col-sm-6">
                 <div class="trend_2i position-relative">
                     <div class="trend_2i1">
-                        <img src="img/6.jpg" class="w-100" alt="abc">
+                        <img th:src="@{/img/6.jpg}" class="w-100" alt="abc">
                     </div>
                     <div class="trend_2i2 bg_back position-absolute w-100 h-100 top-0 px-4">
                         <h6 class="font_14 text-light">Animation / 160 Mins </h6>
@@ -244,7 +244,7 @@
             <div class="col-md-3 col-sm-6">
                 <div class="trend_2i position-relative">
                     <div class="trend_2i1">
-                        <img src="img/7.jpg" class="w-100" alt="abc">
+                        <img th:src="@{/img/7.jpg}" class="w-100" alt="abc">
                     </div>
                     <div class="trend_2i2 bg_back position-absolute w-100 h-100 top-0 px-4">
                         <h6 class="font_14 text-light">Thriller / 190 Mins </h6>
@@ -256,7 +256,7 @@
             <div class="col-md-3 col-sm-6">
                 <div class="trend_2i position-relative">
                     <div class="trend_2i1">
-                        <img src="img/8.png" class="w-100" alt="abc">
+                        <img th:src="@{/img/8.jpg}" class="w-100" alt="abc">
                     </div>
                     <div class="trend_2i2 bg_back position-absolute w-100 h-100 top-0 px-4">
                         <h6 class="font_14 text-light">Romance / 150 Mins </h6>
@@ -292,7 +292,7 @@
                     <div class="feat_2i1">
                         <div class="grid clearfix">
                             <figure class="effect-jazz mb-0">
-                                <a href="#"><img src="img/9.jpg" class="w-100" alt="abc"></a>
+                                <a href="#"><img th:src="@{/img/9.jpg}" class="w-100" alt="abc"></a>
                             </figure>
                         </div>
                     </div>
@@ -312,7 +312,7 @@
                     <div class="feat_2i1">
                         <div class="grid clearfix">
                             <figure class="effect-jazz mb-0">
-                                <a href="#"><img src="img/10.jpg" class="w-100" alt="abc"></a>
+                                <a href="#"><img th:src="@{/img/10.jpg}" class="w-100" alt="abc"></a>
                             </figure>
                         </div>
                     </div>
@@ -332,7 +332,7 @@
                     <div class="feat_2i1">
                         <div class="grid clearfix">
                             <figure class="effect-jazz mb-0">
-                                <a href="#"><img src="img/11.jpg" class="w-100" alt="abc"></a>
+                                <a href="#"><img th:src="@{/img/11.jpg}" class="w-100" alt="abc"></a>
                             </figure>
                         </div>
                     </div>
@@ -435,7 +435,7 @@
                     <div class="gallery_2i1">
                         <div class="grid clearfix">
                             <figure class="effect-jazz mb-0">
-                                <a href="#"><img src="img/13.jpg" class="w-100" alt="abc"></a>
+                                <a href="#"><img th:src="@{/img/13.jpg}" class="w-100" alt="abc"></a>
                             </figure>
                         </div>
                     </div>
@@ -452,7 +452,7 @@
                                         <i class="fa fa-close"></i></button>
                                 </div>
                                 <div class="modal-body">
-                                    <img src="img/13.jpg" class="w-100" alt="abc">
+                                    <img th:src="@{/img/13.jpg}" class="w-100" alt="abc">
                                 </div>
                             </div>
                         </div>
@@ -464,7 +464,7 @@
                     <div class="gallery_2i1">
                         <div class="grid clearfix">
                             <figure class="effect-jazz mb-0">
-                                <a href="#"><img src="img/14.jpg" class="w-100" alt="abc"></a>
+                                <a href="#"><img th:src="@{/img/14.jpg}" class="w-100" alt="abc"></a>
                             </figure>
                         </div>
                     </div>
@@ -481,7 +481,7 @@
                                         <i class="fa fa-close"></i></button>
                                 </div>
                                 <div class="modal-body">
-                                    <img src="img/14.jpg" class="w-100" alt="abc">
+                                    <img th:src="@{/img/14.jpg}" class="w-100" alt="abc">
                                 </div>
                             </div>
                         </div>
@@ -493,7 +493,7 @@
                     <div class="gallery_2i1">
                         <div class="grid clearfix">
                             <figure class="effect-jazz mb-0">
-                                <a href="#"><img src="img/15.jpg" class="w-100" alt="abc"></a>
+                                <a href="#"><img th:src="@{/img/15.jpg}" class="w-100" alt="abc"></a>
                             </figure>
                         </div>
                     </div>
@@ -510,7 +510,7 @@
                                         <i class="fa fa-close"></i></button>
                                 </div>
                                 <div class="modal-body">
-                                    <img src="img/15.jpg" class="w-100" alt="abc">
+                                    <img th:src="@{/img/15.jpg}" class="w-100" alt="abc">
                                 </div>
                             </div>
                         </div>
@@ -522,7 +522,7 @@
                     <div class="gallery_2i1">
                         <div class="grid clearfix">
                             <figure class="effect-jazz mb-0">
-                                <a href="#"><img src="img/16.jpg" class="w-100" alt="abc"></a>
+                                <a href="#"><img th:src="@{/img/16.jpg}" class="w-100" alt="abc"></a>
                             </figure>
                         </div>
                     </div>
@@ -539,7 +539,7 @@
                                         <i class="fa fa-close"></i></button>
                                 </div>
                                 <div class="modal-body">
-                                    <img src="img/16.jpg" class="w-100" alt="abc">
+                                    <img th:src="@{/img/16.jpg}" class="w-100" alt="abc">
                                 </div>
                             </div>
                         </div>
@@ -573,7 +573,7 @@
                                 <div class="event_1ril1">
                                     <div class="grid clearfix">
                                         <figure class="effect-jazz mb-0">
-                                            <a href="#"><img src="img/17.jpg" height="240" class="w-100" alt="abc"></a>
+                                            <a href="#"><img th:src="@{/img/17.jpg}" height="240" class="w-100" alt="abc"></a>
                                         </figure>
                                     </div>
                                 </div>
@@ -598,7 +598,7 @@
                                 <div class="event_1ril1">
                                     <div class="grid clearfix">
                                         <figure class="effect-jazz mb-0">
-                                            <a href="#"><img src="img/18.jpg" height="240" class="w-100" alt="abc"></a>
+                                            <a href="#"><img th:src="@{/img/18.jpg}" height="240" class="w-100" alt="abc"></a>
                                         </figure>
                                     </div>
                                 </div>
@@ -656,7 +656,7 @@
                                             <span class="d-inline-block bg_oran text-white text-center span_1 rounded-circle"><i
                                                     class="fa fa-quote-left"></i></span>
                                             <div class="testim_1i1i clearfix mt-3">
-                                                <span><img src="img/19.jpg" alt="abc"
+                                                <span><img th:src="@{/img/19.jpg}" alt="abc"
                                                            class="rounded-circle me-3 float-start"></span>
                                                 <h6 class="mb-0 fw-bold text-uppercase"> Eget Nulla <br> <span
                                                         class="col_oran font_14 fw-normal">Customer</span></h6>
@@ -677,7 +677,7 @@
                                             <span class="d-inline-block bg_oran text-white text-center span_1 rounded-circle"><i
                                                     class="fa fa-quote-left"></i></span>
                                             <div class="testim_1i1i clearfix mt-3">
-                                                <span><img src="img/20.jpg" alt="abc"
+                                                <span><img th:src="@{/img/20.jpg}" alt="abc"
                                                            class="rounded-circle me-3 float-start"></span>
                                                 <h6 class="mb-0 fw-bold text-uppercase"> Lorem Porta <br> <span
                                                         class="col_oran font_14 fw-normal">Customer</span></h6>
@@ -713,7 +713,7 @@
             <div class="col-md-3 col-sm-6">
                 <div class="trend_2i position-relative">
                     <div class="trend_2i1">
-                        <img src="img/21.jpg" class="w-100" alt="abc">
+                        <img th:src="@{/img/21.jpg}" class="w-100" alt="abc">
                     </div>
                     <div class="trend_2i2 bg_back position-absolute w-100 h-100 top-0 px-4">
                         <h6 class="font_14 text-light">Comedy / 180 Mins </h6>
@@ -725,7 +725,7 @@
             <div class="col-md-3 col-sm-6">
                 <div class="trend_2i position-relative">
                     <div class="trend_2i1">
-                        <img src="img/22.jpg" class="w-100" alt="abc">
+                        <img th:src="@{/img/22.jpg}" class="w-100" alt="abc">
                     </div>
                     <div class="trend_2i2 bg_back position-absolute w-100 h-100 top-0 px-4">
                         <h6 class="font_14 text-light">Animation / 160 Mins </h6>
@@ -737,7 +737,7 @@
             <div class="col-md-3 col-sm-6">
                 <div class="trend_2i position-relative">
                     <div class="trend_2i1">
-                        <img src="img/23.jpg" class="w-100" alt="abc">
+                        <img th:src="@{/img/23.jpg}" class="w-100" alt="abc">
                     </div>
                     <div class="trend_2i2 bg_back position-absolute w-100 h-100 top-0 px-4">
                         <h6 class="font_14 text-light">Thriller / 190 Mins </h6>
@@ -749,7 +749,7 @@
             <div class="col-md-3 col-sm-6">
                 <div class="trend_2i position-relative">
                     <div class="trend_2i1">
-                        <img src="img/24.png" class="w-100" alt="abc">
+                        <img th:src="@{/img/24.jpg}" class="w-100" alt="abc">
                     </div>
                     <div class="trend_2i2 bg_back position-absolute w-100 h-100 top-0 px-4">
                         <h6 class="font_14 text-light">Romance / 150 Mins </h6>
@@ -798,7 +798,7 @@
                         <div class="blog_h1m1">
                             <div class="grid clearfix">
                                 <figure class="effect-jazz mb-0">
-                                    <a href="#"><img src="img/25.jpg" class="w-100" alt="img25"></a>
+                                    <a href="#"><img th:src="@{/img/25.jpg}" class="w-100" alt="img25"></a>
                                 </figure>
                             </div>
                         </div>
@@ -826,7 +826,7 @@
                         <div class="blog_h1m1">
                             <div class="grid clearfix">
                                 <figure class="effect-jazz mb-0">
-                                    <a href="#"><img src="img/26.jpg" class="w-100" alt="img25"></a>
+                                    <a href="#"><img th:src="@{/img/26.jpg}" class="w-100" alt="img25"></a>
                                 </figure>
                             </div>
                         </div>
@@ -854,7 +854,7 @@
                         <div class="blog_h1m1">
                             <div class="grid clearfix">
                                 <figure class="effect-jazz mb-0">
-                                    <a href="#"><img src="img/27.jpg" class="w-100" alt="img25"></a>
+                                    <a href="#"><img th:src="@{/img/27.jpg}" class="w-100" alt="img25"></a>
                                 </figure>
                             </div>
                         </div>
@@ -880,7 +880,7 @@
     </div>
 
 </section>
-<footer th:replace="layout/footer :: footer"></footer>
+<footer th:replace="~{layout/footer :: footer}"></footer>
 
 <!-- Video Modal -->
 <div class="modal fade" id="templateVideoModal" tabindex="-1" aria-labelledby="videoModalLabel" aria-hidden="true">
@@ -921,6 +921,43 @@
 <script src="../static/js/common.js"></script>
 <script>
     checkLogin()
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Lấy toàn bộ tham số trên thanh URL (ví dụ: ?token=abc.xyz...)
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
+
+        // Nếu tìm thấy chữ 'token' trên URL
+        if (token) {
+            // 1. Lưu token vào localStorage
+            localStorage.setItem("jwtToken", token);
+
+            // 2. Xóa token khỏi thanh địa chỉ cho đẹp và bảo mật
+            // Biến http://localhost:8080/?token=... thành http://localhost:8080/
+            window.history.replaceState({}, document.title, window.location.pathname);
+
+            // 3. Thông báo cho người dùng
+            alert("Đăng nhập bằng Google thành công!");
+        }
+    });
+</script>
+<script>
+    window.addEventListener('load', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
+
+        if (token) {
+            // Lưu mã JWT vào LocalStorage
+            localStorage.setItem("jwtToken", token);
+
+            // Xóa token trên thanh địa chỉ để bảo mật
+            window.history.replaceState({}, document.title, window.location.pathname);
+
+            alert("Đăng nhập bằng Google thành công!");
+            location.reload(); // Tải lại trang để cập nhật trạng thái UI
+        }
+    });
 </script>
 </body>
 

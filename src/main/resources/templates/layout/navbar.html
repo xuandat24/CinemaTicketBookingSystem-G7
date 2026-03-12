@@ -1,6 +1,6 @@
 <nav xmlns:th="http://www.thymeleaf.org" th:fragment="navbar" class="navbar navbar-expand-md navbar-light px_4" id="navbar_sticky">
     <div class="container-fluid">
-        <a class="navbar-brand  p-0 fw-bold text-white" href="index.html"><i class="fa fa-modx col_oran"></i> Movie Theme </a>
+        <a class="navbar-brand  p-0 fw-bold text-white" th:href="@{/}"><i class="fa fa-modx col_oran"></i> Movie Theme </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -8,11 +8,11 @@
             <ul class="navbar-nav mb-0 ms-auto">
 
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/index.html">Home</a>
+                    <a class="nav-link active" aria-current="page" th:href="@{/}">Home</a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="/about.html">About Us</a>
+                    <a class="nav-link" th:href="@{/about}">About Us</a>
                 </li>
 
                 <li class="nav-item dropdown">
@@ -53,10 +53,49 @@
                 <li class="nav-item">
                     <a class="nav-link fs-5 drop_icon" data-bs-target="#exampleModal2" data-bs-toggle="modal" href="#"><i class="fa fa-search"></i></a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link fs-5 drop_icon" th:href="@{login}"><i class="fa fa-user"></i></a>
+
+                <li class="nav-item dropdown" id="auth_container">
+                    <a class="nav-link fs-5 drop_icon" th:href="@{/login}" id="login_link">
+                        <i class="fa fa-user"></i>
+                    </a>
                 </li>
             </ul>
+
+            <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    // Lấy username từ localStorage (được lưu sau khi gọi API login thành công)
+                    const username = localStorage.getItem("username");
+                    const authContainer = document.getElementById("auth_container");
+
+                    if (username) {
+                        // Nếu đã đăng nhập: Thay thế icon bằng Tên người dùng và Menu thả xuống
+                        authContainer.innerHTML = `
+            <a class="nav-link dropdown-toggle text-white fw-bold" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fa fa-user-circle me-1"></i> ${username}
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end drop_1" aria-labelledby="userDropdown">
+                <li><a class="dropdown-item" href="/profile"><i class="fa fa-id-card me-2"></i> Thông tin cá nhân</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item text-danger" href="javascript:void(0)" onclick="handleLogout()">
+                    <i class="fa fa-sign-out me-2"></i> Đăng xuất
+                </a></li>
+            </ul>
+        `;
+                    }
+                });
+
+                // Hàm xử lý đăng xuất
+                function handleLogout() {
+                    if (confirm("Bạn có chắc chắn muốn đăng xuất?")) {
+                        // Xóa sạch dấu vết đăng nhập trong trình duyệt
+                        localStorage.removeItem("token");
+                        localStorage.removeItem("username");
+
+                        // Chuyển hướng về trang chủ hoặc trang login
+                        window.location.href = "/";
+                    }
+                }
+            </script>
         </div>
     </div>
 </nav>
