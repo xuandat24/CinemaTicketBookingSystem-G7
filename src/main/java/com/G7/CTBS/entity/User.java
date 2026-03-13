@@ -3,6 +3,7 @@ package com.G7.CTBS.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -21,10 +22,10 @@ public class User {
     @JoinColumn(name = "roleId")
     private Role role;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false,columnDefinition = "NVARCHAR(50)", length = 50)
     private String firstName;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false,columnDefinition = "NVARCHAR(50)", length = 50)
     private String lastName;
 
     @Column(nullable = false, unique = true, length = 50)
@@ -38,6 +39,12 @@ public class User {
 
     @Column(nullable = false, unique = true, length = 100)
     private String email;
+
+    @Column(length = 20)
+    private String gender; // Ví dụ: "Nam", "Nữ", "Khác"
+
+    @Column
+    private LocalDate dob;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;

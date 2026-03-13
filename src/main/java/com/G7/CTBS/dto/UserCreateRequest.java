@@ -6,6 +6,8 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
+
 // Sửa file UserCreateRequest.java
 @Data
 @NoArgsConstructor
@@ -35,6 +37,10 @@ public class UserCreateRequest {
             message = "Mật khẩu phải chứa ít nhất 1 chữ hoa, 1 chữ thường, 1 chữ số và 1 kí tự đặc biệt"
     )
     String password;
+
+    private String confirmPassword; // Chỉ dùng để validate, không lưu vào DB
+    private String gender;
+    private LocalDate dob;
 
     @NotBlank(message = "Số điện thoại không được để trống")
     @Pattern(regexp = "^\\d{10}$", message = "Số điện thoại phải có đúng 10 chữ số")

@@ -4,7 +4,7 @@
 const loginForm = document.getElementById("loginForm");
 
 if (loginForm) {
-    loginForm.addEventListener("submit", async function(e){
+    loginForm.addEventListener("submit", async function (e) {
         e.preventDefault();
 
         const username = document.getElementById("username").value;
@@ -13,11 +13,11 @@ if (loginForm) {
         try {
             const response = await fetch("/api/auth/login", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ userName: username, password: password })
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({userName: username, password: password})
             });
 
-            if(!response.ok){
+            if (!response.ok) {
                 alert("Tài khoản hoặc mật khẩu không đúng!");
                 return;
             }
@@ -48,7 +48,13 @@ if (registerForm) {
         document.querySelectorAll('.text-danger').forEach(el => el.innerText = '');
         const generalError = document.getElementById("errorMsg");
         if (generalError) generalError.innerText = '';
+        const password = document.getElementById("password")?.value || "";
+        const confirmPassword = document.getElementById("confirmPassword")?.value || "";
 
+        if (password !== confirmPassword) {
+            alert("Mật khẩu xác nhận không khớp!");
+            return; // Dừng lại không gửi lên server
+        }
         const formData = {
             firstName: document.getElementById("firstName")?.value || "",
             lastName: document.getElementById("lastName")?.value || "",
@@ -56,14 +62,15 @@ if (registerForm) {
             phone: document.getElementById("phone")?.value || "",
             email: document.getElementById("email")?.value || "",
             password: document.getElementById("password")?.value || "",
+            confirmPassword: confirmPassword, // Gửi cả confirmPassword lên Backend
+            gender: document.getElementById("gender")?.value || "Khác",
+            dob: document.getElementById("dob")?.value || null,
             roleId: 2
         };
 
         try {
             const response = await fetch("/api/auth/register", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formData)
+                method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(formData)
             });
 
             if (!response.ok) {
@@ -114,7 +121,7 @@ if (tokenFromUrl) {
 // ==========================================
 // 4. QUẢN LÝ GIAO DIỆN NAVBAR (ĐỢI HTML LOAD XONG MỚI CHẠY)
 // ==========================================
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     const navLogin = document.getElementById('nav-login');
     const navUser = document.getElementById('nav-user');
     const displayUsername = document.getElementById('display-username');
@@ -144,7 +151,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Xử lý nút đăng xuất
     if (btnLogout) {
-        btnLogout.addEventListener('click', function(e) {
+        btnLogout.addEventListener('click', function (e) {
             e.preventDefault();
             localStorage.removeItem("jwtToken");
             localStorage.removeItem("username");

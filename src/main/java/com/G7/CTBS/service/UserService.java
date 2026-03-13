@@ -56,7 +56,8 @@ public class UserService {
         user.setPhone(req.getPhone());
         user.setPassword(passwordEncoder.encode(req.getPassword())); // Mã hóa mật khẩu
         user.setCreatedAt(LocalDateTime.now()); // Thời gian tạo
-
+        user.setGender(req.getGender());
+        user.setDob(req.getDob());
         // Gán Role (Mặc định là 2)
         Integer roleId = req.getRoleId() != null ? req.getRoleId().intValue() : 2;
 

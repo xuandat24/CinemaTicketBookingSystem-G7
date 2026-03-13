@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.util.Optional;
 import java.util.Random;
 
@@ -61,7 +62,10 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                     .firstName(firstName)
                     .lastName(lastName)
                     .password("Google_Auth_Default@123") // Mật khẩu tạm để pass validation
+                    .confirmPassword("")
                     .phone("0000000000") // Giá trị mặc định
+                    .gender("Others") // Mặc định khi đăng ký qua Google
+                    .dob(LocalDate.of(2000, 1, 1))
                     .roleId(2L)
                     .build();
 

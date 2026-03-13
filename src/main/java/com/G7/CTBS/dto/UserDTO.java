@@ -1,6 +1,8 @@
 package com.G7.CTBS.dto;
 
 import lombok.*;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -15,5 +17,7 @@ public class UserDTO {
     private String userName;
     private String phone;
     private String email;
+    private String gender;
+    private LocalDate dob;
     private LocalDateTime createdAt;
 }
