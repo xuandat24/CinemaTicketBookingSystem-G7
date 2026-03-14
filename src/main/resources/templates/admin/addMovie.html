@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add New Movie - Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/admin/universal.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/addMovie.css}">
+</head>
+<body class="bg-light">
+
+<div th:replace="~{admin/fragments/navbar :: admin-nav}"></div>
+
+<div class="container mb-5 mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-success text-white py-3">
+                    <h4 class="mb-0"><i class="fa-solid fa-film me-2"></i> Add New Movie</h4>
+                </div>
+                <div class="card-body p-4">
+
+                    <div id="omdbSection">
+                        <div class="input-group mb-4 shadow-sm">
+                            <span class="input-group-text bg-white border-success text-success"><i class="fa-solid fa-magnifying-glass"></i></span>
+                            <input type="text" id="omdbSearchInput" class="form-control border-success form-control-lg" placeholder="Enter English movie title (e.g., Inception)...">
+                            <button class="btn btn-success px-4 fw-bold" type="button" onclick="searchOMDb()">Search</button>
+                        </div>
+
+                        <div id="omdbLoading" class="text-center my-4 d-none">
+                            <div class="spinner-border text-success" role="status"></div>
+                            <p class="mt-2 text-muted fw-semibold">Fetching movies from OMDb...</p>
+                        </div>
+
+                        <div class="row g-3 mb-4" id="omdbResults"></div>
+
+                        <hr>
+                        <div class="text-center mt-4">
+                            <p class="text-muted mb-2">Can't find your movie on OMDb?</p>
+                            <button type="button" class="btn btn-outline-secondary fw-semibold px-4" onclick="openBlankForm()">
+                                <i class="fa-solid fa-pen"></i> Click here to add manually
+                            </button>
+                        </div>
+                    </div>
+
+                    <form id="addMovieForm" class="d-none">
+                        <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                            <h5 class="fw-bold text-success m-0">Movie Details</h5>
+                            <button type="button" class="btn btn-sm btn-light border fw-semibold" onclick="backToOMDb()">
+                                <i class="fa-solid fa-arrow-left"></i> Back to Search
+                            </button>
+                        </div>
+
+                        <input type="hidden" id="omdbPosterUrl">
+                        <input type="hidden" id="omdbGenres">
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Movie Title <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="movieTitle" placeholder="Enter movie title" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Description <span class="text-danger">*</span></label>
+                            <textarea class="form-control" id="movieDesc" rows="4" placeholder="Enter movie description" required></textarea>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Duration (Min) <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" id="movieDuration" min="1" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Release Date <span class="text-danger">*</span></label>
+                                <input type="date" class="form-control" id="movieReleaseDate" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Status <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control bg-light" id="movieStatus" value="Coming Soon" readonly>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Director <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="movieDirector" required>
+                            </div>
+                            <div class="col-md-5">
+                                <label class="form-label fw-bold">Actors / Cast <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="movieActors" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold">Rating (0-10) <span class="text-danger">*</span></label>
+                                <input type="number" step="0.1" min="0" max="10" class="form-control" id="movieRating" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-4 p-3 bg-light rounded border">
+                            <label class="form-label fw-bold">Categories <span class="text-danger">*</span></label>
+                            <div id="selectedCategoryTags" class="mb-2" style="min-height: 35px;"></div>
+                            <div class="input-group">
+                                <select class="form-select" id="movieCategorySelect">
+                                    <option value="">-- Select category to add --</option>
+                                </select>
+                                <button class="btn btn-outline-secondary" type="button" onclick="addCategoryTag()">Add Tag</button>
+                            </div>
+                            <small class="text-muted" id="categoryHint">Select tags. If fetched from OMDb, genres will be auto-generated upon saving.</small>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Banner Image</label>
+                                <input class="form-control mb-2" type="file" id="movieBanner" accept="image/*">
+
+                                <div id="omdbPosterContainer" class="d-none p-2 bg-light border rounded text-center">
+                                    <p class="small text-success fw-bold mb-1"><i class="fa-solid fa-check-circle"></i> Poster fetched from OMDb</p>
+                                    <img id="omdbPosterPreview" src="" alt="OMDb Poster" style="height: 120px; border-radius: 5px; object-fit: cover;">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Trailer Video</label>
+                                <input class="form-control" type="file" id="movieTrailer" accept="video/mp4">
+                                <small class="text-muted">Accepted format: MP4</small>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4 pt-3 border-top">
+                            <a href="/admin/movies/search" class="btn btn-light border px-4 fw-semibold">Cancel</a>
+                            <button type="submit" class="btn btn-success px-4 fw-bold"><i class="fa-solid fa-floppy-disk me-1"></i> Save Movie</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/admin/addMovie.js}"></script>
+</body>
+</html>

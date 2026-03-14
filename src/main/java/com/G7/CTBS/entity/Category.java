@@ -1,5 +1,6 @@
 package com.G7.CTBS.entity;
 
+import com.G7.CTBS.util.TextUtils;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,4 +20,14 @@ public class Category {
     
     @ManyToMany(mappedBy = "categories")
     private List<Movie> movies;
+    
+    @PrePersist
+    public void prePersist() {
+        this.name = TextUtils.formatTitleCase(this.name);
+    }
+    
+    @PreUpdate
+    public void preUpdate() {
+        this.name = TextUtils.formatTitleCase(this.name);
+    }
 }

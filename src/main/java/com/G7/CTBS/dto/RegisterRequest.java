@@ -6,6 +6,7 @@ public class RegisterRequest {
     private String lastName;
     private String password;
     private String role; // USER / ADMIN
+    private String phone;
     private String email;
 
     public String getEmail() {
@@ -47,4 +48,8 @@ public class RegisterRequest {
     public void setRole(String role) {
         this.role = role;
     }
+    
+    public String getPhone() { return phone; }
+    
+    public void setPhone(String phone) { this.phone = phone; }
 }

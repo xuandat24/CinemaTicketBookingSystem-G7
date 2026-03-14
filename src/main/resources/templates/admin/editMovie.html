@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Movie - Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <link rel="stylesheet" th:href="@{/css/admin/editMovie.css}">
+</head>
+<body>
+
+<div th:replace="~{admin/fragments/navbar :: admin-nav}"></div>
+
+<div class="container-fluid px-4 py-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+
+            <div class="d-flex align-items-center mb-4">
+                <button class="btn btn-outline-secondary me-3" onclick="window.location.href='/admin/movies/search'">
+                    <i class="fa-solid fa-arrow-left"></i> Back
+                </button>
+                <h2 class="fw-bold text-dark m-0">Edit Movie</h2>
+            </div>
+
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white py-3">
+                    <h5 class="mb-0"><i class="fa-solid fa-pen-to-square me-2"></i> Update Movie Information</h5>
+                </div>
+                <div class="card-body p-4">
+
+                    <form id="editMovieForm">
+                        <input type="hidden" id="editMovieId">
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Movie Title <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="movieTitle" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Description <span class="text-danger">*</span></label>
+                            <textarea class="form-control" id="movieDesc" rows="4" required></textarea>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Duration (Min) <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" id="movieDuration" min="1" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Release Date <span class="text-danger">*</span></label>
+                                <input type="date" class="form-control" id="movieReleaseDate" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Status <span class="text-danger">*</span></label>
+                                <select class="form-select" id="movieStatus" required>
+                                    <option value="Coming Soon">Coming Soon</option>
+                                    <option value="Now Playing">Now Playing</option>
+                                    <option value="Pending">Pending</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Director <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="movieDirector" placeholder="e.g. Christopher Nolan" required>
+                            </div>
+                            <div class="col-md-5">
+                                <label class="form-label fw-bold">Cast / Actors <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="movieActors" placeholder="e.g. Tom Holland, Zendaya" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold">Rating (0-10) <span class="text-danger">*</span></label>
+                                <input type="number" step="0.1" min="0" max="10" class="form-control" id="movieRating" placeholder="e.g. 8.5" required>
+                                <small class="text-muted">Enter a score from 0 to 10.</small>
+                            </div>
+                        </div>
+                        <div class="mb-4 p-3 bg-light rounded border">
+                            <label class="form-label fw-bold">Categories <span class="text-danger">*</span></label>
+                            <div id="selectedCategoryTags" class="mb-2" style="min-height: 35px;"></div>
+                            <div class="input-group">
+                                <select class="form-select" id="movieCategorySelect">
+                                    <option value="">-- Select category to add --</option>
+                                </select>
+                                <button class="btn btn-outline-secondary" type="button" onclick="addCategoryTag()">Add Tag</button>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Banner Image</label>
+                                <input class="form-control" type="file" id="movieBanner" accept="image/*">
+                                <small class="text-muted">Leave blank to keep the current image.</small>
+
+                                <div class="preview-container d-none" id="currentBannerContainer">
+                                    <p class="text-muted small mb-1">Current Banner:</p>
+                                    <img src="" id="currentBannerImg" class="preview-img mb-2" alt="Current Banner">
+                                    <div class="text-break small font-monospace text-secondary" id="currentBannerPathText"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Trailer Video</label>
+                                <input class="form-control" type="file" id="movieTrailer" accept="video/mp4">
+                                <small class="text-muted">Leave blank to keep the current video.</small>
+
+                                <div class="preview-container d-none" id="currentTrailerContainer">
+                                    <p class="text-muted small mb-1">Current Trailer:</p>
+                                    <video id="currentTrailerVideo" controls class="w-100 mb-2 rounded shadow-sm" style="max-height: 220px; background-color: #000;">
+                                        <source src="" type="video/mp4" id="currentTrailerSource">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                    <div class="text-break small font-monospace text-secondary" id="currentTrailerPathText"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <div class="d-flex justify-content-between">
+                            <button type="button" class="btn btn-danger" id="btnDeleteMovie">
+                                <i class="fa-solid fa-trash me-1"></i> Delete Movie
+                            </button>
+                            <div>
+                                <button type="button" class="btn btn-light border me-2" onclick="window.location.href='/admin/movies/search'">Cancel</button>
+                                <button type="submit" class="btn btn-primary" id="btnUpdate">
+                                    <i class="fa-solid fa-floppy-disk me-1"></i> Update Movie
+                                </button>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/admin/editMovie.js}"></script>
+</body>
+</html>

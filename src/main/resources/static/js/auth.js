@@ -24,12 +24,15 @@ if (loginForm) {
 
             const data = await response.json();
 
-            // Lưu thông tin vào LocalStorage
+            // Lưu vào LocalStorage
             localStorage.setItem("jwtToken", data.token);
             localStorage.setItem("username", username);
 
+            // BỔ SUNG: LƯU VÀO COOKIE ĐỂ TRÌNH DUYỆT TỰ ĐỘNG GỬI KHI CHUYỂN TRANG
+            document.cookie = "jwtToken=" + data.token + "; path=/; max-age=" + (60*60*24); // Lưu 1 ngày
+
             alert("Đăng nhập thành công!");
-            window.location.href = "/"; // Chuyển về trang chủ
+            window.location.href = "/admin/home"; // HOẶC chuyển về '/' tùy bạn
         } catch (error) {
             console.error("Lỗi hệ thống:", error);
         }
@@ -127,11 +130,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const displayUsername = document.getElementById('display-username');
     const btnLogout = document.getElementById('btn-logout');
 
-    // Lấy giá trị từ LocalStorage
     const savedUsername = localStorage.getItem('username');
     const savedToken = localStorage.getItem('jwtToken');
 
-    // Hàm cắt ngắn tên
     function shortenName(name) {
         if (!name || name === "null") return "User";
         if (name.includes('@')) name = name.split('@')[0];
@@ -139,7 +140,6 @@ document.addEventListener("DOMContentLoaded", function () {
         return name;
     }
 
-    // Cập nhật UI
     if (savedToken && savedUsername && savedUsername !== "null") {
         if (navLogin) navLogin.style.display = 'none';
         if (navUser) navUser.style.display = 'block';
@@ -149,13 +149,15 @@ document.addEventListener("DOMContentLoaded", function () {
         if (navUser) navUser.style.display = 'none';
     }
 
-    // Xử lý nút đăng xuất
     if (btnLogout) {
         btnLogout.addEventListener('click', function (e) {
             e.preventDefault();
+            // Xóa LocalStorage
             localStorage.removeItem("jwtToken");
             localStorage.removeItem("username");
-            window.location.href = "/";
+            // XÓA COOKIE
+            document.cookie = "jwtToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+            window.location.href = "/login";
         });
     }
 });

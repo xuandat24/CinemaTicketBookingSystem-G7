@@ -30,4 +30,9 @@ public class HomeController {
     public String verifyOtpPage() {
         return "verify-otp"; // Trả về file verify-otp.html trong thư mục templates
     }
+
+    @GetMapping("/movie-seats")
+    public String movieSeats() {
+        return "movie-seats";
+    }
 }

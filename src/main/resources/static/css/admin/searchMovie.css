@@ -1,0 +1,25 @@
+.table-card {
+    border-radius: 12px;
+    border: none;
+}
+
+.table-card .card-header {
+    background-color: #ffffff;
+    border-bottom: 2px solid #f4f6f9;
+    padding: 1.2rem 1.5rem;
+    border-radius: 12px 12px 0 0;
+}
+
+.custom-thead {
+    background-color: #f8f9fa;
+    color: #495057;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f8f9fc;
+    transition: background-color 0.2s ease;
+}
