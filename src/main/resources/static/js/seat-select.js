@@ -1,4 +1,4 @@
-﻿/* Mock seat selection behavior */
+/* Seat selection behavior (API-backed) */
 (function () {
     const seatGrid = document.getElementById("seat-grid");
     if (!seatGrid) {
@@ -17,6 +17,7 @@
     const totalSideEl = document.getElementById("total-price-side");
     const totalBottomEl = document.getElementById("total-price-bottom");
     const timerEl = document.getElementById("countdown-timer");
+    const continueBtn = document.getElementById("continue-btn");
 
     if (showtimeBar) {
         showtimeBar.classList.add("is-hidden");
@@ -24,18 +25,12 @@
         showtimeBar.setAttribute("aria-hidden", "true");
     }
 
-    const basePrice = 100000;
-    const priceFactor = {
-        NORMAL: 1.0,
-        VIP: 1.5,
-        PAIR: 1.25
-    };
-
-    const bookedSeats = new Set([
-        "A1", "A2", "A3", "B5", "C7", "D10", "E12", "F9", "G14", "H3", "I16", "J6", "K11", "L5", "L6"
-    ]);
+    const params = new URLSearchParams(window.location.search);
+    const showtimeId = params.get("showtimeId");
 
     const selected = new Set();
+    let seatMap = new Map();
+    let basePrice = 0;
 
     function setActiveButton(buttons, activeButton) {
         buttons.forEach((btn) => btn.classList.remove("active"));
@@ -93,6 +88,26 @@
         return value.toLocaleString("vi-VN") + "đ";
     }
 
+    function updateContinueLink() {
+        if (!continueBtn) return;
+        const selectedIds = Array.from(selected)
+            .map((code) => seatMap.get(code))
+            .filter((seat) => seat && seat.seatId)
+            .map((seat) => seat.seatId);
+
+        if (!showtimeId || selectedIds.length === 0) {
+            continueBtn.href = "#";
+            continueBtn.classList.add("disabled");
+            continueBtn.setAttribute("aria-disabled", "true");
+            return;
+        }
+
+        continueBtn.href = "/booking?showtimeId=" + encodeURIComponent(showtimeId)
+            + "&seatIds=" + encodeURIComponent(selectedIds.join(","));
+        continueBtn.classList.remove("disabled");
+        continueBtn.removeAttribute("aria-disabled");
+    }
+
     function updateSummary() {
         const seats = Array.from(selected).sort((a, b) => {
             const rowA = a.charCodeAt(0);
@@ -108,14 +123,15 @@
 
         let total = 0;
         seats.forEach((code) => {
-            const row = code[0];
-            const type = getSeatType(row);
-            total += basePrice * priceFactor[type];
+            const seat = seatMap.get(code);
+            const factor = seat && seat.priceFactor ? seat.priceFactor : 1.0;
+            total += basePrice * factor;
         });
 
         const totalText = formatPrice(total);
         if (totalSideEl) totalSideEl.textContent = totalText;
         if (totalBottomEl) totalBottomEl.textContent = totalText;
+        updateContinueLink();
     }
 
     function getSeatType(row) {
@@ -128,13 +144,18 @@
         return "NORMAL";
     }
 
-    function makeSeatButton(code, type, isBooked) {
+    function isBooked(code) {
+        const seat = seatMap.get(code);
+        return seat ? seat.booked === true : true;
+    }
+
+    function makeSeatButton(code, type, booked) {
         const btn = document.createElement("div");
         btn.className = "seat " + type.toLowerCase();
         btn.textContent = code;
         btn.dataset.seat = code;
 
-        if (isBooked) {
+        if (booked) {
             btn.classList.add("booked");
             btn.setAttribute("aria-disabled", "true");
             return btn;
@@ -168,7 +189,7 @@
         const num = parseInt(code.slice(1), 10);
         const pairNum = num % 2 === 1 ? num + 1 : num - 1;
         const pairCode = "L" + pairNum;
-        if (bookedSeats.has(code) || bookedSeats.has(pairCode)) {
+        if (isBooked(code) || isBooked(pairCode)) {
             return;
         }
         const codes = [code, pairCode];
@@ -187,6 +208,7 @@
     }
 
     function renderSeats() {
+        seatGrid.innerHTML = "";
         const rows = "ABCDEFGHIJKL".split("");
         const cols = 12;
         const fragment = document.createDocumentFragment();
@@ -194,9 +216,10 @@
         rows.forEach((row) => {
             for (let col = 1; col <= cols; col++) {
                 const code = row + col;
-                const type = getSeatType(row);
-                const isBooked = bookedSeats.has(code);
-                fragment.appendChild(makeSeatButton(code, type, isBooked));
+                const seat = seatMap.get(code);
+                const type = seat && seat.seatType ? seat.seatType : getSeatType(row);
+                const booked = seat ? seat.booked : true;
+                fragment.appendChild(makeSeatButton(code, type, booked));
             }
         });
 
@@ -231,10 +254,32 @@
         setInterval(tick, 1000);
     }
 
+    async function loadSeats() {
+        if (!showtimeId) {
+            seatGrid.innerHTML = "<p class=\"text-danger\">Missing showtimeId in URL.</p>";
+            updateContinueLink();
+            return;
+        }
+
+        try {
+            const res = await fetch("/api/showtimes/" + encodeURIComponent(showtimeId) + "/seats");
+            if (!res.ok) {
+                throw new Error("Failed to load seats");
+            }
+            const data = await res.json();
+            basePrice = data.basePrice || 0;
+            seatMap = new Map((data.seats || []).map((s) => [s.seatCode, s]));
+            renderSeats();
+        } catch (e) {
+            seatGrid.innerHTML = "<p class=\"text-danger\">Unable to load seat data.</p>";
+        }
+    }
+
     buildDayButtons();
     updateSelectedDate("--/--");
     updateSelectedTime("--:--");
     startCountdown(5 * 60 + 11);
+    updateContinueLink();
 
     dayButtons.forEach((btn) => {
         btn.addEventListener("click", function () {
@@ -260,5 +305,5 @@
         });
     });
 
-    renderSeats();
+    loadSeats();
 })();

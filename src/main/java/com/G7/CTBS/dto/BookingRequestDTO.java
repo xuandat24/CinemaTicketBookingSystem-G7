@@ -1,0 +1,15 @@
+package com.G7.CTBS.dto;
+
+import lombok.*;
+
+import java.util.List;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class BookingRequestDTO {
+    private Long showtimeId;
+    private List<Long> seatIds;
+    private Long userId;
+}
