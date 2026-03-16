@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <title>Booking</title>
+
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+    <link rel="stylesheet" th:href="@{/css/booking.css}">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div th:replace="layout/navbar :: navbar"></div>
+
+
+<div class="container mt-4">
+
+    <!-- breadcrumb -->
+
+    <nav aria-label="breadcrumb">
+
+        <ol class="breadcrumb">
+
+            <li class="breadcrumb-item">
+                <a th:href="@{/}">Home</a>
+            </li>
+
+            <li class="breadcrumb-item">Booking</li>
+
+            <li class="breadcrumb-item active">
+                The Semper Season 3
+            </li>
+
+        </ol>
+
+    </nav>
+
+    <div class="row">
+
+
+        <!-- LEFT SIDE -->
+
+        <div class="col-md-8">
+
+
+            <!-- customer info -->
+
+            <h4>PAYMENT INFORMATION</h4>
+
+            <div class="card p-3 mb-4">
+
+                <div class="row">
+
+                    <div class="col-md-4">
+
+                        <p><b>Name</b></p>
+
+                        <p>Nguyễn Viết Hải Anh</p>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <p><b>Phone</b></p>
+
+                        <p>0966264889</p>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <p><b>Email</b></p>
+
+                        <p>haianhnv07@gmail.com</p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- seat price -->
+
+            <h5>VIP SEAT</h5>
+
+            <div class="card p-3 mb-4">
+
+                <div class="d-flex justify-content-between">
+
+                    <span id="seatList">E6, E7</span>
+
+                    <span>2 x 50.000 = <b id="seatPrice">100000</b> vnđ</span>
+
+                </div>
+
+            </div>
+
+
+            <!-- combo -->
+
+            <h4>COMBO PREFERENCES</h4>
+
+            <div class="card p-3 mb-4">
+
+                <table class="table">
+
+                    <thead>
+
+                    <tr>
+
+                        <th></th>
+                        <th>Combo name</th>
+                        <th>Description</th>
+                        <th>Quantity</th>
+
+                    </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    <tr>
+
+                        <td>
+                            <img th:src="@{/img/combo1.png}" width="100">
+                        </td>
+
+                        <td>Ice Cream Combo</td>
+
+                        <td>1 Ice Cream + 1 Soft Drink + 1 Large Popcorn</td>
+
+                        <td>
+
+                            <button onclick="changeCombo(1,-1)">-</button>
+
+                            <span id="combo1">0</span>
+
+                            <button onclick="changeCombo(1,1)">+</button>
+
+                        </td>
+
+                    </tr>
+
+
+                    <tr>
+
+                        <td>
+                            <img th:src="@{/img/combo2.png}" width="100">
+                        </td>
+
+                        <td>Sweet Combo</td>
+
+                        <td>1 Large Popcorn + 2 Soft Drinks</td>
+
+                        <td>
+
+                            <button onclick="changeCombo(2,-1)">-</button>
+
+                            <span id="combo2">0</span>
+
+                            <button onclick="changeCombo(2,1)">+</button>
+
+                        </td>
+
+                    </tr>
+                    <tr>
+
+                        <td>
+                            <img th:src="@{/img/combo3.png}" width="100">
+                        </td>
+
+                        <td>Family Combo</td>
+
+                        <td>1 Large Popcorn + 2 Soft Drinks + 2 Snack Oishi</td>
+
+                        <td>
+
+                            <button onclick="changeCombo(3,-1)">-</button>
+
+                            <span id="combo3">0</span>
+
+                            <button onclick="changeCombo(3,1)">+</button>
+
+                        </td>
+
+                    </tr>
+                    <tr>
+
+                        <td>
+                            <img th:src="@{/img/combo4.png}" width="100">
+                        </td>
+
+                        <td>Beta Combo</td>
+
+                        <td>1 Large Popcorn + 1 Soft Drinks</td>
+
+                        <td>
+
+                            <button onclick="changeCombo(4,-1)">-</button>
+
+                            <span id="combo4">0</span>
+
+                            <button onclick="changeCombo(4,1)">+</button>
+
+                        </td>
+
+                    </tr>
+                    <tr>
+
+                        <td>
+                            <img th:src="@{/img/combo5.png}" width="100">
+                        </td>
+
+                        <td>Astronaut Cup Combo</td>
+
+                        <td>1 Astronaut Cup Drink + 1 Popcorn</td>
+
+                        <td>
+
+                            <button onclick="changeCombo(5,-1)">-</button>
+
+                            <span id="combo5">0</span>
+
+                            <button onclick="changeCombo(5,1)">+</button>
+
+                        </td>
+
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+
+            <!-- point discount -->
+
+            <h4>DISCOUNT</h4>
+
+            <div class="card p-3 mb-4">
+
+                <div class="row align-items-center">
+
+                    <div class="col-md-3">
+
+                        <p>Points available</p>
+                        <h5 id="currentPoint">100</h5>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <input type="number" id="pointInput"
+                               class="form-control"
+                               placeholder="Enter points">
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                        <p>= <span id="discountMoney">0</span> vnđ</p>
+
+                    </div>
+
+                    <div class="col-md-2">
+
+                        <button onclick="applyPoint()" class="btn btn-primary">
+                            REDEEM
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- payment -->
+
+            <h4>PAYMENT METHOD</h4>
+
+            <div class="card p-3">
+
+                <div class="payment-container">
+
+                    <label class="payment-box">
+
+                        <input type="radio" name="payment">
+
+                        <img th:src="@{/img/momo.png}" class="payment-icon">
+
+                        <p>MoMo</p>
+
+                    </label>
+
+
+                    <label class="payment-box">
+
+                        <input type="radio" name="payment">
+
+                        <img th:src="@{/img/zalopay.png}" class="payment-icon">
+
+                        <p>ZaloPay</p>
+
+                    </label>
+
+
+                    <label class="payment-box">
+
+                        <input type="radio" name="payment">
+
+                        <img th:src="@{/img/shopeepay.png}" class="payment-icon">
+
+                        <p>ShopeePay</p>
+
+                    </label>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- RIGHT SIDE -->
+
+        <div class="col-md-4 booking-summary">
+
+            <div class="card p-3">
+                <img th:src="@{${poster}}" class="img-fluid mb-3">
+                <h5 th:text="${movieName}"></h5>
+
+                <p>
+                    <i class="fa fa-building me-2"></i>
+                    Cinema: Beta
+                </p>
+
+                <p>
+                    <i class="fa fa-calendar me-2"></i>
+                    Date: 12/03/2026
+                </p>
+
+                <p>
+                    <i class="fa fa-clock-o me-2"></i>
+                    Time: 10:00
+                </p>
+
+                <p>
+                    <i class="fa fa-ticket me-2"></i>
+                    Seat: <span id="seatShow">E6, E7</span>
+                </p>
+
+                <hr>
+
+                <p>Time remaining:
+                    <span id="timer">10:00</span>
+                </p>
+
+                <hr>
+
+                <div class="price-row">
+
+                    <span>Total:</span>
+
+                    <span id="totalPrice">100000</span>
+
+                </div>
+
+
+                <div class="price-row">
+
+                    <span>The amount is reduced:</span>
+
+                    <span id="discount">0</span>
+
+                </div>
+
+
+                <div class="price-row">
+
+                    <b>The payment amount:</b>
+
+                    <b id="finalPrice">100000</b>
+
+                </div>
+
+                <button class="btn btn-primary w-100 mt-3">
+                    Next
+                </button>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<!-- FOOTER -->
+
+<div th:replace="layout/footer :: footer"></div>
+
+<script th:src="@{/js/booking.js}"></script>
+
+</body>
+
+</html>
