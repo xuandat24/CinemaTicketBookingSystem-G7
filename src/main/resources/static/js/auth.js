@@ -116,6 +116,7 @@ if (tokenFromUrl) {
     // Lưu vào kho LocalStorage ngay lập tức
     localStorage.setItem("jwtToken", tokenFromUrl);
     localStorage.setItem("username", usernameFromUrl);
+    document.cookie = "jwtToken=" + tokenFromUrl + "; path=/; max-age=" + (60*60*24);
 
     // Xóa tham số trên thanh địa chỉ URL cho sạch đẹp
     window.history.replaceState({}, document.title, window.location.pathname);
@@ -157,7 +158,7 @@ document.addEventListener("DOMContentLoaded", function () {
             localStorage.removeItem("username");
             // XÓA COOKIE
             document.cookie = "jwtToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-            window.location.href = "/login";
+            window.location.replace("/login");
         });
     }
 });

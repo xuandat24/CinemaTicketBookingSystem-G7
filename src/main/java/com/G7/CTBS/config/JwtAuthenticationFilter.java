@@ -60,6 +60,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         
         if (token == null) {
             System.out.println(">> [JWT FILTER] KHÔNG CÓ TOKEN. Chuyển tiếp với quyền Khách (Guest).");
+            SecurityContextHolder.clearContext();
             filterChain.doFilter(request, response);
             return;
         }

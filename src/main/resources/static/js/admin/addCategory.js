@@ -11,10 +11,12 @@ document.getElementById('addCategoryForm').addEventListener('submit', async (e) 
     }
 
     try {
+        const token = localStorage.getItem('jwtToken'); // Lấy token
         const response = await fetch('/api/admin/categories', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}` // Bổ sung Token
             },
             body: JSON.stringify(categoryData)
         });

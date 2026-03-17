@@ -10,6 +10,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -32,6 +33,14 @@ public class MovieService {
         try {
             return convertToDTO(movieRepository.findAll());
         } catch (Exception e) {
+            throw new RuntimeException("Cannot find movie");
+        }
+    }
+    
+    public MovieDTO findById(@PathVariable Long id) throws EntityNotFoundException {
+        try{
+            return convertToDTO(movieRepository.findById(id).get());
+        } catch (EntityNotFoundException e) {
             throw new RuntimeException("Cannot find movie");
         }
     }

@@ -10,7 +10,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 async function fetchExistingMovies() {
     try {
-        const res = await fetch('/api/admin/movies');
+        const token = localStorage.getItem('jwtToken');
+        const res = await fetch('/api/admin/movies', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
         const movies = await res.json();
         existingMovieTitles = movies.map(m => m.title.toLowerCase());
     } catch (e) { console.log("Failed to load existing movies"); }
@@ -131,11 +134,15 @@ async function openPrefilledForm(imdbID) {
 }
 
 async function loadCategoryDropdown() {
-    const response = await fetch('/api/admin/categories');
+    const token = localStorage.getItem('jwtToken');
+    const response = await fetch('/api/admin/categories', {
+         headers: { 'Authorization': `Bearer ${token}` }
+    });
     const categories = await response.json();
     const select = document.getElementById('movieCategorySelect');
     categories.forEach(c => select.innerHTML += `<option value="${c.categoryId}">${c.name}</option>`);
 }
+
 function addCategoryTag() {
     const select = document.getElementById('movieCategorySelect');
     const id = select.value;
@@ -189,7 +196,14 @@ document.getElementById('addMovieForm').addEventListener('submit', async (e) => 
     if (trailerFile) formData.append('trailerFile', trailerFile);
 
     try {
-        const response = await fetch('/api/admin/movies', { method: 'POST', body: formData });
+        const token = localStorage.getItem('jwtToken');
+        const response = await fetch('/api/admin/movies', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+            body: formData
+        });
         const data = await response.json();
         if (response.ok) {
             alert("Success: " + data.message);

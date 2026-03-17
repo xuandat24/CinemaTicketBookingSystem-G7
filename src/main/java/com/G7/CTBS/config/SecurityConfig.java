@@ -15,7 +15,6 @@ public class SecurityConfig {
     
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
     
-    // BẮT BUỘC: Khai báo Filter mà chúng ta vừa sửa ở trên
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     
     @Bean
@@ -25,7 +24,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/css/**", "/js/**", "/img/**", "/fonts/**", "/banners/**", "/trailers/**").permitAll()
                         .requestMatchers("/login", "/register", "/verify-otp", "/api/auth/**").permitAll()
-                        .requestMatchers("/", "/index.html", "/movies.html", "/detail.html", "/about.html").permitAll()
+                        .requestMatchers("/", "/index.html", "/movies", "/detail", "/about", "/movies/**").permitAll()
+                        .requestMatchers("/api/public/**").permitAll()
                         .requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
                         
                         // KHÓA TRANG ADMIN: Chỉ Role_Admin mới được vào
@@ -33,7 +33,6 @@ public class SecurityConfig {
                         
                         .anyRequest().authenticated()
                 )
-                // LỖI NẰM Ở ĐÂY: Cần chèn JWT Filter vào chuỗi bảo mật của Spring
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 
                 .exceptionHandling(ex -> ex
@@ -49,6 +48,13 @@ public class SecurityConfig {
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/login")
                         .successHandler(oAuth2SuccessHandler)
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/logout") // Bắt tín hiệu từ form logout
+                        .logoutSuccessUrl("/login?logout") // Chuyển về trang login
+                        .deleteCookies("jwtToken", "JSESSIONID")
+                        .invalidateHttpSession(true) // Xóa session của Spring
+                        .clearAuthentication(true) // Xóa quyền trong Context
                 );
         
         return http.build();

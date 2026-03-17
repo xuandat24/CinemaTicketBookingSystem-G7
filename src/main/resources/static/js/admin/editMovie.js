@@ -15,7 +15,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 async function loadMovieData() {
     try {
-        const response = await fetch(`/api/admin/movies/${movieId}`);
+        const token = localStorage.getItem('jwtToken');
+        const response = await fetch(`/api/admin/movies/${movieId}`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
         if (!response.ok) throw new Error("Movie not found");
 
         const movie = await response.json();
@@ -59,7 +62,10 @@ async function loadMovieData() {
 }
 
 async function loadCategoryDropdown() {
-    const response = await fetch('/api/admin/categories');
+    const token = localStorage.getItem('jwtToken');
+    const response = await fetch('/api/admin/categories', {
+        headers: { 'Authorization': `Bearer ${token}` }
+    });
     const categories = await response.json();
     const select = document.getElementById('movieCategorySelect');
     select.innerHTML = '<option value="">-- Select category to add --</option>';
@@ -136,10 +142,14 @@ document.getElementById('editMovieForm').addEventListener('submit', async (e) =>
     if (trailerFile) formData.append('trailerFile', trailerFile);
 
     try {
-        const response = await fetch(`/api/admin/movies/${movieId}`, {
-            method: 'PUT',
-            body: formData
-        });
+            const token = localStorage.getItem('jwtToken');
+            const response = await fetch(`/api/admin/movies/${movieId}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                body: formData
+            });
         const data = await response.json();
 
         if (response.ok) {
@@ -158,10 +168,14 @@ document.getElementById('editMovieForm').addEventListener('submit', async (e) =>
 
 document.getElementById('btnDeleteMovie').addEventListener('click', async () => {
     if(!confirm("DANGER: Are you absolutely sure you want to delete this movie? This action will disable the movie.")) return;
-
     try{
-        const response = await fetch(`/api/admin/movies/${movieId}`, {method: 'DELETE'})
-        const data = await response.json()
+        const token = localStorage.getItem('jwtToken');
+        const response = await fetch(`/api/admin/movies/${movieId}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` } // Thêm token
+        });
+
+        const data = await response.json();
 
         if(response.ok){
             alert("Success: " + data.message);
