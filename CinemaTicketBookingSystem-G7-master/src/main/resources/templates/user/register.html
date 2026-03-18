@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Đăng ký | Movie Theme</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+</head>
+<body class="reg-body">
+<div class="reg-wrapper">
+    <div class="reg-card">
+        <div class="reg-side-left d-none d-md-flex">
+            <div class="reg-overlay"></div>
+            <div class="reg-content">
+                <div class="reg-badge">NEW MEMBER</div>
+                <h1 class="text-white fw-bold">JOIN THE<br>COMMUNITY</h1>
+                <p class="text-white-50 mt-3">Get your all-access pass to the best cinematic experience.</p>
+
+                <div class="movie-ticket-animation">
+                    <div class="ticket">
+                        <i class="fa fa-ticket"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="reg-side-right">
+            <a th:href="@{/}" class="reg-brand">
+                <i class="fa fa-modx"></i> <span>MovieTheme</span>
+            </a>
+
+            <div class="reg-header mb-4">
+                <h2 class="fw-bold m-0">Create Account</h2>
+                <p class="text-muted small">Welcome new member CTBS</p>
+            </div>
+
+            <form id="registerForm">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label small fw-bold">First Name</label>
+                        <input type="text" id="firstName" class="form-control" placeholder="John" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label small fw-bold">Last Name</label>
+                        <input type="text" id="lastName" class="form-control" placeholder="Doe" required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Email Address</label>
+                    <input type="email" id="email" class="form-control" placeholder="john@example.com" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Username</label>
+                    <input type="text" id="userName" class="form-control" placeholder="johndoe123" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Phone</label>
+                    <input type="text" id="phone" class="form-control" placeholder="johndoe123" required>
+                </div>
+
+                <div class="mb-3">
+                <label class="form-label small fw-bold">Gender</label>
+                <select id="gender" class="form-control" required>
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Others">Others</option>
+                </select>
+                </div>
+
+                <div class="mb-3">
+                <label class="form-label small fw-bold">Date of Birth</label>
+                <input type="date" id="dob" class="form-control" required>
+                </div>
+
+
+                <div class="mb-4">
+                    <label class="form-label small fw-bold">Password</label>
+                    <input type="password" id="password" class="form-control" placeholder="Minimum 8 characters" required>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label small fw-bold">Confirm Password</label>
+                    <input type="password" id="confirmPassword" class="form-control" placeholder="Re-enter your password" required>
+                </div>
+
+                <button type="submit" class="reg-btn-submit w-100 mb-3">GET STARTED</button>
+
+                <div class="reg-divider"><span>OR</span></div>
+
+                <a th:href="@{/oauth2/authorization/google}" class="reg-btn-google w-100">
+                    <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" alt="Google">
+                    Sign up with Google
+                </a>
+
+                <p class="text-center mt-4 mb-0 small text-muted">
+                    Already have an account?
+                    <a th:href="@{/login}" class="fw-bold col_oran text-decoration-none">Log in here</a>
+                </p>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<footer th:replace="~{layout/footer :: footer}"></footer>
+<script th:src="@{/js/auth.js}"></script>
+</body>
+</html>
