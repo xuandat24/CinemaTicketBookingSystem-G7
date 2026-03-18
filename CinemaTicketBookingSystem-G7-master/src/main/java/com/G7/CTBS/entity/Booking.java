@@ -34,4 +34,7 @@ public class Booking {
     
     @OneToMany(mappedBy = "booking")
     private List<Payment> payments;
+
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
+    private List<BookingCombo> bookingCombos;
 }

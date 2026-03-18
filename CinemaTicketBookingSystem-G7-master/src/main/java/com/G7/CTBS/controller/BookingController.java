@@ -1,9 +1,13 @@
 package com.G7.CTBS.controller;
 
+import com.G7.CTBS.entity.User;
+import com.G7.CTBS.service.ComboService;
+import com.G7.CTBS.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,10 +15,27 @@ import java.util.Map;
 @Controller
 public class BookingController {
 
-    @GetMapping("/booking/{id}")
-    public String booking(@PathVariable("id") Long id, Model model) {
+    @Autowired
+    private ComboService comboService;
 
-        // Map giả lập movieId -> movie info
+    @Autowired
+    private UserService userService;
+
+    @GetMapping("/booking/{id}")
+    public String booking(@PathVariable("id") Long id,
+                          @RequestParam(value = "username", required = false) String username,
+                          Model model) {
+
+        // ❗ Nếu chưa login → đá về login
+        if (username == null) {
+            return "redirect:/login";
+        }
+
+        // 👉 Lấy user từ DB
+        User user = userService.findByUsername(username);
+        model.addAttribute("user", user);
+
+        // Fake movie
         Map<Long, Map<String, String>> movies = new HashMap<>();
 
         Map<String, String> movie1 = new HashMap<>();
@@ -32,12 +53,13 @@ public class BookingController {
         movie3.put("poster", "/img/3.jpg");
         movies.put(3L, movie3);
 
-        // Lấy thông tin theo id, nếu id không tồn tại thì trả movie1
         Map<String, String> movie = movies.getOrDefault(id, movie1);
 
         model.addAttribute("movieName", movie.get("name"));
         model.addAttribute("poster", movie.get("poster"));
 
-        return "booking"; // render booking.html
+        model.addAttribute("combos", comboService.getAllCombos());
+
+        return "booking";
     }
 }

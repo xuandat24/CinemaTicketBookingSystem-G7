@@ -1,85 +1,81 @@
-let seatPrice = 100000
+document.addEventListener("DOMContentLoaded", function () {
 
-let comboPrice = {
-    1:48000,
-    2:88000,
-    3:220000,
-    4:68000,
-    5:130000
-}
+    // ====== DATA ======
+    let seatPrice = 100000
 
-let comboQty = {
-    1:0,
-    2:0,
-    3:0,
-    4:0,
-    5:0
-}
+    // đảm bảo tồn tại
+    if (typeof comboPrice === "undefined") comboPrice = {}
+    if (typeof comboQty === "undefined") comboQty = {}
 
-function changeCombo(id,change){
+    // ====== CHANGE COMBO ======
+    function changeCombo(id, change) {
 
-    comboQty[id]+=change
+        if (!comboQty[id]) comboQty[id] = 0
 
-    if(comboQty[id]<0){
-        comboQty[id]=0
+        comboQty[id] += change
+
+        if (comboQty[id] < 0) comboQty[id] = 0
+
+        let el = document.getElementById("combo" + id)
+        if (el) el.innerText = comboQty[id]
+
+        updateTotal()
     }
 
-    document.getElementById("combo"+id).innerText=comboQty[id]
+    // ⚠️ QUAN TRỌNG: expose ra global cho HTML gọi
+    window.changeCombo = changeCombo
 
-    updateTotal()
+    // ====== UPDATE TOTAL ======
+    function updateTotal() {
 
-}
+        let comboTotal = 0
 
-function updateTotal(){
+        for (let id in comboQty) {
+            comboTotal += comboQty[id] * (comboPrice[id] || 0)
+        }
 
-    let comboTotal=0
+        let discount = parseInt(document.getElementById("discount")?.innerText) || 0
 
-    for(let id in comboQty){
-        comboTotal+=comboQty[id]*comboPrice[id]
+        let total = seatPrice + comboTotal
+        let final = total - discount
+
+        document.getElementById("totalPrice").innerText = total
+        document.getElementById("finalPrice").innerText = final
     }
 
-    let discount = document.getElementById("discount").innerText
+    // ====== POINT ======
+    let pointInput = document.getElementById("pointInput")
 
-    let final = seatPrice + comboTotal - discount
+    if (pointInput) {
+        pointInput.addEventListener("input", function () {
 
-    document.getElementById("totalPrice").innerText = seatPrice + comboTotal
+            let point = parseInt(this.value) || 0
+            let discount = point * 1000
 
-    document.getElementById("finalPrice").innerText = final
+            document.getElementById("discountMoney").innerText = discount
+            document.getElementById("discount").innerText = discount
 
-}
+            updateTotal()
+        })
+    }
 
-document.getElementById("pointInput").addEventListener("input",function(){
+    // ====== TIMER ======
+    let time = 600
 
-    let point = this.value
+    setInterval(function () {
 
-    let discount = point * 1000
+        let minutes = Math.floor(time / 60)
+        let seconds = time % 60
 
-    document.getElementById("discountMoney").innerText = discount
-    document.getElementById("discount").innerText = discount
+        let timerEl = document.getElementById("timer")
 
-    updateTotal()
+        if (timerEl) {
+            timerEl.innerText =
+                minutes + ":" + (seconds < 10 ? "0" : "") + seconds
+        }
+
+        time--
+
+    }, 1000)
 
 })
-
-
-let time = 600
-
-let timer = setInterval(function(){
-
-    let minutes = Math.floor(time/60)
-    let seconds = time%60
-
-    document.getElementById("timer").innerText =
-        minutes + ":" + (seconds<10?"0":"") + seconds
-
-    time--
-
-    if(time<0){
-
-        clearInterval(timer)
-
-        alert("Hết thời gian giữ ghế!")
-
-    }
-
-},1000)
