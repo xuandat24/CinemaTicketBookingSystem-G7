@@ -36,6 +36,7 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy Account với ID: " + id));
     }
 
+
     public User create(UserCreateRequest req) {
 
         if (repository.existsByuserName(req.getUserName())) {
@@ -64,7 +65,6 @@ public class UserService {
         // Gọi thẳng service (không cần orElseThrow ở đây nữa)
         Role role = roleService.findById(roleId);
 
-        user.setRole(role);
         user.setRole(role);
 
         // BẮT BUỘC PHẢI CÓ DÒNG NÀY ĐỂ LƯU XUỐNG DATABASE
@@ -98,4 +98,12 @@ public class UserService {
 
         return repository.save(user);
     }
+    public User findByUsername(String username) {
+        return repository.findByuserName(username).orElse(null);
+    }
+
+    public User findByUsernameOrEmail(String input) {
+        return repository.findByUserNameOrEmail(input, input).orElse(null);
+    }
+
 }

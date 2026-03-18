@@ -75,12 +75,27 @@ public class AuthController {
                 // SỬA TẠI ĐÂY: Dùng biến instance 'userService' thay vì Class 'UserService'
                 userService.create(userData);
 
+                // ==========================================
+                // THÊM MỚI: TẠO TOKEN ĐỂ TỰ ĐỘNG LOGIN
+                // ==========================================
+                String rawName = userData.getUserName();
+                if (rawName == null || rawName.isEmpty()) {
+                    rawName = "Google User";
+                }
+                // Gọi service tạo token (giống hệt lúc đăng nhập)
+                String token = authenticationService.tokenGeneration(rawName);
+
                 // Xóa dữ liệu tạm sau khi đăng ký thành công
                 session.removeAttribute("PENDING_USER_DATA");
                 session.removeAttribute("OTP_CODE");
                 session.removeAttribute("OTP_TIME");
 
-                return ResponseEntity.ok(Map.of("message", "Xác thực và tạo tài khoản thành công!"));
+                // SỬA TẠI ĐÂY: Trả về thêm 'token' và 'username' trong JSON
+                return ResponseEntity.ok(Map.of(
+                        "message", "Xác thực và tạo tài khoản thành công!",
+                        "token", token,
+                        "username", rawName
+                ));
             }
             return ResponseEntity.badRequest().body(Map.of("message", "Không tìm thấy dữ liệu đăng ký!"));
         } else {

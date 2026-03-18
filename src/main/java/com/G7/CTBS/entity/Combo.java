@@ -3,20 +3,22 @@ package com.G7.CTBS.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
-
 @Entity
-@Table(name = "categories")
+@Table(name = "combos")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Category {
+public class Combo {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long categoryId;
-    
+    private Long id;
+
     private String name;
-    
-    @ManyToMany(mappedBy = "categories")
-    private List<Movie> movies;
+
+    private String description;
+
+    private int price;
+
+    private String image;
 }

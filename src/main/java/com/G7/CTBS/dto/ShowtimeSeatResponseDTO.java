@@ -10,6 +10,8 @@ import java.util.List;
 @Builder
 public class ShowtimeSeatResponseDTO {
     private Long showtimeId;
+    private Long roomId;
+    private String roomName;
     private Double basePrice;
     private List<SeatAvailabilityDTO> seats;
 }

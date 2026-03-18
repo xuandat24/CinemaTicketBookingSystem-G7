@@ -1,4 +1,4 @@
-/* Seat selection behavior (API-backed) */
+﻿/* Mock seat selection behavior */
 (function () {
     const seatGrid = document.getElementById("seat-grid");
     if (!seatGrid) {
@@ -18,6 +18,9 @@
     const totalBottomEl = document.getElementById("total-price-bottom");
     const timerEl = document.getElementById("countdown-timer");
     const continueBtn = document.getElementById("continue-btn");
+    const queryParams = new URLSearchParams(window.location.search);
+    const showtimeId = queryParams.get("showtimeId");
+    const username = (queryParams.get("username") || localStorage.getItem("username") || "").trim();
 
     if (showtimeBar) {
         showtimeBar.classList.add("is-hidden");
@@ -25,12 +28,18 @@
         showtimeBar.setAttribute("aria-hidden", "true");
     }
 
-    const params = new URLSearchParams(window.location.search);
-    const showtimeId = params.get("showtimeId");
+    const basePrice = 100000;
+    const priceFactor = {
+        NORMAL: 1.0,
+        VIP: 1.5,
+        PAIR: 1.25
+    };
+
+    const bookedSeats = new Set([
+        "A1", "A2", "A3", "B5", "C7", "D10", "E12", "F9", "G14", "H3", "I16", "J6", "K11", "L5", "L6"
+    ]);
 
     const selected = new Set();
-    let seatMap = new Map();
-    let basePrice = 0;
 
     function setActiveButton(buttons, activeButton) {
         buttons.forEach((btn) => btn.classList.remove("active"));
@@ -88,24 +97,33 @@
         return value.toLocaleString("vi-VN") + "đ";
     }
 
+    function seatCodeToId(code) {
+        const row = code.charCodeAt(0) - "A".charCodeAt(0);
+        const col = parseInt(code.slice(1), 10);
+        if (row < 0 || Number.isNaN(col)) {
+            return null;
+        }
+        return row * 12 + col;
+    }
+
     function updateContinueLink() {
         if (!continueBtn) return;
-        const selectedIds = Array.from(selected)
-            .map((code) => seatMap.get(code))
-            .filter((seat) => seat && seat.seatId)
-            .map((seat) => seat.seatId);
 
-        if (!showtimeId || selectedIds.length === 0) {
-            continueBtn.href = "#";
-            continueBtn.classList.add("disabled");
-            continueBtn.setAttribute("aria-disabled", "true");
+        const selectedSeatCodes = Array.from(selected).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+        const selectedSeatIds = selectedSeatCodes
+            .map((code) => seatCodeToId(code))
+            .filter((id) => id !== null);
+
+        if (!showtimeId || selectedSeatCodes.length === 0) {
+            continueBtn.href = username ? ("/booking?username=" + encodeURIComponent(username)) : "/booking";
             return;
         }
 
-        continueBtn.href = "/booking?showtimeId=" + encodeURIComponent(showtimeId)
-            + "&seatIds=" + encodeURIComponent(selectedIds.join(","));
-        continueBtn.classList.remove("disabled");
-        continueBtn.removeAttribute("aria-disabled");
+        continueBtn.href =
+            "/booking?showtimeId=" + encodeURIComponent(showtimeId) +
+            "&seatIds=" + encodeURIComponent(selectedSeatIds.join(",")) +
+            "&seatCodes=" + encodeURIComponent(selectedSeatCodes.join(",")) +
+            (username ? ("&username=" + encodeURIComponent(username)) : "");
     }
 
     function updateSummary() {
@@ -123,9 +141,9 @@
 
         let total = 0;
         seats.forEach((code) => {
-            const seat = seatMap.get(code);
-            const factor = seat && seat.priceFactor ? seat.priceFactor : 1.0;
-            total += basePrice * factor;
+            const row = code[0];
+            const type = getSeatType(row);
+            total += basePrice * priceFactor[type];
         });
 
         const totalText = formatPrice(total);
@@ -144,18 +162,13 @@
         return "NORMAL";
     }
 
-    function isBooked(code) {
-        const seat = seatMap.get(code);
-        return seat ? seat.booked === true : true;
-    }
-
-    function makeSeatButton(code, type, booked) {
+    function makeSeatButton(code, type, isBooked) {
         const btn = document.createElement("div");
         btn.className = "seat " + type.toLowerCase();
         btn.textContent = code;
         btn.dataset.seat = code;
 
-        if (booked) {
+        if (isBooked) {
             btn.classList.add("booked");
             btn.setAttribute("aria-disabled", "true");
             return btn;
@@ -189,7 +202,7 @@
         const num = parseInt(code.slice(1), 10);
         const pairNum = num % 2 === 1 ? num + 1 : num - 1;
         const pairCode = "L" + pairNum;
-        if (isBooked(code) || isBooked(pairCode)) {
+        if (bookedSeats.has(code) || bookedSeats.has(pairCode)) {
             return;
         }
         const codes = [code, pairCode];
@@ -208,7 +221,6 @@
     }
 
     function renderSeats() {
-        seatGrid.innerHTML = "";
         const rows = "ABCDEFGHIJKL".split("");
         const cols = 12;
         const fragment = document.createDocumentFragment();
@@ -216,10 +228,9 @@
         rows.forEach((row) => {
             for (let col = 1; col <= cols; col++) {
                 const code = row + col;
-                const seat = seatMap.get(code);
-                const type = seat && seat.seatType ? seat.seatType : getSeatType(row);
-                const booked = seat ? seat.booked : true;
-                fragment.appendChild(makeSeatButton(code, type, booked));
+                const type = getSeatType(row);
+                const isBooked = bookedSeats.has(code);
+                fragment.appendChild(makeSeatButton(code, type, isBooked));
             }
         });
 
@@ -254,27 +265,6 @@
         setInterval(tick, 1000);
     }
 
-    async function loadSeats() {
-        if (!showtimeId) {
-            seatGrid.innerHTML = "<p class=\"text-danger\">Missing showtimeId in URL.</p>";
-            updateContinueLink();
-            return;
-        }
-
-        try {
-            const res = await fetch("/api/showtimes/" + encodeURIComponent(showtimeId) + "/seats");
-            if (!res.ok) {
-                throw new Error("Failed to load seats");
-            }
-            const data = await res.json();
-            basePrice = data.basePrice || 0;
-            seatMap = new Map((data.seats || []).map((s) => [s.seatCode, s]));
-            renderSeats();
-        } catch (e) {
-            seatGrid.innerHTML = "<p class=\"text-danger\">Unable to load seat data.</p>";
-        }
-    }
-
     buildDayButtons();
     updateSelectedDate("--/--");
     updateSelectedTime("--:--");
@@ -305,5 +295,5 @@
         });
     });
 
-    loadSeats();
+    renderSeats();
 })();

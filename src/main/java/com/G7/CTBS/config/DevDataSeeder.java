@@ -48,9 +48,6 @@ public class DevDataSeeder implements CommandLineRunner {
         movie.setDuration(120);
         movie.setReleaseDate(LocalDate.now().minusDays(30));
         movie.setStatus("Now Playing");
-        movie.setDirector("Seed Director");
-        movie.setActors("Seed Actor");
-        movie.setRating(7.5);
         Movie savedMovie = movieRepository.save(movie);
 
         TheaterRoom room = new TheaterRoom();

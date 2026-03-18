@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <title>Booking</title>
+
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+    <link rel="stylesheet" th:href="@{/css/booking.css}">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div th:replace="layout/navbar :: navbar"></div>
+
+<div class="container mt-4">
+
+    <!-- breadcrumb -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a th:href="@{/}">Home</a>
+            </li>
+            <li class="breadcrumb-item">Booking</li>
+            <li class="breadcrumb-item active">
+                <span th:text="${movieName}">Selected Movie</span>
+            </li>
+        </ol>
+    </nav>
+
+    <div class="row">
+
+        <!-- LEFT SIDE -->
+        <div class="col-md-8">
+
+            <!-- PAYMENT -->
+            <h4><i class="fa fa-user-circle me-2"></i> PAYMENT INFORMATION</h4>
+
+            <div class="card p-3 mb-4">
+                <div class="row">
+
+                    <div class="col-md-4">
+                        <p><b>Name</b></p>
+                        <p th:text="${user != null ? user.firstName + ' ' + user.lastName : 'Guest'}">
+                            Guest
+                        </p>
+                    </div>
+
+                    <div class="col-md-4">
+                        <p><b>Phone</b></p>
+                        <p th:text="${user != null ? user.phone : '-'}">
+                            -
+                        </p>
+                    </div>
+
+                    <div class="col-md-4">
+                        <p><b>Email</b></p>
+                        <p th:text="${user != null ? user.email : '-'}">
+                            -
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- SEAT -->
+            <h5>VIP SEAT</h5>
+
+            <div class="card p-3 mb-4">
+                <div class="d-flex justify-content-between">
+                    <span id="seatList" th:text="${selectedSeatCodes}">Not selected</span>
+                    <span>2 x 50.000 = <b id="seatPrice">100000</b> vnđ</span>
+                </div>
+            </div>
+
+            <!-- COMBO -->
+            <h4><i class="fa fa-shopping-basket me-2 text-warning"></i> COMBO PREFERENCES</h4>
+
+            <div class="card p-3 mb-4">
+                <table class="table">
+
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>Combo name</th>
+                        <th>Description</th>
+                        <th>Quantity</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr th:each="combo : ${combos}">
+                        <td>
+                            <div class="combo-img">
+                                <img th:src="@{/img/{img}(img=${combo.image})}">
+                            </div>
+                        </td>
+
+                        <td th:text="${combo.name}"></td>
+                        <td th:text="${combo.description}"></td>
+
+                        <td>
+                            <div class="qty-box">
+                                <button class="qty-btn minus"
+                                        th:attr="onclick=|changeCombo(${combo.id}, -1)|">−</button>
+
+                                <span class="qty-number" th:id="'combo' + ${combo.id}">0</span>
+
+                                <button class="qty-btn plus"
+                                        th:attr="onclick=|changeCombo(${combo.id}, 1)|">+</button>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+
+                </table>
+            </div>
+
+            <!-- DISCOUNT -->
+            <h4><i class="fa fa-gift me-2 text-danger"></i> DISCOUNT</h4>
+
+            <div class="card p-3 mb-4">
+                <div class="row align-items-center">
+
+                    <div class="col-md-3">
+                        <p>Points available</p>
+                        <h5 id="currentPoint">100</h5>
+                    </div>
+
+                    <div class="col-md-4">
+                        <input type="number" id="pointInput"
+                               class="form-control"
+                               placeholder="Enter points">
+                    </div>
+
+                    <div class="col-md-3">
+                        <p>= <span id="discountMoney">0</span> vnđ</p>
+                    </div>
+
+                    <div class="col-md-2">
+                        <button onclick="applyPoint()" class="redeem-btn">
+                            REDEEM
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- PAYMENT METHOD -->
+            <h4><i class="fa fa-credit-card me-2 text-success"></i> PAYMENT METHOD</h4>
+
+            <div class="payment-method">
+
+                <label class="payment-item">
+                    <input type="radio" name="payment" value="momo">
+                    <img th:src="@{/img/momo.png}">
+                    <span>MoMo wallet</span>
+                </label>
+
+                <label class="payment-item">
+                    <input type="radio" name="payment" value="zalopay">
+                    <img th:src="@{/img/zalopay.png}">
+                    <span>ZaloPay wallet</span>
+                </label>
+
+                <label class="payment-item">
+                    <input type="radio" name="payment" value="shopee">
+                    <img th:src="@{/img/shopeepay.png}">
+                    <span>ShopeePay wallet</span>
+                </label>
+
+                <label class="payment-item">
+                    <input type="radio" name="payment" value="qr">
+                    <img th:src="@{/img/qr.png}">
+                    <span>QR Code</span>
+                </label>
+
+            </div>
+
+            <div class="payment-note">
+                <p>* Please review all the information carefully before proceeding to the next step.</p>
+                <p>* Tickets that have been successfully paid for are non-refundable under any circumstances.</p>
+            </div>
+
+        </div>
+
+
+
+        <!-- RIGHT SIDE -->
+        <div class="col-md-4 booking-summary">
+
+            <div class="card p-3">
+                <img th:src="@{${poster}}" class="img-fluid mb-3">
+                <h5 th:text="${movieName}"></h5>
+
+                <p><i class="fa fa-building me-2"></i> Cinema: Beta</p>
+                <p><i class="fa fa-calendar me-2"></i> Date: 12/03/2026</p>
+                <p><i class="fa fa-clock-o me-2"></i> Time: 10:00</p>
+
+                <p>
+                    <i class="fa fa-ticket me-2"></i>
+                    Seat: <span id="seatShow" th:text="${selectedSeatCodes}">Not selected</span>
+                </p>
+
+                <hr>
+                <p class="timer-row">
+                    <span class="timer-label">Time remaining:</span>
+                    <span id="timer" class="countdown">10:00</span>
+                </p>
+
+
+                <hr>
+
+                <div class="price-row">
+                    <span>Total:</span>
+                    <span id="totalPrice">100000</span>
+                </div>
+
+                <div class="price-row">
+                    <span>Discount:</span>
+                    <span id="discount">0</span>
+                </div>
+
+                <div class="price-row">
+                    <b>Final:</b>
+                    <b id="finalPrice">100000</b>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn-prev">PREVIOUS</button>
+                    <button class="btn-next">NEXT</button>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script th:inline="javascript">
+    let comboPrice = {}
+    let comboQty = {}
+
+    /*<![CDATA[*/
+    let combos = /*[[${combos}]]*/ [];
+    /*]]>*/
+
+    combos.forEach(c => {
+        comboPrice[c.id] = c.price
+        comboQty[c.id] = 0
+    })
+</script>
+
+<div th:replace="layout/footer :: footer"></div>
+
+<script th:src="@{/js/booking.js}"></script>
+
+</body>
+</html>
