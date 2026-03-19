@@ -25,6 +25,7 @@ public class SecurityConfig {
                         .requestMatchers("/css/**", "/js/**", "/img/**", "/fonts/**", "/banners/**", "/trailers/**").permitAll()
                         .requestMatchers("/login", "/register", "/verify-otp", "/api/auth/**").permitAll()
                         .requestMatchers("/", "/index.html", "/movies", "/detail", "/about", "/movies/**").permitAll()
+                        .requestMatchers("/showtimes", "/api/showtimes/**", "/showtimes/**").permitAll()
                         .requestMatchers("/api/public/**").permitAll()
                         .requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
                         

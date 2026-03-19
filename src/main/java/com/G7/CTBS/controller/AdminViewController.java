@@ -42,4 +42,19 @@ public class AdminViewController {
     public String editCategoryPage() {
         return "admin/editCategory";
     }
+
+    @GetMapping("/showtimes/create")
+    public String addShowtimesPage() {
+        return "admin/create-showtime";
+    }
+
+    @GetMapping("showtimes")
+    public String searchShowtimesPage() {
+        return "admin/search-showtime";
+    }
+
+    @GetMapping("showtimes/update")
+    public String updateShowtimesPage() {
+        return "admin/update-showtime";
+    }
 }
