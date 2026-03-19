@@ -28,6 +28,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
 
         String authHeader = request.getHeader("Authorization");
+        
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            token = authHeader.substring(7);
+            System.out.println(">> [JWT FILTER] Đã tìm thấy Token trong Header (API Fetch)!");
+        } else if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if ("jwtToken".equals(cookie.getName())) {
+                    token = cookie.getValue();
+                    System.out.println(">> [JWT FILTER] Đã tìm thấy Token trong Cookie (Chuyển trang HTML)!");
+                    break;
+                }
+            }
+        }
+        
+        if (token == null) {
+            System.out.println(">> [JWT FILTER] KHÔNG CÓ TOKEN. Chuyển tiếp với quyền Khách (Guest).");
+            SecurityContextHolder.clearContext();
 
         if(authHeader == null || !authHeader.startsWith("Bearer ")){
             filterChain.doFilter(request, response);

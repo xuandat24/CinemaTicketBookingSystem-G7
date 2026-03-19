@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Movies - Movie Theme</title>
+
+	<link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" >
+	<link th:href="@{/css/font-awesome.min.css}" rel="stylesheet" >
+	<link th:href="@{/css/global.css}" rel="stylesheet">
+	<link th:href="@{/css/list.css}" rel="stylesheet">
+	<link th:href="@{/css/user/movies.css}" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Platypi:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+
+	<script th:src="@{/js/jquery-3.7.1.min.js}"></script>
+	<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</head>
+<body>
+
+<div class="main_o main">
+	<div class="main_o1 bg_back">
+
+		<div th:replace="~{layout/navbar :: navbar}"></div>
+
+		<section id="center" class="centre_o pt-5 pb-5">
+			<div class="container-xl">
+				<div class="row centre_o1 text-center">
+					<div class="col-md-12">
+						<h1 class="text-white font_60">Movies</h1>
+						<h5 class="mb-0 mt-3 fw-normal col_oran">
+							<a class="text-light" th:href="@{/}">Home</a>
+							<span class="mx-2 text-muted">/</span> Movies
+						</h5>
+					</div>
+				</div>
+			</div>
+		</section>
+	</div>
+</div>
+
+<div class="border_dashed"></div>
+
+<section id="trend" class="p_3">
+	<div class="container-xl">
+		<div class="row mb-4 bg-light p-3 rounded shadow-sm align-items-center">
+
+			<div class="col-md-4 mb-2 mb-md-0">
+				<div class="input-group">
+            <span class="input-group-text bg-white border-primary text-primary filter-element">
+                <i class="fa fa-search"></i>
+            </span>
+					<input type="text" id="searchTitle" class="form-control border-primary filter-element" placeholder="Search movie by title...">
+				</div>
+			</div>
+
+			<div class="col-md-3 mb-2 mb-md-0">
+				<select id="filterCategory" class="form-select border-primary filter-element">
+					<option value="">-- All Categories --</option>
+				</select>
+			</div>
+
+			<div class="col-md-3 mb-2 mb-md-0">
+				<select id="sortBy" class="form-select border-primary filter-element">
+					<option value="newest">Newest First</option>
+					<option value="oldest">Oldest First</option>
+				</select>
+			</div>
+
+			<div class="col-md-2">
+				<button class="btn btn-primary w-100 fw-bold filter-element" onclick="applyFilters()">Filter</button>
+			</div>
+
+		</div>
+
+		<div class="row trend_2" id="movieListContainer">
+			<div class="col-12 text-center py-5">
+				<div class="spinner-border text-primary" role="status"></div>
+				<p class="mt-2 text-muted">Loading movies...</p>
+			</div>
+		</div>
+
+		<div class="pages mt-5 row text-center">
+			<div class="col-md-12">
+				<ul class="mb-0" id="paginationContainer">
+				</ul>
+			</div>
+		</div>
+	</div>
+</section>
+
+<div th:replace="~{layout/footer :: footer}"></div>
+
+<script th:src="@{/js/common.js}"></script>
+<script th:src="@{/js/movies.js}"></script>
+</body>
+</html>

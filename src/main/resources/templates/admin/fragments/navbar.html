@@ -32,6 +32,10 @@
         <a th:href="@{/admin/categories/add}" class="menu-item"><i class="fa-solid fa-folder-plus me-2"></i> Add Category</a>
         <a th:href="@{/admin/categories}" class="menu-item"><i class="fa-solid fa-tags me-2"></i> View Categories</a>
 
+        <div class="section-title">Showtimes Management</div>
+        <a th:href="@{/admin/showtimes/create}" class="menu-item"><i class="fa-solid fa-folder-plus me-2"></i> Add Showtime</a>
+        <a th:href="@{/admin/showtimes}" class="menu-item"><i class="fa-solid fa-tags me-2"></i> View Showtimes</a>
+
         <div class="section-title">System</div>
         <form th:action="@{/logout}" method="post" class="px-3 mt-3">
             <button class="btn btn-danger btn-sm w-100 fw-bold" type="submit">
@@ -41,6 +45,11 @@
 
     </div>
 </nav>
-
+<script>
+    function clearLocalData() {
+        localStorage.removeItem("jwtToken");
+        localStorage.removeItem("username");
+    }
+</script>
 </body>
 </html>

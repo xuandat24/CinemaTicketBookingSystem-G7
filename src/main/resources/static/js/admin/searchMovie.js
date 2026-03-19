@@ -18,7 +18,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 async function loadCategoriesForFilter() {
     try {
-        const response = await fetch('/api/admin/categories');
+        const token = localStorage.getItem('jwtToken'); // Lấy Token
+        const response = await fetch('/api/admin/categories', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}` // Bắt buộc đính kèm Token
+            }
+        });
         const categories = await response.json();
         const select = document.getElementById('filterCategory');
         categories.forEach(cat => {
@@ -52,7 +58,14 @@ async function loadMovies() {
             tableTitle.innerHTML = title ? `Search Results for: <span class="text-primary">"${title}"</span>` : 'Current Movies';
         }
 
-        const response = await fetch(apiUrl);
+        const token = localStorage.getItem('jwtToken');
+        const response = await fetch(apiUrl, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
         const movies = await response.json();
 
         const tbody = document.querySelector('#movieTable tbody');

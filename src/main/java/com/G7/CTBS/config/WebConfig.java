@@ -13,20 +13,30 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.lang.reflect.Method;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
     
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // Cấp phép cho đường dẫn /banners/** truy cập vào thư mục vật lý uploads/banners/
-        registry.addResourceHandler("/banners/**")
-                .addResourceLocations("file:uploads/banners/");
+        // Get the absolute path to the physical upload directories
+        Path bannerUploadDir = Paths.get("./uploads/banners");
+        String bannerUploadPath = bannerUploadDir.toFile().getAbsolutePath();
         
-        // Cấp phép cho đường dẫn /trailers/** truy cập vào thư mục vật lý uploads/trailers/
+        Path trailerUploadDir = Paths.get("./uploads/trailers");
+        String trailerUploadPath = trailerUploadDir.toFile().getAbsolutePath();
+        
+        // Grant permission for /banners/** to access the physical uploads/banners/ directory
+        registry.addResourceHandler("/banners/**")
+                .addResourceLocations("file:/" + bannerUploadPath + "/");
+        
+        // Grant permission for /trailers/** to access the physical uploads/trailers/ directory
         registry.addResourceHandler("/trailers/**")
-                .addResourceLocations("file:uploads/trailers/");
+                .addResourceLocations("file:/" + trailerUploadPath + "/");
     }
+    
     @Bean
     public WebServerFactoryCustomizer<TomcatServletWebServerFactory> tomcatCustomizer() {
         return factory -> {
@@ -39,7 +49,7 @@ public class WebConfig implements WebMvcConfigurer {
                 // 2. Mở khóa số lượng tham số (Parameters)
                 connector.setMaxParameterCount(10000);
                 
-                // 3. Mở khóa số lượng File/Part (Chữa dứt điểm lỗi FileCountLimitExceededException)
+                // 3. Mở khóa số lượng File/Part
                 // Sử dụng Reflection để vượt qua bài kiểm tra lỗi Cú pháp (Cannot find symbol) của IDE
                 try {
                     Method setMaxPartCount = connector.getClass().getMethod("setMaxPartCount", int.class);

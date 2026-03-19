@@ -11,10 +11,12 @@ public class HomeController {
         return "about";
     }
 
+
     @GetMapping("/login")
     public String login() {
         return "user/login";
     }
+
 
     @GetMapping("/register")
     public String register() {
@@ -28,11 +30,23 @@ public class HomeController {
 
     @GetMapping("/verify-otp")
     public String verifyOtpPage() {
-        return "verify-otp";
+        return "verify-otp"; // Trả về file verify-otp.html trong thư mục templates
     }
 
     @GetMapping("/movie-seats")
     public String movieSeats() {
         return "movie-seats";
+    }
+
+    @GetMapping("/movies")
+    public String moviesPage() {
+        // Trả về file movies.html trong thư mục templates
+        return "movies";
+    }
+
+    @GetMapping("/detail")
+    public String movieDetailPage() {
+        // Trả về file detail.html trong thư mục templates
+        return "detail";
     }
 }

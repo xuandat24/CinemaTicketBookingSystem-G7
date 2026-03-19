@@ -6,6 +6,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,5 +53,77 @@ public class GlobalExceptionHandler {
                 .build();
 
         return ResponseEntity.internalServerError().body(error);
+    }
+
+    /**
+     * 8. InvalidShowtimeException
+     * Lỗi dữ liệu showtime không hợp lệ (ví dụ: startTime trong quá khứ)
+     * HTTP 400 - Bad Request
+     */
+    @ExceptionHandler(InvalidShowtimeException.class)
+    public ResponseEntity<Map<String, Object>> handleInvalidShowtimeException(InvalidShowtimeException ex) {
+
+        Map<String, Object> response = new HashMap<>();
+
+        response.put("timestamp", LocalDateTime.now());
+        response.put("status", 400);
+        response.put("error", "Invalid Showtime");
+        response.put("message", ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    /**
+     * 9. ShowtimeConflictException
+     * Lỗi trùng lịch chiếu trong cùng phòng
+     * HTTP 409 - Conflict
+     */
+    @ExceptionHandler(ShowtimeConflictException.class)
+    public ResponseEntity<Map<String, Object>> handleShowtimeConflictException(ShowtimeConflictException ex) {
+
+        Map<String, Object> response = new HashMap<>();
+
+        response.put("timestamp", LocalDateTime.now());
+        response.put("status", 409);
+        response.put("error", "Showtime Conflict");
+        response.put("message", ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
+    /**
+     * 10. ShowtimeHasBookingException
+     * Không thể sửa/xóa showtime vì đã có booking
+     * HTTP 409 - Conflict
+     */
+    @ExceptionHandler(ShowtimeHasBookingException.class)
+    public ResponseEntity<Map<String, Object>> handleShowtimeHasBookingException(ShowtimeHasBookingException ex) {
+
+        Map<String, Object> response = new HashMap<>();
+
+        response.put("timestamp", LocalDateTime.now());
+        response.put("status", 409);
+        response.put("error", "Showtime Has Booking");
+        response.put("message", ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
+    /**
+     * 11. ResourceNotFoundException
+     * Không thể tim thay resource
+     * HTTP 409 - Conflict
+     */
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleResourceNotFoundException(ResourceNotFoundException ex) {
+
+        Map<String, Object> response = new HashMap<>();
+
+        response.put("timestamp", LocalDateTime.now());
+        response.put("status", 404);
+        response.put("error", "Resource Not Found");
+        response.put("message", ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 }

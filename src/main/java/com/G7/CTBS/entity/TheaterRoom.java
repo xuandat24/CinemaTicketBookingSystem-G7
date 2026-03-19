@@ -21,6 +21,6 @@ public class TheaterRoom {
     @OneToMany(mappedBy = "room")
     private List<Seat> seats;
     
-    @OneToMany(mappedBy = "room")
+    @OneToMany(mappedBy = "theaterRoom")
     private List<Showtime> showtimes;
 }
