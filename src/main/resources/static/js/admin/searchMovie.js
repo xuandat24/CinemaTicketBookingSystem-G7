@@ -1,3 +1,7 @@
+// Khai báo 2 biến toàn cục để quản lý thời gian chờ (Debounce)
+let typingTimer;
+const doneTypingInterval = 500; // Đợi 500ms (0.5 giây) sau khi ngừng gõ mới tìm kiếm
+
 document.addEventListener('DOMContentLoaded', async () => {
     await loadCategoriesForFilter();
 
@@ -12,6 +16,41 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (categoryIdFromUrl) {
         document.getElementById('filterCategory').value = categoryIdFromUrl;
     }
+
+    // === 1. LIVE SEARCH CHO Ô NHẬP TÊN PHIM (DEBOUNCE) ===
+    const searchInput = document.getElementById('searchTitle');
+    if (searchInput) {
+        // Lắng nghe sự kiện 'input' (mỗi khi gõ, xóa, dán chữ...)
+        searchInput.addEventListener('input', function () {
+            // Bước 1: Xóa lệnh tìm kiếm cũ nếu người dùng vẫn tiếp tục gõ
+            clearTimeout(typingTimer);
+
+            // Bước 2: Hẹn giờ 0.5 giây sau mới chạy hàm applyFilter()
+            typingTimer = setTimeout(() => {
+                applyFilter();
+            }, doneTypingInterval);
+        });
+
+        // Vẫn chặn phím Enter để form không bị tải lại trang nếu người dùng quen tay ấn Enter
+        searchInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                // Không cần gọi applyFilter() ở đây nữa vì sự kiện 'input' ở trên đã lo rồi
+            }
+        });
+    }
+
+    // === 2. TÌM KIẾM NGAY KHI ĐỔI THỂ LOẠI / NGÀY THÁNG / SẮP XẾP ===
+    // (Bấm chọn là lọc ngay, không cần ấn nút Filter)
+    const filterElements = ['filterCategory', 'fromDate', 'toDate', 'sortBy'];
+    filterElements.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.addEventListener('change', function() {
+                applyFilter();
+            });
+        }
+    });
 
     loadMovies();
 });

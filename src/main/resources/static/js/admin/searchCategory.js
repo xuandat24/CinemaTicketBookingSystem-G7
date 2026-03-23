@@ -1,11 +1,46 @@
+let typingTimer;
+const doneTypingInterval = 500; // Đợi 500ms (0.5 giây)
+
 document.addEventListener('DOMContentLoaded', () => {
     loadCategories();
+
+    // Áp dụng Live Search (Debounce) cho thanh tìm kiếm Category
+    const searchInput = document.getElementById('searchCategoryInput');
+    if (searchInput) {
+        searchInput.addEventListener('input', function () {
+            clearTimeout(typingTimer);
+            typingTimer = setTimeout(() => {
+                loadCategories();
+            }, doneTypingInterval);
+        });
+
+        // Chặn tải lại trang nếu người dùng quen tay ấn Enter
+        searchInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+            }
+        });
+    }
 });
+
+// Giữ nguyên hàm async function loadCategories() ở dưới...
 
 async function loadCategories() {
     try {
         const token = localStorage.getItem('jwtToken');
-        const response = await fetch('/api/admin/categories', {
+
+        // 1. Lấy giá trị từ ô tìm kiếm
+        const searchInput = document.getElementById('searchCategoryInput');
+        const keyword = searchInput ? searchInput.value.trim() : '';
+
+        // 2. Gắn từ khóa vào URL nếu có
+        let url = '/api/admin/categories';
+        if (keyword !== '') {
+            url += `?name=${encodeURIComponent(keyword)}`;
+        }
+
+        // 3. Gọi API
+        const response = await fetch(url, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -20,7 +55,7 @@ async function loadCategories() {
         tbody.innerHTML = '';
 
         if (categories.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-4">No categories found.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-4">No categories found matching "${keyword}".</td></tr>`;
             return;
         }
 

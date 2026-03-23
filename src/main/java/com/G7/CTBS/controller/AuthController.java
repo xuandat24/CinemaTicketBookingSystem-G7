@@ -27,7 +27,7 @@ public class AuthController {
     public ResponseEntity<?> register(@RequestBody @Valid UserCreateRequest request) {
         try {
             userService.create(request);
-            return ResponseEntity.ok("Đăng ký thành công!");
+            return ResponseEntity.ok("Register successfully!");
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -42,7 +42,7 @@ public class AuthController {
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
             // Nếu sai mật khẩu hoặc tài khoản không tồn tại, trả về lỗi 400
-            return ResponseEntity.badRequest().body(Map.of("message", "Tên đăng nhập hoặc mật khẩu không chính xác!"));
+            return ResponseEntity.badRequest().body(Map.of("message", "Incorrect password!"));
         }
     }
 
@@ -56,14 +56,14 @@ public class AuthController {
 
         // 2. Kiểm tra nếu Session mất hoặc hết hạn
         if (serverOtp == null || createTime == null) {
-            return ResponseEntity.badRequest().body(Map.of("message", "Mã xác thực không tồn tại!"));
+            return ResponseEntity.badRequest().body(Map.of("message", "Verify code invalid!"));
         }
 
         // 3. Kiểm tra hết hạn thực tế (5 phút)
         if (System.currentTimeMillis() - createTime > 300000) {
             session.removeAttribute("OTP_CODE");
             session.removeAttribute("PENDING_USER_DATA");
-            return ResponseEntity.badRequest().body(Map.of("message", "Mã OTP đã hết hạn!"));
+            return ResponseEntity.badRequest().body(Map.of("message", "Verify code expired!"));
         }
 
         // 4. So khớp OTP

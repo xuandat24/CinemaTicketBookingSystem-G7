@@ -3,10 +3,44 @@ let filteredMovies = [];
 let currentPage = 1;
 const itemsPerPage = 20; // Số phim trên 1 trang
 
+// Khai báo biến cho Live Search
+let typingTimer;
+const doneTypingInterval = 500;
+
 document.addEventListener('DOMContentLoaded', async () => {
     await loadCategories();
     await loadMovies();
+
+    // 1. Live Search cho ô nhập Tên phim
+    const searchInput = document.getElementById('searchTitle');
+    if (searchInput) {
+        searchInput.addEventListener('input', function () {
+            clearTimeout(typingTimer);
+            typingTimer = setTimeout(() => {
+                applyFilters();
+            }, doneTypingInterval);
+        });
+
+        searchInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+            }
+        });
+    }
+
+    // 2. Lọc ngay lập tức khi đổi Thể loại hoặc kiểu Sắp xếp
+    const filterElements = ['filterCategory', 'sortBy'];
+    filterElements.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.addEventListener('change', function() {
+                applyFilters();
+            });
+        }
+    });
 });
+
+// Giữ nguyên các hàm async function loadCategories() và phần còn lại...
 
 async function loadCategories() {
     try {

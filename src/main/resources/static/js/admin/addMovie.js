@@ -2,11 +2,56 @@ const OMDB_API_KEY = '9b0b8e47';
 let selectedCategoryIds = [];
 let existingMovieTitles = [];
 
+let typingTimer;
+const doneTypingInterval = 1300;
+const randomKeywords = ['Animation', 'Comedy', 'Batman', 'Marvel', 'Star Wars', 'Matrix', 'Action', 'War', 'City', 'Space', 'Ocean', 'King', 'Magic'];
+
 document.addEventListener('DOMContentLoaded', async () => {
     loadCategoryDropdown();
     await fetchExistingMovies();
-    searchOMDb('2024');
+
+    fetchSuggestedMovies();
+
+    const omdbInput = document.getElementById('omdbSearchInput');
+    if (omdbInput) {
+        omdbInput.addEventListener('input', function () {
+            clearTimeout(typingTimer);
+            const keyword = omdbInput.value.trim();
+
+            if (keyword !== '') {
+                typingTimer = setTimeout(() => {
+                    searchOMDb(keyword);
+                }, doneTypingInterval);
+            } else {
+                fetchSuggestedMovies();
+            }
+        });
+
+        omdbInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') e.preventDefault();
+        });
+    }
 });
+
+async function fetchSuggestedMovies() {
+    const randomKeyword = randomKeywords[Math.floor(Math.random() * randomKeywords.length)];
+
+    document.getElementById('omdbLoading').classList.remove('d-none');
+    document.getElementById('omdbResults').innerHTML = '';
+
+    try {
+        const res = await fetch(`https://www.omdbapi.com/?apikey=${OMDB_API_KEY}&s=${encodeURIComponent(randomKeyword)}&type=movie`);
+        const data = await res.json();
+
+        if (data.Response === "True") {
+            renderOmdbResults(data.Search);
+        }
+    } catch (error) {
+        console.error("Error when connect with OMDb API!");
+    } finally {
+        document.getElementById('omdbLoading').classList.add('d-none');
+    }
+}
 
 async function fetchExistingMovies() {
     try {
@@ -59,8 +104,6 @@ async function searchOMDb(keyword = null) {
 
 function renderOmdbResults(movies) {
     const container = document.getElementById('omdbResults');
-    container.innerHTML = '';
-
     const defaultPoster = 'https://placehold.co/300x450/eeeeee/999999?text=No+Poster';
 
     movies.forEach(movie => {
@@ -72,7 +115,7 @@ function renderOmdbResults(movies) {
         const poster = (movie.Poster && movie.Poster !== "N/A") ? movie.Poster : defaultPoster;
 
         container.innerHTML += `
-            <div class="col-md-3 col-sm-6">
+            <div class="col-md-3 col-sm-6 mb-4">
                 <div class="card h-100 shadow-sm border-0 bg-white">
                     <img src="${poster}" onerror="this.onerror=null; this.src='${defaultPoster}';" class="card-img-top" alt="poster" style="height: 300px; object-fit: cover;">
                     <div class="card-body p-3 text-center d-flex flex-column justify-content-between">
@@ -167,12 +210,12 @@ document.getElementById('addMovieForm').addEventListener('submit', async (e) => 
     const omdbGenres = document.getElementById('omdbGenres').value;
     const omdbPosterUrl = document.getElementById('omdbPosterUrl').value;
 
-    if (selectedCategoryIds.length === 0 && !omdbGenres) return alert("Vui lòng chọn ít nhất 1 Thể loại (hoặc dùng phim OMDb)!");
+    if (selectedCategoryIds.length === 0 && !omdbGenres) return alert("Chose at least 1 category!");
 
     const bannerFile = document.getElementById('movieBanner').files[0];
     const trailerFile = document.getElementById('movieTrailer').files[0];
 
-    if (!bannerFile && !omdbPosterUrl) return alert("Vui lòng tải ảnh lên hoặc dùng ảnh tự động từ OMDb!");
+    if (!bannerFile && !omdbPosterUrl) return alert("Chose the banner/poster!");
 
     const btnSubmit = e.target.querySelector('button[type="submit"]');
     btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> Saving...';

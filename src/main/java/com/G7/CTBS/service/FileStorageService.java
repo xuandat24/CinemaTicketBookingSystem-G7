@@ -30,10 +30,10 @@ public class FileStorageService {
         
         String contentType = file.getContentType();
         if (folder.equals("banners") && (contentType == null || !contentType.startsWith("image/"))) {
-            throw new RuntimeException("Security Error: Only image files are allowed for banners!");
+            throw new RuntimeException("Error: Only image files are allowed for banners!");
         }
         if (folder.equals("trailers") && (contentType == null || !contentType.equals("video/mp4"))) {
-            throw new RuntimeException("Security Error: Only MP4 files are allowed for trailers!");
+            throw new RuntimeException("Error: Only MP4 files are allowed for trailers!");
         }
         
         try {
@@ -76,7 +76,7 @@ public class FileStorageService {
             Path filePath = this.fileStorageLocation.resolve(relativePath).normalize();
             Files.deleteIfExists(filePath);
         } catch (IOException ex) {
-            System.err.println("Cảnh báo: Không thể xóa file cũ: " + fileUrl);
+            System.err.println("Error: Cannot delete file " + fileUrl);
         }
     }
     

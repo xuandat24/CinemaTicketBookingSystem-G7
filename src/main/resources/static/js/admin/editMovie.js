@@ -33,7 +33,7 @@ async function loadMovieData() {
 
         // Load data mới
         document.getElementById('movieDirector').value = movie.director || '';
-        document.getElementById('movieActors').value = movie.actors || '';
+        document.getElementById('movieActors').value = movie.actors  || '';
         document.getElementById('movieRating').value = movie.rating || 0.0;
 
         if (movie.categoryIds) {
@@ -118,7 +118,7 @@ document.getElementById('editMovieForm').addEventListener('submit', async (e) =>
     formData.append('releaseDate', document.getElementById('movieReleaseDate').value);
     formData.append('status', document.getElementById('movieStatus').value);
 
-    // Gửi data mới xuống
+    // Gửi data mới xuống BE
     formData.append('director', document.getElementById('movieDirector').value);
     formData.append('actors', document.getElementById('movieActors').value);
     formData.append('rating', document.getElementById('movieRating').value);
@@ -130,11 +130,11 @@ document.getElementById('editMovieForm').addEventListener('submit', async (e) =>
 
     // Validate định dạng
     if (bannerFile && !bannerFile.type.startsWith('image/')) {
-        alert("Lỗi: Banner bắt buộc phải là file Hình ảnh!");
+        alert("Error: Banner must be PNG or JPG!");
         btnSubmit.innerHTML = originalText; btnSubmit.disabled = false; return;
     }
     if (trailerFile && trailerFile.type !== 'video/mp4') {
-        alert("Lỗi: Trailer bắt buộc phải là file MP4!");
+        alert("Lỗi: Trailer must be MP4 file!");
         btnSubmit.innerHTML = originalText; btnSubmit.disabled = false; return;
     }
 

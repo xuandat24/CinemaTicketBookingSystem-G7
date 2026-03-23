@@ -27,7 +27,7 @@ public class HomeController {
     
     @GetMapping("/verify-otp")
     public String verifyOtpPage() {
-        return "verify-otp"; // Trả về file verify-otp.html trong thư mục templates
+        return "verify-otp";
     }
     
     @GetMapping("/movie-seats")
@@ -37,13 +37,11 @@ public class HomeController {
     
     @GetMapping("/movies")
     public String moviesPage() {
-        // Trả về file movies.html trong thư mục templates
         return "movies";
     }
     
     @GetMapping("/detail")
     public String movieDetailPage() {
-        // Trả về file detail.html trong thư mục templates
         return "detail";
     }
 }
