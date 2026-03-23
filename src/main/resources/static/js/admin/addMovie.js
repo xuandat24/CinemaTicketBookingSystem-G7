@@ -153,7 +153,7 @@ async function openPrefilledForm(imdbID) {
         document.getElementById('movieDirector').value = movieData.Director !== "N/A" ? movieData.Director : "Unknown";
         document.getElementById('movieActors').value = movieData.Actors !== "N/A" ? movieData.Actors : "Unknown";
         document.getElementById('movieRating').value = rating;
-
+        document.getElementById('movieLanguage').value = movieData.Language !== "N/A" ? movieData.Language : "Unknown";
         document.getElementById('omdbGenres').value = movieData.Genre !== "N/A" ? movieData.Genre : "";
 
         if (movieData.Poster !== "N/A") {
@@ -227,6 +227,7 @@ document.getElementById('addMovieForm').addEventListener('submit', async (e) => 
     formData.append('duration', document.getElementById('movieDuration').value);
     formData.append('releaseDate', document.getElementById('movieReleaseDate').value);
     formData.append('status', document.getElementById('movieStatus').value);
+    formData.append('language', document.getElementById('movieLanguage').value);
     formData.append('director', document.getElementById('movieDirector').value);
     formData.append('actors', document.getElementById('movieActors').value);
     formData.append('rating', document.getElementById('movieRating').value);

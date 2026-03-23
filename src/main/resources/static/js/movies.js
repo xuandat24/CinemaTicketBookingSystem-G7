@@ -11,25 +11,27 @@ document.addEventListener('DOMContentLoaded', async () => {
     await loadCategories();
     await loadMovies();
 
-    // 1. Live Search cho ô nhập Tên phim
-    const searchInput = document.getElementById('searchTitle');
-    if (searchInput) {
-        searchInput.addEventListener('input', function () {
-            clearTimeout(typingTimer);
-            typingTimer = setTimeout(() => {
-                applyFilters();
-            }, doneTypingInterval);
-        });
+    const textInputs = ['searchTitle', 'searchLanguage'];
 
-        searchInput.addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
+        textInputs.forEach(id => {
+            const inputEle = document.getElementById(id);
+            if (inputEle) {
+                inputEle.addEventListener('input', function () {
+                    clearTimeout(typingTimer);
+                    typingTimer = setTimeout(() => {
+                        applyFilters();
+                    }, doneTypingInterval);
+                });
+
+                inputEle.addEventListener('keypress', function (e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                    }
+                });
             }
         });
-    }
 
-    // 2. Lọc ngay lập tức khi đổi Thể loại hoặc kiểu Sắp xếp
-    const filterElements = ['filterCategory', 'sortBy'];
+    const filterElements = ['filterCategory', 'sortBy', 'filterStatus'];
     filterElements.forEach(id => {
         const element = document.getElementById(id);
         if (element) {
@@ -39,8 +41,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 });
-
-// Giữ nguyên các hàm async function loadCategories() và phần còn lại...
 
 async function loadCategories() {
     try {
@@ -56,21 +56,24 @@ async function loadCategories() {
 async function loadMovies() {
     try {
         restoreSearchState();
-
-        const title = document.getElementById('searchTitle').value.trim();
+        const titleInput = document.getElementById('searchTitle');
+        const title = titleInput ? titleInput.value.trim() : '';
         const categoryId = document.getElementById('filterCategory').value;
+        const status = document.getElementById('filterStatus').value;
+        const language = document.getElementById('searchLanguage').value.trim();
         const sortBy = document.getElementById('sortBy').value;
 
         let apiUrl = `/api/public/movies?sortBy=${sortBy}`;
-        if(title) apiUrl += `&title=${encodeURIComponent(title)}`;
-        if(categoryId) apiUrl += `&categoryId=${categoryId}`;
+        if (title) apiUrl += `&title=${encodeURIComponent(title)}`;
+        if (categoryId) apiUrl += `&categoryId=${categoryId}`;
+        if (status) apiUrl += `&status=${encodeURIComponent(status)}`;
+        if (language) apiUrl += `&language=${encodeURIComponent(language)}`;
 
         const res = await fetch(apiUrl);
         if (!res.ok) throw new Error("Failed to fetch movies");
 
         const data = await res.json();
 
-        // Dữ liệu lúc này đã được Backend lọc cực chuẩn (và loại bỏ sẵn phim Disabled), chỉ việc in ra
         filteredMovies = data;
 
         renderMovies();
@@ -122,6 +125,9 @@ function renderMovies() {
                 <small class="fw-bold" style="color: #eb7a18; font-size: 0.85rem;">
                     <i class="fa fa-clock-o me-1"></i> ${movie.duration} Mins
                 </small>
+                <div class="mt-2 text-muted" style="font-size: 0.85rem;">
+                    <i class="fa fa-solid fa-globe"></i> ${movie.language || 'Unknown'}
+                </div>
              </div>
            </div>
         </div>
@@ -163,12 +169,13 @@ function goToDetail(movieId) {
     sessionStorage.setItem('movieSearchState', JSON.stringify({
         title: document.getElementById('searchTitle').value,
         categoryId: document.getElementById('filterCategory').value,
+        status: document.getElementById('filterStatus').value,
+        language: document.getElementById('searchLanguage').value,
         sortBy: document.getElementById('sortBy').value,
         page: currentPage,
         scrollY: window.scrollY
     }));
 
-    // 2. Chuyển hướng
     window.location.href = `/detail?id=${movieId}`;
 }
 
@@ -178,6 +185,10 @@ function restoreSearchState() {
         const state = JSON.parse(stateStr);
         document.getElementById('searchTitle').value = state.title || '';
         document.getElementById('filterCategory').value = state.categoryId || '';
+        const statusInput = document.getElementById('filterStatus');
+        if (statusInput) statusInput.value = state.status || '';
+        const langInput = document.getElementById('searchLanguage');
+        if (langInput) langInput.value = state.language || '';
         document.getElementById('sortBy').value = state.sortBy || 'newest';
         currentPage = state.page || 1;
     }

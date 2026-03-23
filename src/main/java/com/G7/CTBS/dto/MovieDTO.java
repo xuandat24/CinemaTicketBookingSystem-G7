@@ -52,6 +52,9 @@ public class MovieDTO {
     @Max(value = 10, message = "Rating cannot exceed 10")
     private Double rating;
     
+    @NotBlank(message = "Language is required")
+    private String language;
+    
     private List<Long> categoryIds;
     private List<String> categoryNames;
 }

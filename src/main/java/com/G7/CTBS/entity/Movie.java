@@ -27,6 +27,7 @@ public class Movie {
     private String director;
     private String actors;
     private Double rating;
+    private String language;
     
     @ManyToMany
     @JoinTable(

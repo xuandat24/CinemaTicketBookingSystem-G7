@@ -25,35 +25,51 @@
 
     <div class="card shadow-sm mb-4 border-0">
         <div class="card-body bg-white rounded">
-            <form id="filterForm" class="row g-2 align-items-end">
-                <div class="col-md-4">
+            <form id="filterForm" class="row g-3 align-items-end">
+                <div class="col-md-3">
                     <label class="form-label fw-bold text-secondary small mb-1">Search Title</label>
-                    <input type="text" class="form-control form-control-sm" id="searchTitle" placeholder="Enter movie title...">
+                    <input type="text" class="form-control form-control-sm" id="searchTitle" placeholder="Title...">
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <label class="form-label fw-bold text-secondary small mb-1">Category</label>
                     <select class="form-select form-select-sm" id="filterCategory">
-                        <option value="">-- All --</option>
+                        <option value="">-- All Categories --</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold text-secondary small mb-1">Language</label>
+                    <input type="text" class="form-control form-control-sm" id="searchLanguage" placeholder="e.g. English, Korean">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold text-secondary small mb-1">Status</label>
+                    <select class="form-select form-select-sm" id="filterStatus">
+                        <option value="">-- All Status --</option>
+                        <option value="Now Playing">Now Playing</option>
+                        <option value="Coming Soon">Coming Soon</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Disabled">Disabled</option>
                     </select>
                 </div>
 
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <label class="form-label fw-bold text-secondary small mb-1">From Date</label>
                     <input type="date" class="form-control form-control-sm" id="fromDate">
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <label class="form-label fw-bold text-secondary small mb-1">To Date</label>
                     <input type="date" class="form-control form-control-sm" id="toDate">
                 </div>
-
-                <div class="col-md-2">
-                    <label class="form-label fw-bold text-secondary small mb-1">Sort By</label>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold text-secondary small mb-1">Sort</label>
                     <select class="form-select form-select-sm" id="sortBy">
-                        <option value="id">Latest Added</option>
-                        <option value="name">Name (A-Z)</option>
-                        <option value="releaseDateDesc">Newest Release</option>
-                        <option value="releaseDateAsc">Oldest Release</option>
+                        <option value="id">Newest First</option>
+                        <option value="name">A-Z (Title)</option>
                     </select>
+                </div>
+                <div class="col-md-3">
+                    <button type="button" class="btn btn-primary btn-sm w-100 fw-bold" onclick="applyFilter()" title="Apply Filter">
+                        <i class="fa-solid fa-filter me-1"></i> Apply
+                    </button>
                 </div>
             </form>
         </div>

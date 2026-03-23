@@ -35,10 +35,14 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
     @Query("SELECT m FROM Movie m " +
             "WHERE (:title IS NULL OR LOWER(m.title) LIKE LOWER(CONCAT('%', :title, '%'))) " +
             "AND (:categoryId IS NULL OR EXISTS (SELECT 1 FROM m.categories c WHERE c.categoryId = :categoryId)) " +
+            "AND (:language IS NULL OR LOWER(m.language) LIKE LOWER(CONCAT('%', :language, '%'))) " +
+            "AND (:status IS NULL OR m.status = :status) " +
             "AND (CAST(:fromDate AS date) IS NULL OR m.releaseDate >= :fromDate) " +
             "AND (CAST(:toDate AS date) IS NULL OR m.releaseDate <= :toDate)")
     List<Movie> searchMovies(@Param("title") String title,
                              @Param("categoryId") Long categoryId,
+                             @Param("language") String language,
+                             @Param("status") String status,
                              @Param("fromDate") java.time.LocalDate fromDate,
                              @Param("toDate") java.time.LocalDate toDate,
                              org.springframework.data.domain.Sort sort);

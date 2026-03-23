@@ -25,16 +25,18 @@ public class MovieController {
     public ResponseEntity<List<MovieDTO>> getMovies(
             @RequestParam(required = false) String title,
             @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) String language,
+            @RequestParam(required = false) String status,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
             @RequestParam(required = false, defaultValue = "id") String sortBy) {
         
-        return ResponseEntity.ok(movieService.searchAndFilterMovies(title, categoryId, fromDate, toDate, sortBy));
+        return ResponseEntity.ok(movieService.searchAndFilterMovies(title, categoryId, language, status, fromDate, toDate, sortBy));
     }
     
     @GetMapping("/{id}")
     public ResponseEntity<MovieDTO> getMovieById(@PathVariable Long id) {
-        return ResponseEntity.ok(movieService.getMovieById(id));
+        return ResponseEntity.ok(movieService.findById(id));
     }
     
     @PostMapping

@@ -38,7 +38,10 @@ async function loadMovieDetails(id) {
         const bannerContainer = document.getElementById('bannerContainer');
         const inlineVideo = document.getElementById('inlineVideo');
         const customPlayBtn = document.getElementById('customPlayBtn');
-
+        const langElement = document.getElementById('detailLanguage');
+        if (langElement) {
+            langElement.innerText = movie.language && movie.language !== "N/A" ? movie.language : "Unknown";
+        }
         if (movie.trailerPath && movie.trailerPath.trim() !== "") {
             // NẾU CÓ VIDEO: Gắn link, hiện Video, ẩn ảnh Banner dự phòng
             inlineVideo.src = movie.trailerPath;

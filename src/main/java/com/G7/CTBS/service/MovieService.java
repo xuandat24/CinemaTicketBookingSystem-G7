@@ -29,14 +29,6 @@ public class MovieService {
         this.fileStorageService = fileStorageService;
     }
     
-    public List<MovieDTO> findAll() {
-        try {
-            return convertToDTO(movieRepository.findAll());
-        } catch (Exception e) {
-            throw new RuntimeException("Cannot find movie");
-        }
-    }
-    
     public MovieDTO findById(@PathVariable Long id) throws EntityNotFoundException {
         try{
             return convertToDTO(movieRepository.findById(id).get());
@@ -45,66 +37,48 @@ public class MovieService {
         }
     }
     
-    public List<MovieDTO> getMoviesByStatus(String status) {
-        List<Movie> movies = movieRepository.findByStatus(status);
-        
-        if(movies.isEmpty()) {
-            throw new EntityNotFoundException("No movies found");
-        }
-        return movies.stream().map(this::convertToDTO).toList();
-    }
-    
-    public List<MovieDTO> getMoviesByTitle(String title) {
-        if(title == null || title.trim().isEmpty()) return new ArrayList<>();
-        List<Movie> movies = movieRepository.findByTitleContainingIgnoreCase(title);
-        
-        if(movies.isEmpty()) {
-            throw new EntityNotFoundException("No movies found");
-        }
-        return movies.stream().map(this::convertToDTO).toList();
-    }
-    
-    public List<MovieDTO> getMoviesByCategory(String category) {
-        if(category == null || category.trim().isEmpty()) return new ArrayList<>();
-        List<Movie> movies = movieRepository.findByCategories_NameContainingIgnoreCase(category);
-        
-        if(movies.isEmpty()) {
-            System.out.println("No movies found");
-            return new ArrayList<>();
+    public List<MovieDTO> getPublicMovies(String title, Long categoryId, String language, String status, String sortBy) {
+        String backendSortBy = "id";
+        if ("newest".equalsIgnoreCase(sortBy)) {
+            backendSortBy = "releaseDateDesc";
+        } else if ("oldest".equalsIgnoreCase(sortBy)) {
+            backendSortBy = "releaseDateAsc";
         }
         
-        return movies.stream().map(this::convertToDTO).toList();
-    }
-    
-    public MovieDTO getMovieById(Long id) {
-        if (!movieRepository.existsById(id)) {
-            throw new EntityNotFoundException("No movies found");
+        if (status != null && !status.equals("Now Playing") && !status.equals("Coming Soon")) {
+            status = null;
         }
-        Movie movie = movieRepository.findById(id).get();
-        return convertToDTO(movie);
+        
+        List<MovieDTO> movies = this.searchAndFilterMovies(title, categoryId, language, status, null, null, backendSortBy);
+        
+        if (status == null) {
+            return movies.stream()
+                    .filter(m -> "Now Playing".equals(m.getStatus()) || "Coming Soon".equals(m.getStatus()))
+                    .toList();
+        }
+        
+        return movies;
     }
     
-    public List<MovieDTO> searchAndFilterMovies(String title, Long categoryId, LocalDate fromDate, LocalDate toDate, String sortBy) {
+    public List<MovieDTO> searchAndFilterMovies(String title, Long categoryId, String language, String status, LocalDate fromDate, LocalDate toDate, String sortBy) {
         Sort sort;
-        
-        // Cấu hình các tiêu chí sắp xếp
         if ("name".equalsIgnoreCase(sortBy)) {
-            sort = Sort.by(Sort.Direction.ASC, "title"); // Theo tên A-Z
-        } else if ("releaseDateDesc".equalsIgnoreCase(sortBy)) {
-            sort = Sort.by(Sort.Direction.DESC, "releaseDate"); // Ngày ra mắt mới nhất
-        } else if ("releaseDateAsc".equalsIgnoreCase(sortBy)) {
-            sort = Sort.by(Sort.Direction.ASC, "releaseDate"); // Ngày ra mắt cũ nhất
+            sort = Sort.by(Sort.Direction.ASC, "title");
         } else {
-            // Mặc định cho "id" -> Phim mới thêm vào sẽ lên đầu
             sort = Sort.by(Sort.Direction.DESC, "movieId");
         }
         
         if (title != null && title.trim().isEmpty()) {
             title = null;
         }
+        if (language != null && language.trim().isEmpty()) {
+            language = null;
+        }
+        if (status != null && status.trim().isEmpty()) {
+            status = null;
+        }
         
-        // Gọi Repository
-        List<Movie> movies = movieRepository.searchMovies(title, categoryId, fromDate, toDate, sort);
+        List<Movie> movies = movieRepository.searchMovies(title, categoryId, language, status, fromDate, toDate, sort);
         return movies.stream().map(this::convertToDTO).toList();
     }
     
@@ -122,6 +96,7 @@ public class MovieService {
         movie.setDirector(movieDTO.getDirector());
         movie.setActors(movieDTO.getActors());
         movie.setRating(movieDTO.getRating() != null ? movieDTO.getRating() : 0.0);
+        movie.setLanguage(movieDTO.getLanguage() != null ? movieDTO.getLanguage() : "Unknown");
         
         if (movieDTO.getBannerFile() != null && !movieDTO.getBannerFile().isEmpty()) {
             movie.setBannerPath(fileStorageService.storeFile(movieDTO.getBannerFile(), "banners", movie.getTitle()));
@@ -133,34 +108,28 @@ public class MovieService {
             movie.setTrailerPath(fileStorageService.storeFile(movieDTO.getTrailerFile(), "trailers", movie.getTitle()));
         }
         
-        // Xử lý Thể loại (Lấy từ JS gửi lên OMDb, tách ra và lưu)
         List<Category> categories = new ArrayList<>();
         
-        // Bước 1: Lấy danh sách các tag mà Admin đã tự chọn tay trên giao diện
         if (movieDTO.getCategoryIds() != null && !movieDTO.getCategoryIds().isEmpty()) {
             categories.addAll(categoryRepository.findAllById(movieDTO.getCategoryIds()));
         }
         
-        // Bước 2: Quét qua chuỗi thể loại của OMDb (Ví dụ: "Action, Sci-Fi")
         if (movieDTO.getOmdbGenres() != null && !movieDTO.getOmdbGenres().trim().isEmpty()) {
             String[] genres = movieDTO.getOmdbGenres().split(",");
             
             for (String g : genres) {
                 String cleanName = g.trim();
                 
-                // Kiểm tra xem thể loại OMDb này Admin đã lỡ chọn tay ở Bước 1 chưa (Tránh trùng lặp)
                 boolean alreadyAdded = categories.stream()
                         .anyMatch(c -> c.getName().equalsIgnoreCase(cleanName));
                 
                 if (!alreadyAdded) {
-                    // Nếu chưa có, tìm trong DB. Nếu DB chưa có luôn thì tạo mới.
                     Category cat = categoryRepository.findByNameIgnoreCase(cleanName)
                             .orElseGet(() -> {
                                 Category newCat = new Category();
                                 newCat.setName(cleanName);
                                 return categoryRepository.save(newCat);
                             });
-                    // Thêm vào danh sách chung
                     categories.add(cat);
                 }
             }
@@ -216,6 +185,7 @@ public class MovieService {
         movie.setDirector(movieDTO.getDirector());
         movie.setActors(movieDTO.getActors());
         movie.setRating(movieDTO.getRating());
+        movie.setLanguage(movieDTO.getLanguage());
         
         movieRepository.save(movie);
     }
@@ -250,6 +220,7 @@ public class MovieService {
                 .director(movie.getDirector())
                 .actors(movie.getActors())
                 .rating(movie.getRating())
+                .language(movie.getLanguage())
                 .categoryIds(categoryIds)
                 .categoryNames(categoryNames)
                 .build();
