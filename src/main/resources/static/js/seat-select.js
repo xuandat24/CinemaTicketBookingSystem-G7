@@ -17,10 +17,6 @@
     const totalSideEl = document.getElementById("total-price-side");
     const totalBottomEl = document.getElementById("total-price-bottom");
     const timerEl = document.getElementById("countdown-timer");
-    const continueBtn = document.getElementById("continue-btn");
-    const queryParams = new URLSearchParams(window.location.search);
-    const showtimeId = queryParams.get("showtimeId");
-    const username = (queryParams.get("username") || localStorage.getItem("username") || "").trim();
 
     if (showtimeBar) {
         showtimeBar.classList.add("is-hidden");
@@ -97,35 +93,6 @@
         return value.toLocaleString("vi-VN") + "đ";
     }
 
-    function seatCodeToId(code) {
-        const row = code.charCodeAt(0) - "A".charCodeAt(0);
-        const col = parseInt(code.slice(1), 10);
-        if (row < 0 || Number.isNaN(col)) {
-            return null;
-        }
-        return row * 12 + col;
-    }
-
-    function updateContinueLink() {
-        if (!continueBtn) return;
-
-        const selectedSeatCodes = Array.from(selected).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
-        const selectedSeatIds = selectedSeatCodes
-            .map((code) => seatCodeToId(code))
-            .filter((id) => id !== null);
-
-        if (!showtimeId || selectedSeatCodes.length === 0) {
-            continueBtn.href = username ? ("/booking?username=" + encodeURIComponent(username)) : "/booking";
-            return;
-        }
-
-        continueBtn.href =
-            "/booking?showtimeId=" + encodeURIComponent(showtimeId) +
-            "&seatIds=" + encodeURIComponent(selectedSeatIds.join(",")) +
-            "&seatCodes=" + encodeURIComponent(selectedSeatCodes.join(",")) +
-            (username ? ("&username=" + encodeURIComponent(username)) : "");
-    }
-
     function updateSummary() {
         const seats = Array.from(selected).sort((a, b) => {
             const rowA = a.charCodeAt(0);
@@ -149,7 +116,6 @@
         const totalText = formatPrice(total);
         if (totalSideEl) totalSideEl.textContent = totalText;
         if (totalBottomEl) totalBottomEl.textContent = totalText;
-        updateContinueLink();
     }
 
     function getSeatType(row) {
@@ -269,7 +235,6 @@
     updateSelectedDate("--/--");
     updateSelectedTime("--:--");
     startCountdown(5 * 60 + 11);
-    updateContinueLink();
 
     dayButtons.forEach((btn) => {
         btn.addEventListener("click", function () {

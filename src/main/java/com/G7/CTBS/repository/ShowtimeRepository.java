@@ -26,4 +26,3 @@ public interface ShowtimeRepository extends JpaRepository<Showtime, Long> {
             LocalDateTime start);
 }
 
-

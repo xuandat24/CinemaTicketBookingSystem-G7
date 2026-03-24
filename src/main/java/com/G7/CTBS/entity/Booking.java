@@ -8,7 +8,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "bookings")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Booking {
@@ -34,7 +35,4 @@ public class Booking {
     
     @OneToMany(mappedBy = "booking")
     private List<Payment> payments;
-
-    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
-    private List<BookingCombo> bookingCombos;
 }

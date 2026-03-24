@@ -3,8 +3,13 @@ async function loadMovies() {
     const movieSelect = document.getElementById("movieId");
 
     try {
-
-        const response = await fetch("/api/admin/movies");
+        const token = localStorage.getItem('jwtToken'); // Lấy token
+        const response = await fetch("/api/admin/movies", {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}` // THÊM TOKEN VÀO ĐÂY
+            }
+        });
 
         const movies = await response.json();
 
@@ -27,106 +32,88 @@ async function loadMovies() {
     }
 }
 
-// ✅ MOCK ROOM (theo yêu cầu)
-function loadRooms(){
-
-    const rooms = [
-        { roomId: 1, roomName: "Room 1", totalSeats: 40 },
-        { roomId: 2, roomName: "Room 2", totalSeats: 40 },
-        { roomId: 3, roomName: "Room 3", totalSeats: 40 }
-    ];
+async function loadRooms(){
 
     const roomSelect = document.getElementById("roomId");
 
-    rooms.forEach(room => {
+    try {
+        const token = localStorage.getItem('jwtToken');
+        const response = await fetch("/api/admin/rooms", {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
 
-        const option = document.createElement("option");
+        const rooms = await response.json();
 
-        option.value = room.roomId;
+        rooms.forEach(room => {
 
-        option.text = room.roomName;
+            const option = document.createElement("option");
 
-        roomSelect.appendChild(option);
+            option.value = room.roomId;
 
-    });
+            option.text = room.roomName;
 
+            roomSelect.appendChild(option);
+
+        });
+    } catch (error) {
+        console.error("Cannot load rooms:", error);
+    }
 }
 
-//async function loadRooms(){
-//
-//    const response = await fetch("/api/rooms");
-//
-//    const rooms = await response.json();
-//
-//    const roomSelect = document.getElementById("roomId");
-//
-//    rooms.forEach(room => {
-//
-//        const option = document.createElement("option");
-//
-//        option.value = room.id;
-//
-//        option.text = room.name;
-//
-//        option.value = room.totalSeats
-//
-//        roomSelect.appendChild(option);
-//
-//    });
-//
-//}
-
 document
-.getElementById("createShowtimeForm")
-.addEventListener("submit", async function(e){
+    .getElementById("createShowtimeForm")
+    .addEventListener("submit", async function(e){
 
-    e.preventDefault();
+        e.preventDefault();
 
-    const data = {
+        const data = {
 
-        movieId: document.getElementById("movieId").value,
+            movieId: document.getElementById("movieId").value,
 
-        theaterRoomId: document.getElementById("roomId").value,
+            theaterRoomId: document.getElementById("roomId").value,
 
-        startTime: document.getElementById("startTime").value,
+            startTime: document.getElementById("startTime").value,
 
-        format: document.getElementById("format").value,
+            format: document.getElementById("format").value,
 
-        price: document.getElementById("price").value
+            price: document.getElementById("price").value
 
-    };
+        };
 
-    const response = await fetch("/api/showtimes", {
+        const message = document.getElementById("message"); // Declare message here
 
-        method: "POST",
+        const token = localStorage.getItem('jwtToken'); // Lấy token
+        const response = await fetch("/api/showtimes", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}` // Bổ sung dòng này
+            },
+            body: JSON.stringify(data)
+        });
 
-        headers: {
-            "Content-Type": "application/json"
-        },
+        if(response.ok){
+            // save message to sessionStorage
+            sessionStorage.setItem("successMessage", "Showtime created successfully");
 
-        body: JSON.stringify(data)
+            // redirect
+            window.location.href = "/admin/showtimes";
 
-    });
+        }else{
 
-    if(response.ok){
-        // save message to sessionStorage
-        sessionStorage.setItem("successMessage", "Showtime created successfully");
+            const error = await response.json();
 
-        // redirect
-        window.location.href = "/admin/showtimes";
-
-    }else{
-
-        const error = await response.json();
-
-        message.innerHTML =`
+            message.innerHTML =`
             <div class="alert alert-danger">
                 ${error.message}
             </div>`;
 
-    }
+        }
 
-});
+    });
 
 window.onload = function(){
 

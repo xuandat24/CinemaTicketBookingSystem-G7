@@ -14,12 +14,12 @@ import java.util.List;
 @Component
 public class MovieStatusAutoUpdateScheduler {
     private final MovieRepository movieRepository;
-    
+
     @Autowired
     public MovieStatusAutoUpdateScheduler(MovieRepository movieRepository) {
         this.movieRepository = movieRepository;
     }
-    
+
     //auto update for each 60s
     @Scheduled(fixedRate = 60000)
     @Transactional
@@ -27,7 +27,7 @@ public class MovieStatusAutoUpdateScheduler {
         LocalDateTime now = LocalDateTime.now();
         List<Movie> moviesToUpdateStatus = movieRepository.findMoviesToUpdateStatus(now);
         boolean changeStatus = false;
-        
+
         //if there is some movie meet the requirements, then check to update it
         if(!moviesToUpdateStatus.isEmpty()) {
             for(Movie movie : moviesToUpdateStatus) {
@@ -36,18 +36,18 @@ public class MovieStatusAutoUpdateScheduler {
                 changeStatus = true;
             }
         }
-        
+
         // 1. Lấy TẤT CẢ các phim đang chiếu lên
         List<Movie> nowPlayingMovies = movieRepository.findByStatus("Now Playing");
-        
+
         for (Movie movie : nowPlayingMovies) {
             boolean hasFutureOrOngoingShowtime = false;
-            
+
             // 2. Duyệt qua từng suất chiếu của bộ phim này
             for (Showtime showtime : movie.getShowtimes()) {
                 // Tính thời gian kết thúc chính xác = Thời gian bắt đầu + thời lượng phim (phút)
                 LocalDateTime exactEndTime = showtime.getStartTime().plusMinutes(movie.getDuration());
-                
+
                 // Nếu thời gian kết thúc của suất chiếu này vẫn lớn hơn hoặc bằng hiện tại
                 // Nghĩa là suất chiếu này vẫn đang diễn ra, hoặc chưa diễn ra
                 if (exactEndTime.isAfter(now) || exactEndTime.isEqual(now)) {
@@ -55,7 +55,7 @@ public class MovieStatusAutoUpdateScheduler {
                     break; // Chỉ cần 1 suất chiếu hợp lệ là đủ, thoát vòng lặp ngay
                 }
             }
-            
+
             // 3. Nếu không có bất kỳ suất chiếu nào đang/sắp diễn ra -> Đưa về Pending
             if (!hasFutureOrOngoingShowtime) {
                 movie.setStatus("Pending");
@@ -63,12 +63,12 @@ public class MovieStatusAutoUpdateScheduler {
                 changeStatus = true;
             }
         }
-        
+
         if(changeStatus) {
             movieRepository.saveAll(moviesToUpdateStatus);
             movieRepository.saveAll(nowPlayingMovies);
         }
     }
-    
-    
+
+
 }

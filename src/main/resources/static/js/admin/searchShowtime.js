@@ -6,7 +6,10 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function loadAll() {
-    fetch(API)
+    const token = localStorage.getItem('jwtToken');
+    fetch(API, {
+        headers: { "Authorization": `Bearer ${token}` }
+    })
         .then(res => res.json())
         .then(renderTable);
 }
@@ -16,7 +19,14 @@ function applyFilter() {
 
     if (!date) return loadAll();
 
-    fetch(`${API}/date?date=${date}`)
+    // SỬA Ở ĐÂY: Thêm Token vào quá trình gọi API lọc theo ngày
+    const token = localStorage.getItem('jwtToken');
+    fetch(`${API}/date?date=${date}`, {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
+    })
         .then(res => res.json())
         .then(renderTable);
 }
@@ -26,18 +36,18 @@ function renderTable(data) {
     tbody.innerHTML = "";
 
     if (!data || data.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="8" class="text-center">No showtimes found</td></tr>`;
-            return;
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center">No showtimes found</td></tr>`;
+        return;
     }
 
     data.forEach(s => {
-        format = s.format
-        if(format == "TWO_D") {
-            format = "2D"
-        } else if(format == "THREE_D") {
-            format = "3D"
+        let format = s.format; // Đã thêm 'let' để khai báo biến đúng chuẩn
+        if(format === "TWO_D") {
+            format = "2D";
+        } else if(format === "THREE_D") {
+            format = "3D";
         } else {
-            format = "IMAX"
+            format = "IMAX";
         }
         tbody.innerHTML += `
             <tr>
@@ -65,8 +75,11 @@ function edit(id) {
 
 function del(id) {
     if (!confirm("Delete this showtime?")) return;
-
-    fetch(`${API}/${id}`, { method: "DELETE" })
+    const token = localStorage.getItem('jwtToken');
+    fetch(`${API}/${id}`, {
+        method: "DELETE",
+        headers: { "Authorization": `Bearer ${token}` }
+    })
         .then(res => {
             if (res.ok) loadAll();
             else alert("Delete failed");

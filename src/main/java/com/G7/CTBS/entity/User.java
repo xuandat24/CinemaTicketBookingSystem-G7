@@ -2,6 +2,7 @@ package com.G7.CTBS.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -9,16 +10,17 @@ import java.util.List;
 
 @Entity
 @Table(name = "users")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
+@Builder
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "roleId")
     private Role role;
 
@@ -40,12 +42,16 @@ public class User {
     @Column(nullable = false, unique = true, length = 100)
     private String email;
 
-    @Column(length = 20)
+    @Column(length = 20,columnDefinition = "NVARCHAR(10)")
     private String gender; // Ví dụ: "Nam", "Nữ", "Khác"
 
     @Column
     private LocalDate dob;
 
+    @Column(name = "provider", length = 20)
+    private String provider;
+
+    @CreationTimestamp
     @Column(nullable = false)
     private LocalDateTime createdAt;
 

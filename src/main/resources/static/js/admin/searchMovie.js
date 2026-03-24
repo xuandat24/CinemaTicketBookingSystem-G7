@@ -1,30 +1,50 @@
+let typingTimer;
+const doneTypingInterval = 500;
+
 document.addEventListener('DOMContentLoaded', async () => {
     await loadCategoriesForFilter();
 
+    restoreSearchState();
+
     const urlParams = new URLSearchParams(window.location.search);
-
-    const keyword = urlParams.get('keyword');
-    if (keyword) {
-        document.getElementById('searchTitle').value = keyword;
-    }
-
     const categoryIdFromUrl = urlParams.get('categoryId');
     if (categoryIdFromUrl) {
         document.getElementById('filterCategory').value = categoryIdFromUrl;
     }
 
+    setupLiveSearch('searchTitle');
+
+    setupLiveSearch('searchLanguage');
+
+    const filterElements = ['filterCategory', 'fromDate', 'toDate', 'sortBy', 'filterStatus'];
+    filterElements.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.addEventListener('change', function() {
+                applyFilter();
+            });
+        }
+    });
+
     loadMovies();
 });
 
+function setupLiveSearch(elementId) {
+    const inputEle = document.getElementById(elementId);
+    if (inputEle) {
+        inputEle.addEventListener('input', function () {
+            clearTimeout(typingTimer);
+            typingTimer = setTimeout(() => { applyFilter(); }, doneTypingInterval);
+        });
+        inputEle.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') e.preventDefault();
+        });
+    }
+}
+
 async function loadCategoriesForFilter() {
     try {
-        const token = localStorage.getItem('jwtToken'); // Lấy Token
-        const response = await fetch('/api/admin/categories', {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}` // Bắt buộc đính kèm Token
-            }
-        });
+        const response = await fetch('/api/admin/categories');
         const categories = await response.json();
         const select = document.getElementById('filterCategory');
         categories.forEach(cat => {
@@ -43,6 +63,8 @@ async function loadMovies() {
     try {
         const title = document.getElementById('searchTitle').value.trim();
         const categoryId = document.getElementById('filterCategory').value;
+        const language = document.getElementById('searchLanguage').value.trim();
+        const status = document.getElementById('filterStatus').value;
         const fromDate = document.getElementById('fromDate').value;
         const toDate = document.getElementById('toDate').value;
         const sortBy = document.getElementById('sortBy').value;
@@ -50,50 +72,33 @@ async function loadMovies() {
         let apiUrl = `/api/admin/movies?sortBy=${sortBy}`;
         if (title) apiUrl += `&title=${encodeURIComponent(title)}`;
         if (categoryId) apiUrl += `&categoryId=${categoryId}`;
+        if (language) apiUrl += `&language=${encodeURIComponent(language)}`;
+        if (status) apiUrl += `&status=${encodeURIComponent(status)}`;
         if (fromDate) apiUrl += `&fromDate=${fromDate}`;
         if (toDate) apiUrl += `&toDate=${toDate}`;
 
-        const tableTitle = document.getElementById('tableTitle');
-        if (tableTitle) {
-            tableTitle.innerHTML = title ? `Search Results for: <span class="text-primary">"${title}"</span>` : 'Current Movies';
-        }
-
-        const token = localStorage.getItem('jwtToken');
-        const response = await fetch(apiUrl, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-
+        const response = await fetch(apiUrl);
+        if (!response.ok) throw new Error("Network response was not ok");
         const movies = await response.json();
 
         const tbody = document.querySelector('#movieTable tbody');
-        if (!tbody) return;
-
         tbody.innerHTML = '';
 
         if (movies.length === 0) {
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="5" class="text-center text-muted py-5">
-                        <i class="fa-solid fa-magnifying-glass mb-2 fs-3"></i><br>
-                        No movies found matching your criteria.
-                    </td>
-                </tr>`;
+            tbody.innerHTML = `<tr><td colspan="5" class="text-center text-muted py-4">No movies found matching your criteria.</td></tr>`;
             return;
         }
 
         movies.forEach(movie => {
-            let statusBadge = 'bg-secondary';
-            if (movie.status === 'Now Playing') statusBadge = 'bg-success';
-            if (movie.status === 'Coming Soon') statusBadge = 'bg-warning text-dark';
-            if (movie.status === 'Pending') statusBadge = 'bg-info text-dark';
-            if (movie.status === 'Disabled') statusBadge = 'bg-dark';
+            let statusBadge = "bg-secondary";
+            if (movie.status === 'Now Playing') statusBadge = "bg-success";
+            else if (movie.status === 'Coming Soon') statusBadge = "bg-warning text-dark";
+            else if (movie.status === 'Pending') statusBadge = "bg-info text-dark";
+            else if (movie.status === 'Disabled') statusBadge = "bg-danger";
 
             let categoryTags = movie.categoryNames && movie.categoryNames.length > 0
                 ? movie.categoryNames.map(name => `<span class="badge bg-light text-dark border me-1">${name}</span>`).join('')
-                : '<span class="text-muted small">No category</span>';
+                : '<span class="badge bg-light text-muted border border-dashed">No category</span>';
 
             tbody.innerHTML += `
                 <tr>
@@ -103,7 +108,8 @@ async function loadMovies() {
                             ${movie.bannerPath ? `<img src="${movie.bannerPath}" alt="poster" style="width: 45px; height: 65px; object-fit: cover; border-radius: 4px; margin-right: 12px;">` : ''}
                             <div>
                                 <div class="fw-bold text-dark mb-1">${movie.title}</div>
-                                <div>${categoryTags}</div>
+                                <div class="mb-1">${categoryTags}</div>
+                                <div class="text-muted small"><i class="fa-solid fa-globe"></i> ${movie.language || 'Unknown'}</div>
                             </div>
                         </div>
                     </td>
@@ -114,7 +120,7 @@ async function loadMovies() {
                         <span class="badge ${statusBadge}">${movie.status}</span>
                     </td>
                     <td class="align-middle text-end pe-4">
-                        <a href="/admin/movies/edit?id=${movie.movieId}" class="btn btn-sm btn-primary shadow-sm">
+                        <a href="/admin/movies/edit?id=${movie.movieId}" class="btn btn-sm btn-primary shadow-sm" onclick="saveSearchState()">
                             <i class="fa-solid fa-pen-to-square"></i> Edit
                         </a>
                     </td>
@@ -123,5 +129,31 @@ async function loadMovies() {
         });
     } catch (error) {
         alert("Failed to fetch movies from the server.");
+    }
+}
+
+function saveSearchState() {
+    sessionStorage.setItem('adminMovieSearchState', JSON.stringify({
+        title: document.getElementById('searchTitle').value,
+        categoryId: document.getElementById('filterCategory').value,
+        language: document.getElementById('searchLanguage').value,
+        status: document.getElementById('filterStatus').value,
+        fromDate: document.getElementById('fromDate').value,
+        toDate: document.getElementById('toDate').value,
+        sortBy: document.getElementById('sortBy').value
+    }));
+}
+
+function restoreSearchState() {
+    const stateStr = sessionStorage.getItem('adminMovieSearchState');
+    if (stateStr) {
+        const state = JSON.parse(stateStr);
+        if (state.title) document.getElementById('searchTitle').value = state.title;
+        if (state.categoryId) document.getElementById('filterCategory').value = state.categoryId;
+        if (state.language) document.getElementById('searchLanguage').value = state.language;
+        if (state.status) document.getElementById('filterStatus').value = state.status;
+        if (state.fromDate) document.getElementById('fromDate').value = state.fromDate;
+        if (state.toDate) document.getElementById('toDate').value = state.toDate;
+        if (state.sortBy) document.getElementById('sortBy').value = state.sortBy;
     }
 }

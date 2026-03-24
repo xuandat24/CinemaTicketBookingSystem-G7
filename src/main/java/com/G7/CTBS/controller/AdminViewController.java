@@ -7,37 +7,43 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/admin")
 public class AdminViewController {
-    
+
+    // Thêm đoạn này vào trong class AdminViewController
+    @GetMapping("/profile")
+    public String adminProfilePage() {
+        return "admin/profile-admin";
+    }
+
     @GetMapping({"", "/", "/home"})
     public String homePage() {
         return "admin/home";
     }
-    
+
     @GetMapping("/movies/search")
     public String searchPage() {
         return "admin/searchMovie";
     }
-    
+
     @GetMapping("/movies/add")
     public String addPage() {
         return "admin/addMovie";
     }
-    
+
     @GetMapping("/movies/edit")
     public String editPage() {
         return "admin/editMovie";
     }
-    
+
     @GetMapping("/categories")
     public String searchCategoryPage() {
         return "admin/searchCategory";
     }
-    
+
     @GetMapping("/categories/add")
     public String addCategoryPage() {
         return "admin/addCategory";
     }
-    
+
     @GetMapping("/categories/edit")
     public String editCategoryPage() {
         return "admin/editCategory";

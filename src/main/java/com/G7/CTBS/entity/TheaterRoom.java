@@ -14,13 +14,13 @@ public class TheaterRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long roomId;
-    
+
     private String roomName;
     private Integer totalSeats;
-    
+
     @OneToMany(mappedBy = "room")
     private List<Seat> seats;
-    
+
     @OneToMany(mappedBy = "theaterRoom")
     private List<Showtime> showtimes;
 }
