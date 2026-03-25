@@ -35,6 +35,7 @@ async function loadMovieData() {
         document.getElementById('movieDirector').value = movie.director || '';
         document.getElementById('movieActors').value = movie.actors  || '';
         document.getElementById('movieRating').value = movie.rating || 0.0;
+        document.getElementById('movieLanguage').value = movie.language || 'Unknown';
 
         if (movie.categoryIds) {
             selectedCategoryIds = movie.categoryIds.map(String);
@@ -57,7 +58,7 @@ async function loadMovieData() {
 
     } catch (error) {
         alert("Failed to load movie data!");
-        window.location.href = '../../css/admin/movies/search';
+        window.location.href = '/admin/movies/search';
     }
 }
 
@@ -122,7 +123,7 @@ document.getElementById('editMovieForm').addEventListener('submit', async (e) =>
     formData.append('director', document.getElementById('movieDirector').value);
     formData.append('actors', document.getElementById('movieActors').value);
     formData.append('rating', document.getElementById('movieRating').value);
-
+    formData.append('language', document.getElementById('movieLanguage').value);
     selectedCategoryIds.forEach(id => formData.append('categoryIds', id));
 
     const bannerFile = document.getElementById('movieBanner').files[0];
@@ -154,7 +155,7 @@ document.getElementById('editMovieForm').addEventListener('submit', async (e) =>
 
         if (response.ok) {
             alert("Success: " + data.message);
-            window.location.href = '../../css/admin/movies/search';
+            window.location.href = '/admin/movies/search';
         } else {
             alert("Error: " + (data.message || "Failed to update movie."));
         }

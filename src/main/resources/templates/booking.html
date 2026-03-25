@@ -1,10 +1,365 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <title>Booking</title>
+
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+    <link rel="stylesheet" th:href="@{/css/booking.css}">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
+
 <body>
-$END$
+
+<!-- NAVBAR -->
+<div th:replace="~{layout/header :: header}"></div>
+
+<div class="container mt-4">
+
+    <!-- breadcrumb -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a th:href="@{/}">Home</a>
+            </li>
+            <li class="breadcrumb-item">Booking</li>
+            <li class="breadcrumb-item active">
+                <span th:text="${movieName}">Selected Movie</span>
+            </li>
+        </ol>
+    </nav>
+
+    <div class="row">
+
+        <!-- LEFT SIDE -->
+        <div class="col-md-8">
+
+            <!-- PAYMENT -->
+            <h4><i class="fa fa-user-circle me-2"></i> PAYMENT INFORMATION</h4>
+
+            <div class="card p-3 mb-4">
+                <div class="row">
+
+                    <div class="col-md-4">
+                        <p><b>Name</b></p>
+                        <p th:text="${user != null ? user.firstName + ' ' + user.lastName : 'Guest'}">Guest</p>
+                    </div>
+
+                    <div class="col-md-4">
+                        <p><b>Phone</b></p>
+                        <p th:text="${user != null ? user.phone : '-'}">-</p>
+                    </div>
+
+                    <div class="col-md-4">
+                        <p><b>Email</b></p>
+                        <p th:text="${user != null ? user.email : '-'}">-</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- SEAT -->
+            <h5>SEAT INFORMATION</h5>
+
+            <div class="card p-3 mb-4">
+
+                <div th:if="${seatSummary == null or #lists.isEmpty(seatSummary)}">
+                    Not selected
+                </div>
+
+                <div th:each="seat : ${seatSummary}"
+                     class="d-flex justify-content-between mb-2">
+
+                    <span th:text="${seat.type + ' SEAT'}">VIP SEAT</span>
+
+                    <span>
+    <span th:text="${seat.count}">1</span> x
+    <span th:text="${#numbers.formatInteger(seat.price, 0, 'POINT')}">0</span>
+    =
+    <b th:text="${#numbers.formatInteger(seat.total, 0, 'POINT')}">0</b> vnđ
+</span>
+
+                </div>
+
+            </div>
+
+            <!-- COMBO -->
+            <h4><i class="fa fa-shopping-basket me-2 text-warning"></i> COMBO PREFERENCES</h4>
+
+            <div class="card p-3 mb-4">
+                <table class="table">
+
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>Combo name</th>
+                        <th>Description</th>
+                        <th>Quantity</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr th:each="combo : ${combos}">
+                        <td>
+                            <div class="combo-img">
+                                <img th:src="@{/img/{img}(img=${combo.image})}">
+                            </div>
+                        </td>
+
+                        <td th:text="${combo.name}"></td>
+                        <td th:text="${combo.description}"></td>
+
+                        <td>
+                            <div class="qty-box">
+                                <button class="qty-btn minus"
+                                        th:attr="onclick=|changeCombo(${combo.id}, -1)|">−</button>
+
+                                <span class="qty-number" th:id="'combo' + ${combo.id}">0</span>
+
+                                <button class="qty-btn plus"
+                                        th:attr="onclick=|changeCombo(${combo.id}, 1)|">+</button>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+
+                </table>
+            </div>
+
+            <!-- DISCOUNT -->
+            <h4><i class="fa fa-gift me-2 text-danger"></i> DISCOUNT</h4>
+
+            <div class="card p-3 mb-4">
+                <div class="row align-items-center">
+
+                    <div class="col-md-3">
+                        <p>Points available</p>
+                        <h5 id="currentPoint">100</h5>
+                    </div>
+
+                    <div class="col-md-4">
+                        <input type="number" id="pointInput" class="form-control" placeholder="Enter points">
+                    </div>
+
+                    <div class="col-md-3">
+                        <p>= <span id="discountMoney">0</span> vnđ</p>
+                    </div>
+
+                    <div class="col-md-2">
+                        <button onclick="applyPoint()" class="redeem-btn">
+                            REDEEM
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- PAYMENT METHOD -->
+            <h4><i class="fa fa-credit-card me-2 text-success"></i> PAYMENT METHOD</h4>
+
+            <div class="payment-method">
+
+                <label class="payment-item">
+                    <input type="radio" name="payment" value="momo">
+                    <img th:src="@{/img/momo.png}">
+                    <span>MoMo wallet</span>
+                </label>
+
+                <label class="payment-item">
+                    <input type="radio" name="payment" value="zalopay">
+                    <img th:src="@{/img/zalopay.png}">
+                    <span>ZaloPay wallet</span>
+                </label>
+
+                <label class="payment-item">
+                    <input type="radio" name="payment" value="shopee">
+                    <img th:src="@{/img/shopeepay.png}">
+                    <span>ShopeePay wallet</span>
+                </label>
+
+                <label class="payment-item">
+                    <input type="radio" name="payment" value="qr">
+                    <img th:src="@{/img/qr.png}">
+                    <span>QR Code</span>
+                </label>
+
+            </div>
+
+            <div class="payment-note">
+                <p>* Please review all the information carefully before proceeding to the next step.</p>
+                <p>* Tickets that have been successfully paid for are non-refundable under any circumstances.</p>
+            </div>
+
+        </div>
+
+        <!-- RIGHT SIDE -->
+        <div class="col-md-4 booking-summary">
+
+            <div class="card p-3">
+                <img th:src="@{${poster}}" class="img-fluid mb-3">
+                <h5 th:text="${movieName}"></h5>
+
+                <p class="info-row">
+                    <i class="fa fa-building me-2"></i>
+                    <span class="label">Cinema</span>
+                    <span>CTBS</span>
+                </p>
+
+                <p class="info-row">
+                    <i class="fa fa-calendar me-2"></i>
+                    <span class="label">Date</span>
+                    <span th:text="${showDate}">-</span>
+                </p>
+
+                <p class="info-row">
+                    <i class="fa fa-clock-o me-2"></i>
+                    <span class="label">Time</span>
+                    <span th:text="${showTime}">-</span>
+                </p>
+
+                <p class="info-row">
+                    <i class="fa fa-ticket me-2"></i>
+                    <span class="label">Seat</span>
+                    <span id="seatShow" th:text="${seatDisplay}">Not selected</span>
+                </p>
+
+                <hr>
+
+                <p class="timer-row">
+                    <span class="timer-label">Time remaining:</span>
+                    <span id="timer" class="countdown">10:00</span>
+                </p>
+
+                <hr>
+
+                <!-- PRICE SUMMARY -->
+                <div class="price-row">
+                    <span>Total:</span>
+                    <span id="totalPrice"
+                          th:data-seat-price="${totalPrice}"
+                          th:text="${#numbers.formatInteger(totalPrice, 0, 'POINT')}">
+        0
+    </span>
+                </div>
+
+                <div class="price-row">
+                    <span>Discount:</span>
+                    <span id="discount">0</span>
+                </div>
+
+                <div class="price-row">
+                    <b>Final:</b>
+                    <b id="finalPrice"
+                       th:text="${#numbers.formatInteger(totalPrice, 0, 'POINT')}">
+                        0
+                    </b>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn-prev" onclick="goBack()">PREVIOUS</button>
+                    <button class="btn-next">NEXT</button>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script th:inline="javascript">
+    let comboPrice = {}
+    let comboQty = {}
+
+    /*<![CDATA[*/
+    let combos = /*[[${combos}]]*/ [];
+    /*]]>*/
+
+    combos.forEach(c => {
+        comboPrice[c.id] = c.price
+        comboQty[c.id] = 0
+    })
+</script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    document.querySelector('.btn-next').addEventListener('click', function() {
+        // 1. Thu thập danh sách combo
+        let selectedCombos = [];
+        // 'combos' là biến lấy từ model đã định nghĩa ở đoạn script phía trên
+        combos.forEach(c => {
+            let comboElement = document.getElementById('combo' + c.id);
+            if (comboElement) {
+                let qty = parseInt(comboElement.innerText);
+                if (qty > 0) {
+                    selectedCombos.push({ comboId: c.id, quantity: qty });
+                }
+            }
+        });
+
+        // 2. Chuẩn bị dữ liệu (Sử dụng cú pháp an toàn cho Thymeleaf)
+        const showtimeId = /*[[${showtimeId}]]*/ 0;
+        const seatIds = /*[[${seatIdsList}]]*/ [];
+        const userId = /*[[${user != null ? user.userId : null}]]*/ null;
+
+        const finalPriceText = document.getElementById('finalPrice').innerText;
+        const finalPrice = parseFloat(finalPriceText.replace(/\./g, ''));
+
+        const payload = {
+            showtimeId: showtimeId,
+            seatIds: seatIds,
+            userId: userId,
+            finalPrice: finalPrice,
+            combos: selectedCombos
+        };
+
+        // 3. Kiểm tra đăng nhập
+        if (!payload.userId) {
+            alert("Bạn cần đăng nhập để tiếp tục!");
+            return;
+        }
+
+        // 4. Gửi AJAX
+        fetch('/api/booking/confirm', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Đã lưu thông tin đặt vé thành công!");
+                    window.location.href = "/";
+                } else {
+                    alert("Lỗi khi lưu: " + data.message);
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert("Lỗi kết nối server!");
+            });
+    });
+    /*]]>*/
+</script>
+<script>
+    function goBack() {
+        if (document.referrer) {
+            history.back();
+        } else {
+            window.location.href = "/";
+        }
+    }
+</script>
+
+<div th:replace="layout/footer :: footer"></div>
+
+<script th:src="@{/js/booking.js}"></script>
+
+
+
 </body>
 </html>

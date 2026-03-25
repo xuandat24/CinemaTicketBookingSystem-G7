@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const urlParams = new URLSearchParams(window.location.search);
     const urlToken = urlParams.get('token');
     let urlUsername = urlParams.get('username');
-    const currentPath = window.location.pathname.replace(/\/$/, ""); // Loại bỏ dấu / ở cuối link
+    const currentPath = window.location.pathname.replace(/\/$/, "");
 
     // ==========================================
     // 1. TỰ ĐỘNG DỌN DẸP TOKEN CŨ KHI VÀO TRANG LOGIN
@@ -31,8 +31,11 @@ document.addEventListener("DOMContentLoaded", function () {
     if (loginForm) {
         loginForm.addEventListener("submit", async function (e) {
             e.preventDefault();
-            const usernameInput = loginForm.querySelector('input[name="userName"]') || loginForm.querySelector('input[type="text"]') || loginForm.querySelector('input[type="email"]');
-            const passwordInput = loginForm.querySelector('input[name="password"]') || loginForm.querySelector('input[type="password"]');
+
+            // SỬA CHÍNH XÁC LỖI "CON MẮT" TẠI ĐÂY:
+            // Luôn ưu tiên tìm kiếm bằng ID ('userName' và 'password') trước
+            const usernameInput = document.getElementById('userName') || loginForm.querySelector('input[name="userName"]') || loginForm.querySelector('input[type="text"]');
+            const passwordInput = document.getElementById('password') || loginForm.querySelector('input[name="password"]') || loginForm.querySelector('input[type="password"]');
 
             if (!usernameInput || !passwordInput) return alert("Lỗi giao diện: Không tìm thấy ô nhập liệu.");
 
@@ -51,7 +54,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     const data = await response.json();
                     localStorage.setItem("jwtToken", data.token);
                     localStorage.setItem("username", data.userName);
-                    window.location.href = "/"; // Về trang chủ để luồng phân quyền chạy
+                    window.location.href = "/";
                 } else {
                     const errData = await response.json();
                     alert("Đăng nhập thất bại: " + (errData.message || "Sai tài khoản hoặc mật khẩu."));
@@ -79,7 +82,7 @@ document.addEventListener("DOMContentLoaded", function () {
             method: "GET",
             headers: {
                 "Authorization": "Bearer " + savedToken,
-                "Cache-Control": "no-cache" // Ép trình duyệt luôn lấy dữ liệu mới nhất, không dùng cache
+                "Cache-Control": "no-cache"
             }
         })
             .then(res => {
@@ -94,22 +97,20 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (!displayName || displayName.trim() === "") displayName = user.email ? user.email.split('@')[0] : "User";
                 if (displayUsername) displayUsername.innerText = shortenName(displayName);
 
-                const roleId = Number(user.roleId); // Ép chuẩn sang số để tránh lỗi ==
+                const roleId = Number(user.roleId);
 
-                // --- LUỒNG ADMIN ---
                 if (roleId === 1) {
                     if (currentPath === "" || currentPath === "/" || currentPath.includes("login") || currentPath.includes("index")) {
                         window.location.href = "/admin/home";
                     } else if (currentPath.includes("profile") && !currentPath.includes("admin")) {
-                        window.location.href = "/admin/profile"; // Cấm Admin dùng profile thường
+                        window.location.href = "/admin/profile";
                     }
                     const profileLink = document.querySelector('a[href="/profile"]');
                     if (profileLink) profileLink.href = "/admin/profile";
                 }
-                // --- LUỒNG USER THƯỜNG ---
                 else {
                     if (currentPath.includes("/admin")) {
-                        window.location.href = "/"; // Cấm User vào Admin
+                        window.location.href = "/";
                     } else if (currentPath.includes("login") || currentPath.includes("register")) {
                         window.location.href = "/";
                     }
@@ -128,7 +129,6 @@ document.addEventListener("DOMContentLoaded", function () {
     // ==========================================
     // 5. BẮT SỰ KIỆN LOGOUT (Cả nút JS và Form Spring)
     // ==========================================
-    // Bắt nút đăng xuất bằng ID (Giao diện User)
     const btnLogout = document.getElementById("btn-logout");
     if (btnLogout) {
         btnLogout.addEventListener("click", async function (e) {
@@ -141,11 +141,9 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Bắt form Đăng xuất (Giao diện Admin Navbar)
     const logoutForms = document.querySelectorAll('form[action*="/logout"]');
     logoutForms.forEach(form => {
         form.addEventListener("submit", function() {
-            // Xóa ngay Token trong local trước khi form kịp submit lên server
             localStorage.removeItem("jwtToken");
             localStorage.removeItem("username");
         });

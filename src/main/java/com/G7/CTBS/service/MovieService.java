@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.web.client.RestTemplate;
+import java.util.Map;
+import java.net.URLEncoder;
 
 @Service
 public class MovieService {
@@ -38,19 +41,10 @@ public class MovieService {
     }
 
     public List<MovieDTO> getPublicMovies(String title, Long categoryId, String language, String status, String sortBy) {
-        String backendSortBy = "id";
-        if ("newest".equalsIgnoreCase(sortBy)) {
-            backendSortBy = "releaseDateDesc";
-        } else if ("oldest".equalsIgnoreCase(sortBy)) {
-            backendSortBy = "releaseDateAsc";
-        }
-
         if (status != null && !status.equals("Now Playing") && !status.equals("Coming Soon")) {
             status = null;
         }
-
-        List<MovieDTO> movies = this.searchAndFilterMovies(title, categoryId, language, status, null, null, backendSortBy);
-
+        List<MovieDTO> movies = this.searchAndFilterMovies(title, categoryId, language, status, null, null, sortBy);
         if (status == null) {
             return movies.stream()
                     .filter(m -> "Now Playing".equals(m.getStatus()) || "Coming Soon".equals(m.getStatus()))
@@ -62,11 +56,18 @@ public class MovieService {
 
     public List<MovieDTO> searchAndFilterMovies(String title, Long categoryId, String language, String status, LocalDate fromDate, LocalDate toDate, String sortBy) {
         Sort sort;
-        if ("name".equalsIgnoreCase(sortBy)) {
-            sort = Sort.by(Sort.Direction.ASC, "title");
-        } else {
-            sort = Sort.by(Sort.Direction.DESC, "movieId");
-        }
+        if (sortBy == null) sortBy = "idDesc";
+
+        sort = switch (sortBy) {
+            case "nameAsc" -> Sort.by(Sort.Direction.ASC, "title");
+            case "nameDesc" -> Sort.by(Sort.Direction.DESC, "title");
+            case "releaseDateDesc" -> Sort.by(Sort.Direction.DESC, "releaseDate");
+            case "releaseDateAsc" -> Sort.by(Sort.Direction.ASC, "releaseDate");
+            case "durationDesc" -> Sort.by(Sort.Direction.DESC, "duration");
+            case "durationAsc" -> Sort.by(Sort.Direction.ASC, "duration");
+            case "idAsc" -> Sort.by(Sort.Direction.ASC, "movieId");
+            default -> Sort.by(Sort.Direction.DESC, "movieId"); // Mặc định phim mới thêm lên đầu
+        };
 
         if (title != null && title.trim().isEmpty()) {
             title = null;
@@ -147,45 +148,69 @@ public class MovieService {
         movieRepository.save(movie);
     }
 
+    // ==========================================
+    // HÀM MỚI: BACKEND TỰ ĐỘNG LÊN MẠNG TÌM LINK ẢNH
+    // ==========================================
+    private String fetchPosterUrlFromOMDb(String title) {
+        try {
+            org.springframework.web.client.RestTemplate restTemplate = new org.springframework.web.client.RestTemplate();
+            String encodedTitle = java.net.URLEncoder.encode(title, "UTF-8");
+            String url = "http://www.omdbapi.com/?t=" + encodedTitle + "&apikey=9b0b8e47";
+            java.util.Map<String, Object> response = restTemplate.getForObject(url, java.util.Map.class);
+            if (response != null && response.containsKey("Poster")) {
+                String poster = (String) response.get("Poster");
+                if (poster != null && !poster.equals("N/A")) {
+                    return poster;
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Không thể tự động tải ảnh từ OMDb: " + e.getMessage());
+        }
+        return null;
+    }
+
     public void updateMovie(MovieDTO movieDTO) {
-        Movie movie = movieRepository.findById(movieDTO.getMovieId()).orElse(null);
-        if (movie == null) {
-            throw new EntityNotFoundException("There are some error when finding movie with id: " + movieDTO.getMovieId());
-        }
-
-        if (movieRepository.existsByTitleIgnoreCaseAndMovieIdNot(movieDTO.getTitle(), movieDTO.getMovieId())) {
-            throw new EntityExistsException("Update failed: Another movie already exists with title '" + movieDTO.getTitle() + "'");
-        }
-
-        List<Category> categories = categoryRepository.findAllById(movieDTO.getCategoryIds());
-        if (categories.isEmpty()) {
-            throw new EntityNotFoundException("None of the provided categories were found");
-        }
-
-        if (movieDTO.getBannerFile() != null && !movieDTO.getBannerFile().isEmpty()) {
-            fileStorageService.deleteFile(movie.getBannerPath());
-            String bannerUrl = fileStorageService.storeFile(movieDTO.getBannerFile(), "banners", movieDTO.getTitle());
-            movie.setBannerPath(bannerUrl);
-        }
-
-        if (movieDTO.getTrailerFile() != null && !movieDTO.getTrailerFile().isEmpty()) {
-            fileStorageService.deleteFile(movie.getTrailerPath());
-            String trailerUrl = fileStorageService.storeFile(movieDTO.getTrailerFile(), "trailers", movieDTO.getTitle());
-            movie.setTrailerPath(trailerUrl);
-        }
+        Movie movie = movieRepository.findById(movieDTO.getMovieId())
+                .orElseThrow(() -> new EntityNotFoundException("Cannot find movie"));
 
         movie.setTitle(movieDTO.getTitle());
         movie.setDescription(movieDTO.getDescription());
         movie.setDuration(movieDTO.getDuration());
         movie.setReleaseDate(movieDTO.getReleaseDate());
         movie.setStatus(movieDTO.getStatus());
-        movie.setCategories(categories);
-
-        // BỔ SUNG 3 TRƯỜNG NÀY ĐỂ LƯU DỮ LIỆU CHỈNH SỬA XUỐNG DB
         movie.setDirector(movieDTO.getDirector());
         movie.setActors(movieDTO.getActors());
         movie.setRating(movieDTO.getRating());
         movie.setLanguage(movieDTO.getLanguage());
+
+        if (movieDTO.getCategoryIds() != null) {
+            List<Category> categories = categoryRepository.findAllById(movieDTO.getCategoryIds());
+            movie.setCategories(categories);
+        }
+
+        // --- CƠ CHẾ KHÔI PHỤC ẢNH CHUẨN XÁC ---
+        if (movieDTO.getBannerFile() != null && !movieDTO.getBannerFile().isEmpty()) {
+            fileStorageService.deleteFile(movie.getBannerPath());
+            movie.setBannerPath(fileStorageService.storeFile(movieDTO.getBannerFile(), "banners", movieDTO.getTitle()));
+        } else {
+            boolean isFileMissing = !fileStorageService.isFileExists(movie.getBannerPath());
+
+            // Chỉ chạy lên mạng tìm ảnh nếu ảnh vật lý thực sự BỊ MẤT hoặc NULL
+            if (isFileMissing || movie.getBannerPath() == null || movie.getBannerPath().trim().isEmpty()) {
+                String posterUrl = fetchPosterUrlFromOMDb(movie.getTitle());
+                if (posterUrl != null && !posterUrl.equals("N/A")) {
+                    String recoveredPath = fileStorageService.storeFileFromUrl(posterUrl, "banners", movie.getTitle());
+                    if (recoveredPath != null) {
+                        movie.setBannerPath(recoveredPath);
+                    }
+                }
+            }
+        }
+
+        if (movieDTO.getTrailerFile() != null && !movieDTO.getTrailerFile().isEmpty()) {
+            fileStorageService.deleteFile(movie.getTrailerPath());
+            movie.setTrailerPath(fileStorageService.storeFile(movieDTO.getTrailerFile(), "trailers", movieDTO.getTitle()));
+        }
 
         movieRepository.save(movie);
     }

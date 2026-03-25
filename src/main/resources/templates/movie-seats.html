@@ -1,10 +1,10 @@
 ﻿<!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Chọn Ghế - Mock</title>
+    <title>Seat Selection - Mock</title>
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/css/font-awesome.min.css}">
     <link rel="stylesheet" th:href="@{/css/global.css}">
@@ -17,31 +17,32 @@
 <body class="seat-page-body">
 
 <section id="header">
-    <div th:replace="layout/header :: navbar"></div>
+    <div th:replace="~{layout/header :: header}"></div>
 </section>
 
 <section class="seat-page">
     <div class="container-xl">
         <div class="seat-breadcrumb">
-            <a href="/">Trang chủ</a>
+            <a href="/">Home</a>
             <span>&gt;</span>
-            <a href="#">Đặt vé</a>
+            <a href="#">Booking</a>
             <span>&gt;</span>
-            <span class="current">Tài</span>
+            <span class="current">Movie</span>
         </div>
 
         <div class="seat-warning">
-            Theo quy định của cục điện ảnh, phim này không dành cho khán giả dưới 16 tuổi.
+            According to film board regulations, this movie is not suitable for audiences under 16 years old.
         </div>
 
         <div class="seat-legend-row">
-            <div class="legend-item"><span class="legend-seat available"></span>Ghế trống</div>
-            <div class="legend-item"><span class="legend-seat selected"></span>Ghế đang chọn</div>
-            <div class="legend-item"><span class="legend-seat sold"></span>Ghế đã bán</div>
+            <div class="legend-item"><span class="legend-seat available"></span>Available</div>
+            <div class="legend-item"><span class="legend-seat selected"></span>Selected</div>
+            <div class="legend-item"><span class="legend-seat sold"></span>Booked</div>
         </div>
 
         <div class="seat-main">
             <div id="seat-section" class="seat-map">
+                <div id="theater-room-label" class="theater-room-label">Theater Room --</div>
                 <div class="screen-wrap">
                     <img class="screen-img" th:src="@{/img/cinema-screen.png}" alt="Cinema screen">
                 </div>
@@ -50,42 +51,42 @@
 
             <aside class="seat-info">
                 <div class="info-poster">
-                    <img th:src="@{/img/11.jpg}" alt="poster">
-                    <span class="age-tag">T16</span>
+                    <img id="movie-poster" th:src="@{/img/11.jpg}" alt="poster">
+                    <span class="age-tag">16+</span>
                 </div>
-                <h3 class="info-title">Tài</h3>
-                <div class="info-format">2D Phụ đề</div>
+                <h3 id="movie-title" class="info-title">Movie</h3>
+                <div class="info-format">2D Subtitled</div>
 
                 <div class="info-list">
-                    <div class="info-row"><i class="fa fa-tags"></i><span class="label">Thể loại</span><span class="value">Tâm lý, Gia đình, Hành động</span></div>
-                    <div class="info-row"><i class="fa fa-clock-o"></i><span class="label">Thời lượng</span><span class="value">101 phút</span></div>
-                    <div class="info-row"><i class="fa fa-university"></i><span class="label">Rạp chiếu</span><span class="value">Beta Thanh Xuân</span></div>
-                    <div class="info-row"><i class="fa fa-calendar"></i><span class="label">Ngày chiếu</span><span id="selected-date" class="value">--/--</span></div>
-                    <div class="info-row"><i class="fa fa-clock-o"></i><span class="label">Giờ chiếu</span><span id="selected-time" class="value">--:--</span></div>
-                    <div class="info-row"><i class="fa fa-ticket"></i><span class="label">Ghế ngồi</span><span id="selected-seats-side" class="value">Chưa chọn</span></div>
+                    <div class="info-row"><i class="fa fa-tags"></i><span class="label">Genre</span><span id="movie-genre" class="value">--</span></div>
+                    <div class="info-row"><i class="fa fa-clock-o"></i><span class="label">Duration</span><span id="movie-duration" class="value">--</span></div>
+                    <div class="info-row"><i class="fa fa-university"></i><span class="label">Cinema</span><span id="movie-cinema" class="value">CTBS</span></div>
+                    <div class="info-row"><i class="fa fa-calendar"></i><span class="label">Show Date</span><span id="selected-date" class="value">--/--</span></div>
+                    <div class="info-row"><i class="fa fa-clock-o"></i><span class="label">Show Time</span><span id="selected-time" class="value">--:--</span></div>
+                    <div class="info-row"><i class="fa fa-ticket"></i><span class="label">Seats</span><span id="selected-seats-side" class="value">Not selected</span></div>
                 </div>
 
                 <div class="info-total">
-                    <span>Tổng tiền</span>
-                    <strong id="total-price-side">0đ</strong>
+                    <span>Total</span>
+                    <strong id="total-price-side">0 VND</strong>
                 </div>
 
-                <a class="info-btn" href="/booking">TIẾP TỤC</a>
+                <a class="info-btn" id="continue-btn" href="/booking">CONTINUE</a>
             </aside>
         </div>
 
         <div class="seat-bottom-bar">
             <div class="bottom-legend">
-                <div><span class="legend-seat type-normal"></span>Ghế thường</div>
-                <div><span class="legend-seat type-vip"></span>Ghế VIP</div>
-                <div><span class="legend-seat type-pair"></span>Ghế đôi</div>
+                <div><span class="legend-seat type-normal"></span>Normal Seat</div>
+                <div><span class="legend-seat type-vip"></span>VIP Seat</div>
+                <div><span class="legend-seat type-pair"></span>Pair Seat</div>
             </div>
             <div class="bottom-total">
-                <div class="label">Tổng tiền</div>
-                <div id="total-price-bottom" class="value">0đ</div>
+                <div class="label">Total</div>
+                <div id="total-price-bottom" class="value">0 VND</div>
             </div>
             <div class="bottom-timer">
-                <div class="label">Thời gian còn lại</div>
+                <div class="label">Time Remaining</div>
                 <div id="countdown-timer" class="value">05:11</div>
             </div>
         </div>

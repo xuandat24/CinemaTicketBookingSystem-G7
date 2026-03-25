@@ -4,12 +4,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.UUID;
 
 @Service
 public class FileStorageService {
@@ -24,7 +24,7 @@ public class FileStorageService {
         }
     }
 
-    // Lưu file upload từ máy tính
+    // TẢI ẢNH BẰNG TAY (UPLOAD LOCAL)
     public String storeFile(MultipartFile file, String folder, String title) {
         if (file == null || file.isEmpty()) return null;
 
@@ -38,37 +38,47 @@ public class FileStorageService {
 
         try {
             String safeTitle = title.replaceAll("[^a-zA-Z0-9.-]", "_");
-            String fileName = UUID.randomUUID().toString() + "_" + safeTitle + "." + getExtension(file);
-
+            String fileName = "local_" + safeTitle + "_" + System.currentTimeMillis() + getExtension(file);
             Path targetLocation = this.fileStorageLocation.resolve(folder);
             Files.createDirectories(targetLocation);
             Path finalPath = targetLocation.resolve(fileName);
-
             Files.copy(file.getInputStream(), finalPath, StandardCopyOption.REPLACE_EXISTING);
             return "/" + folder + "/" + fileName;
-
         } catch (IOException ex) {
-            throw new RuntimeException("Could not store file. Please try again!", ex);
+            throw new RuntimeException("Could not store file " + file.getOriginalFilename() + ". Please try again!", ex);
         }
     }
 
+    // TẢI ẢNH TỪ API (OMDb) - VƯỢT TƯỜNG LỬA BẰNG USER-AGENT
     public String storeFileFromUrl(String imageUrl, String folder, String title) {
         if (imageUrl == null || imageUrl.equals("N/A")) return null;
         try {
             String safeTitle = title.replaceAll("[^a-zA-Z0-9.-]", "_");
-            String fileName = java.util.UUID.randomUUID().toString() + "_" + safeTitle + ".jpg";
+
+            // Dùng chung tên file không có UUID để tránh rác dung lượng
+            String fileName = "omdb_" + safeTitle + ".jpg";
+
             Path targetLocation = this.fileStorageLocation.resolve(folder);
             Files.createDirectories(targetLocation);
             Path finalPath = targetLocation.resolve(fileName);
 
-            try (InputStream in = new URL(imageUrl).openStream()) {
-                Files.copy(in, finalPath, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+            // FIX LỖI BỊ AMAZON/OMDB CHẶN (403 FORBIDDEN)
+            // Đóng giả làm trình duyệt Google Chrome để vượt qua bảo mật
+            HttpURLConnection connection = (HttpURLConnection) new URL(imageUrl).openConnection();
+            connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
+            connection.setConnectTimeout(5000); // Tối đa 5s để kết nối
+            connection.setReadTimeout(5000);    // Tối đa 5s để tải
+
+            try (InputStream in = connection.getInputStream()) {
+                Files.copy(in, finalPath, StandardCopyOption.REPLACE_EXISTING);
             }
             return "/" + folder + "/" + fileName;
-        } catch (Exception ex) { return null; }
+        } catch (Exception ex) {
+            System.err.println("Cannot fetch image from URL: " + ex.getMessage());
+            return null;
+        }
     }
 
-    // Xóa file vật lý
     public void deleteFile(String fileUrl) {
         if (fileUrl == null || fileUrl.trim().isEmpty()) return;
         try {
@@ -80,9 +90,22 @@ public class FileStorageService {
         }
     }
 
+    public boolean isFileExists(String fileUrl) {
+        if (fileUrl == null || fileUrl.trim().isEmpty()) return false;
+        try {
+            String relativePath = fileUrl.startsWith("/") ? fileUrl.substring(1) : fileUrl;
+            Path filePath = this.fileStorageLocation.resolve(relativePath).normalize();
+            return Files.exists(filePath);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     private String getExtension(MultipartFile file) {
         String fileName = file.getOriginalFilename();
-        assert fileName != null;
-        return fileName.substring(fileName.lastIndexOf(".") + 1);
+        if (fileName != null && fileName.contains(".")) {
+            return fileName.substring(fileName.lastIndexOf("."));
+        }
+        return ".jpg";
     }
 }

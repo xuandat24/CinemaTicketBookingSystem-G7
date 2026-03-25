@@ -1,11 +1,10 @@
 package com.G7.CTBS.config;
 
 import com.G7.CTBS.config.security.OAuth2SuccessHandler;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,58 +18,74 @@ public class SecurityConfig {
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    // ========================================================================
-    // 1. THÊM BỘ GIẢI MÃ MẬT KHẨU (FIX LỖI ĐĂNG NHẬP ĐÚNG MÀ BÁO SAI)
-    // ========================================================================
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // ========================================================================
-    // 2. THÊM AUTHENTICATION MANAGER (CẦN THIẾT CHO API LOGIN JWT CỦA BẠN)
-    // ========================================================================
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
-        return authConfig.getAuthenticationManager();
-    }
-
-    // ========================================================================
-    // 3. CẤU HÌNH PHÂN QUYỀN ĐƯỜNG DẪN
-    // ========================================================================
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        // Đã bổ sung "/error" để tránh lỗi 404 ngầm đẩy văng ra trang Login
-                        .requestMatchers("/", "/login", "/register", "/forgot-password", "/verify-otp", "/api/auth/**", "/profile", "/error",
-                                "/index.html", "/movies", "/detail", "/about", "/movies/**").permitAll()
 
-                        // Đã bổ sung "/uploads/**" phòng trường hợp bạn lưu ảnh Poster ở thư mục uploads
-                        .requestMatchers("/css/**", "/js/**", "/img/**", "/fonts/**", "/uploads/**", "/banners/**", "/trailers/**").permitAll()
+                        // 1. CÁC TÀI NGUYÊN TĨNH (Ai cũng được tải)
+                        .requestMatchers("/css/**", "/js/**", "/img/**", "/fonts/**", "/banners/**", "/trailers/**").permitAll()
 
-                        .requestMatchers("/showtimes", "/api/showtimes/**", "/showtimes/**").permitAll()
-
+                        // 2. CÁC ĐƯỜNG DẪN PUBLIC BẮT BUỘC
+                        .requestMatchers("/login", "/register", "/verify-otp", "/api/auth/**").permitAll()
+                        .requestMatchers("/", "/index", "/index.html", "/about").permitAll()
+                        .requestMatchers("/movies", "/movies/**", "/detail").permitAll()
+                        .requestMatchers("/showtimes", "/api/showtimes/**", "/showtimes/**").permitAll() // Đã khôi phục để không lỗi Lịch chiếu
                         .requestMatchers("/api/public/**").permitAll()
-
-
-                        // Cho phép các endpoint của OAuth2
                         .requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
-                        // KHÓA TRANG ADMIN: Chỉ Role_Admin mới được vào
+
+                        // 3. KHÓA TRANG HTML ADMIN: Cho phép tải HTML để admin-auth.js kiểm tra Token (Không chặn ở đây)
                         .requestMatchers("/admin/**").permitAll()
-                        // 2. KHÓA CHẶT các API thao tác dữ liệu, bắt buộc phải là Admin mới được gọi
-                        .requestMatchers("/api/admin/**").hasAuthority("ROLE_ADMIN")
-                        // Các đường dẫn khác (ví dụ: /booking) bắt buộc phải đăng nhập
+
+                        // 4. KHÓA CHẶT API ADMIN (BẢO VỆ DỮ LIỆU): Dùng hasAnyAuthority để tránh lỗi viết hoa/viết thường
+                        .requestMatchers("/api/admin/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_Admin")
+
+                        // Các yêu cầu khác (như /profile) phải đăng nhập
                         .anyRequest().authenticated()
                 )
+
+                // Gắn Jwt Filter
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+
+                // ==========================================================
+                // BỘ XỬ LÝ NGOẠI LỆ THÔNG MINH (Kế thừa từ bản cập nhật mới)
+                // ==========================================================
+                .exceptionHandling(ex -> ex
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            String requestURI = request.getRequestURI();
+                            System.out.println(">> [SECURITY BLOCK] Truy cập bị từ chối tại: " + requestURI);
+
+                            // "Tàng hình" hệ thống Admin: Nếu không có quyền, báo Not Found (404) thay vì Forbidden (403)
+                            if (requestURI.startsWith("/admin") || requestURI.startsWith("/api/admin")) {
+                                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Not Found");
+                            } else {
+                                response.sendError(HttpServletResponse.SC_FORBIDDEN, "Access Denied");
+                            }
+                        })
+                )
+
+                // Cấu hình OAuth2
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/login")
                         .successHandler(oAuth2SuccessHandler)
-                );
+                )
 
-        // Gắn bác bảo vệ (JWT FILTER) vào trước cửa
-        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                // ==========================================================
+                // CẤU HÌNH LOGOUT TỐI ƯU (Kế thừa từ bản cập nhật mới)
+                // ==========================================================
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login?logout")
+                        .deleteCookies("jwtToken", "JSESSIONID")
+                        .invalidateHttpSession(true)
+                        .clearAuthentication(true)
+                );
 
         return http.build();
     }

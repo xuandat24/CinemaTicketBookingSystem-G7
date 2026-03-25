@@ -43,20 +43,27 @@
                         </div>
 
                         <div class="row mb-3">
-                            <div class="col-md-4">
-                                <label class="form-label fw-bold">Duration (Min) <span class="text-danger">*</span></label>
+                            <div class="col-md-3">
+                                <label for="movieDuration" class="form-label fw-bold">Duration (Min) <span class="text-danger">*</span></label>
                                 <input type="number" class="form-control" id="movieDuration" min="1" required>
                             </div>
-                            <div class="col-md-4">
-                                <label class="form-label fw-bold">Release Date <span class="text-danger">*</span></label>
+                            <div class="col-md-3">
+                                <label for="movieReleaseDate" class="form-label fw-bold">Release Date <span class="text-danger">*</span></label>
                                 <input type="date" class="form-control" id="movieReleaseDate" required>
                             </div>
-                            <div class="col-md-4">
-                                <label class="form-label fw-bold">Status <span class="text-danger">*</span></label>
+
+                            <div class="col-md-3">
+                                <label for="movieLanguage" class="form-label fw-bold">Language <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="movieLanguage" placeholder="e.g. English" required>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label for="movieStatus" class="form-label fw-bold">Status <span class="text-danger">*</span></label>
                                 <select class="form-select" id="movieStatus" required>
                                     <option value="Coming Soon">Coming Soon</option>
-                                    <option value="Now Playing">Now Playing</option>
                                     <option value="Pending">Pending</option>
+                                    <option value="Now Playing">Now Playing</option>
+                                    <option value="Disabled">Disabled</option>
                                 </select>
                             </div>
                         </div>
@@ -121,7 +128,7 @@
                                 <i class="fa-solid fa-trash me-1"></i> Delete Movie
                             </button>
                             <div>
-                                <button type="button" class="btn btn-light border me-2" onclick="window.location.href='../../static/css/admin/movies/search'">Cancel</button>
+                                <button type="button" class="btn btn-light border me-2" onclick="window.location.href='/admin/movies/search'">Cancel</button>
                                 <button type="submit" class="btn btn-primary" id="btnUpdate">
                                     <i class="fa-solid fa-floppy-disk me-1"></i> Update Movie
                                 </button>

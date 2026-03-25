@@ -62,8 +62,14 @@
                 <div class="col-md-3">
                     <label class="form-label fw-bold text-secondary small mb-1">Sort</label>
                     <select class="form-select form-select-sm" id="sortBy">
-                        <option value="id">Newest First</option>
-                        <option value="name">A-Z (Title)</option>
+                        <option value="idDesc" selected>Newest Added</option>
+                        <option value="idAsc">Oldest Added</option>
+                        <option value="nameAsc">Title (A-Z)</option>
+                        <option value="nameDesc">Title (Z-A)</option>
+                        <option value="releaseDateDesc">Newest Release</option>
+                        <option value="releaseDateAsc">Oldest Release</option>
+                        <option value="durationDesc">Longest Duration</option>
+                        <option value="durationAsc">Shortest Duration</option>
                     </select>
                 </div>
                 <div class="col-md-3">
@@ -102,6 +108,5 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script th:src="@{/js/admin/searchMovie.js}"></script>
 <script th:src="@{/js/admin/admin-auth.js}"></script>
-
 </body>
 </html>

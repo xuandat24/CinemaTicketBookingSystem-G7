@@ -1,10 +1,58 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <title>My Booking History</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <style>
+        .order-card { border-left: 5px solid #f37121; margin-bottom: 20px; transition: 0.3s; }
+        .order-card:hover { box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .status-confirmed { color: green; font-weight: bold; }
+    </style>
 </head>
 <body>
-$END$
+<div th:replace="~{layout/header :: header}"></div>
+
+<div class="container mt-5">
+    <h3 class="mb-4"><i class="fa fa-history"></i> My Booking History</h3>
+
+    <div th:if="${#lists.isEmpty(history)}" class="alert alert-info">
+        You haven't booked any tickets yet.
+    </div>
+
+    <div th:each="bill : ${history}" class="card order-card p-3">
+        <div class="row align-items-center">
+            <div class="col-md-4">
+                <h5 th:text="${bill.showtime.movie.title}" class="text-primary">Movie Name</h5>
+                <p class="mb-1"><i class="fa fa-calendar"></i> <span th:text="${#temporals.format(bill.showtime.startTime, 'dd/MM/yyyy')}">Date</span></p>
+                <p class="mb-1"><i class="fa fa-clock-o"></i> <span th:text="${#temporals.format(bill.showtime.startTime, 'HH:mm')}">Time</span></p>
+            </div>
+
+            <div class="col-md-4">
+                <p class="mb-1"><b>Seats:</b>
+                    <span th:each="bs, iter : ${bill.bookingSeats}"
+                          th:text="${bs.seat.seatCode} + ${!iter.last ? ', ' : ''}">A1, A2</span>
+                </p>
+                <p class="mb-1"><b>Combos:</b>
+                    <span th:if="${#lists.isEmpty(bill.bookingCombos)}">None</span>
+                    <span th:each="bc, iter : ${bill.bookingCombos}"
+                          th:text="${bc.combo.name} + ' (x' + ${bc.quantity} + ')' + ${!iter.last ? ', ' : ''}">Popcorn (x1)</span>
+                </p>
+            </div>
+
+            <div class="col-md-2 text-end">
+                <p class="mb-0">Total Price</p>
+                <h5 th:text="${#numbers.formatInteger(bill.finalPrice, 0, 'POINT')} + ' vnđ'">500.000 vnđ</h5>
+                <span class="status-confirmed" th:text="${bill.status}">CONFIRMED</span>
+            </div>
+
+            <div class="col-md-2 text-center border-start">
+                <small class="text-muted">Booking Date:</small>
+                <p th:text="${#temporals.format(bill.createTime, 'dd/MM/yyyy HH:mm')}">19/03/2026</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="layout/footer :: footer"></div>
 </body>
 </html>

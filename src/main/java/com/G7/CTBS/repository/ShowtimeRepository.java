@@ -44,5 +44,6 @@ public interface ShowtimeRepository extends JpaRepository<Showtime, Long> {
             LocalDateTime start,
             LocalDateTime end
     );
+    boolean existsByTheaterRoom_RoomIdAndStartTimeAfter(Long roomId, LocalDateTime startTime);
 }
 

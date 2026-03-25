@@ -35,7 +35,7 @@ public class PublicAPIController {
             @RequestParam(required = false) Long categoryId,
             @RequestParam(required = false) String language,
             @RequestParam(required = false) String status,
-            @RequestParam(defaultValue = "newest") String sortBy) {
+            @RequestParam(defaultValue = "releaseDateDesc") String sortBy) {
         return ResponseEntity.ok(movieService.getPublicMovies(title, categoryId, language, status, sortBy));
     }
 
