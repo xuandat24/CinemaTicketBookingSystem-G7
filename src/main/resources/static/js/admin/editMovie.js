@@ -57,7 +57,7 @@ async function loadMovieData() {
 
     } catch (error) {
         alert("Failed to load movie data!");
-        window.location.href = '/admin/movies/search';
+        window.location.href = '../../css/admin/movies/search';
     }
 }
 
@@ -154,7 +154,7 @@ document.getElementById('editMovieForm').addEventListener('submit', async (e) =>
 
         if (response.ok) {
             alert("Success: " + data.message);
-            window.location.href = '/admin/movies/search';
+            window.location.href = '../../css/admin/movies/search';
         } else {
             alert("Error: " + (data.message || "Failed to update movie."));
         }

@@ -56,7 +56,7 @@ document
             if (response.ok) {
 
                 sessionStorage.setItem("successMessage", "Showtime updated successfully");
-                window.location.href = "/admin/showtimes";
+                window.location.href = "../../css/admin/showtimes";
 
             } else {
 

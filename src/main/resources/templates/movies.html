@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Movies - Movie Theme</title>
+    <title>Movies - CTBS Cinema</title>
 
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" >
     <link th:href="@{/css/font-awesome.min.css}" rel="stylesheet" >
@@ -17,63 +17,53 @@
     <script th:src="@{/js/jquery-3.7.1.min.js}"></script>
     <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
 </head>
-<body>
+<body class="bg-light"> <div th:replace="~{layout/header :: header}"></div>
 
-<div class="main_o main">
-    <div class="main_o1 bg_back">
-
-        <div th:replace="~{layout/navbar :: navbar}"></div>
-
-        <section id="center" class="centre_o pt-5 pb-5">
-            <div class="container-xl">
-                <div class="row centre_o1 text-center">
-                    <div class="col-md-12">
-                        <h1 class="text-white font_60">Movies</h1>
-                        <h5 class="mb-0 mt-3 fw-normal col_oran">
-                            <a class="text-light" th:href="@{/}">Home</a>
-                            <span class="mx-2 text-muted">/</span> Movies
-                        </h5>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </div>
-</div>
-
-<div class="border_dashed"></div>
-
-<section id="trend" class="p_3">
+<section class="pt-5 pb-4 bg-white shadow-sm">
     <div class="container-xl">
-        <div class="row mb-4 bg-light p-3 rounded shadow-sm align-items-center">
+        <div class="row text-center">
+            <div class="col-md-12">
+                <h2 class="fw-bold text-dark">Tất Cả Phim</h2>
+                <h6 class="mb-0 mt-2 fw-normal">
+                    <a class="text-primary text-decoration-none fw-bold" th:href="@{/}">Home</a>
+                    <span class="mx-2 text-muted">/</span> <span class="text-muted">Movies</span>
+                </h6>
+            </div>
+        </div>
+    </div>
+</section>
 
+<section id="trend" class="p_3 mt-4">
+    <div class="container-xl">
+        <div class="row mb-4 bg-white p-3 rounded shadow-sm align-items-center">
             <div class="col-md-3 col-sm-6 mb-3 mb-md-0">
                 <div class="input-group">
-                    <span class="input-group-text bg-white border-primary border-end-0"><i class="fa fa-search"></i></span>
-                    <input type="text" id="searchTitle" class="form-control border-primary filter-element" placeholder="Search title...">
+                    <span class="input-group-text bg-light border-primary"><i class="fa fa-search text-muted"></i></span>
+                    <input type="text" id="searchTitle" class="form-control border-primary filter-element" placeholder="Tìm tên phim...">
                 </div>
             </div>
             <div class="col-md-3 col-sm-6 mb-3 mb-md-0">
                 <div class="input-group">
-                    <span class="input-group-text bg-white border-primary border-end-0"><i class="fa fa-globe"></i></span>
-                    <input type="text" id="searchLanguage" class="form-control border-primary border-start-0 filter-element" placeholder="Language...">
+                    <span class="input-group-text bg-light border-primary"><i class="fa fa-globe text-muted"></i></span>
+                    <input type="text" id="searchLanguage" class="form-control border-primary filter-element" placeholder="Ngôn ngữ...">
                 </div>
             </div>
             <div class="col-md-2 col-sm-4 mb-2 mb-md-0">
                 <select id="filterCategory" class="form-select border-primary filter-element">
-                    <option value="">-- Categories --</option>
+                    <option value="">-- Thể loại --</option>
                 </select>
             </div>
             <div class="col-md-2 col-sm-4 mb-2 mb-md-0">
                 <select id="filterStatus" class="form-select border-primary filter-element">
-                    <option value="">-- All Status --</option>
-                    <option value="Now Playing">Now Playing</option>
-                    <option value="Coming Soon">Coming Soon</option>
+                    <option value="">-- Trạng thái --</option>
+                    <option value="Now Playing">Đang chiếu</option>
+                    <option value="Coming Soon">Sắp chiếu</option>
                 </select>
             </div>
             <div class="col-md-2 col-sm-4 mb-2 mb-md-0">
                 <select id="sortBy" class="form-select border-primary filter-element">
-                    <option value="newest">Newest First</option>
-                    <option value="oldest">Oldest First</option>
+                    <option value="newest">Mới nhất</option>
+                    <option value="oldest">Cũ nhất</option>
                 </select>
             </div>
         </div>
@@ -81,13 +71,13 @@
         <div class="row trend_2" id="movieListContainer">
             <div class="col-12 text-center py-5">
                 <div class="spinner-border text-primary" role="status"></div>
-                <p class="mt-2 text-muted">Loading movies...</p>
+                <p class="mt-2 text-muted">Đang tải phim...</p>
             </div>
         </div>
 
-        <div class="pages mt-5 row text-center">
-            <div class="col-md-12">
-                <ul class="mb-0" id="paginationContainer">
+        <div class="row mt-4 mb-5">
+            <div class="col-md-12 d-flex justify-content-center">
+                <ul class="pagination shadow-sm" id="paginationContainer">
                 </ul>
             </div>
         </div>
@@ -96,6 +86,7 @@
 
 <div th:replace="~{layout/footer :: footer}"></div>
 
+<script th:src="@{/js/auth.js}"></script>
 <script th:src="@{/js/common.js}"></script>
 <script th:src="@{/js/movies.js}"></script>
 </body>

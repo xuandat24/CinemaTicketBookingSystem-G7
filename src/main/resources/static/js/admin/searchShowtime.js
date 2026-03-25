@@ -119,7 +119,7 @@ function renderTable(data) {
 }
 
 function edit(id) {
-    window.location.href = `/admin/showtimes/update?id=${id}`;
+    window.location.href = `../../css/admin/showtimes/update?id=${id}`;
 }
 
 function formatDate(dt) {

@@ -88,7 +88,7 @@ document
             sessionStorage.setItem("successMessage", "Showtime created successfully");
 
             // redirect
-            window.location.href = "/admin/showtimes";
+            window.location.href = "../../css/admin/showtimes";
 
         }else{
 
