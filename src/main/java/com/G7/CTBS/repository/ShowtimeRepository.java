@@ -1,7 +1,7 @@
 package com.G7.CTBS.repository;
 
-import com.G7.CTBS.entity.Movie;
 import com.G7.CTBS.entity.Showtime;
+import com.G7.CTBS.enums.ShowtimeStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,18 +11,38 @@ import java.util.*;
 @Repository
 public interface ShowtimeRepository extends JpaRepository<Showtime, Long> {
     List<Showtime> findByMovieMovieId(Long movieId);
+
     List<Showtime> findByTheaterRoomRoomId(Long roomId);
+
     List<Showtime> findByStartTimeBetween(LocalDateTime start, LocalDateTime end);
 
-    boolean existsByTheaterRoomRoomIdAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
-            Long roomId,
+    List<Showtime> findByMovieMovieIdAndStartTimeBetweenAndStatus(
+            Long movieId,
             LocalDateTime start,
-            LocalDateTime end);
+            LocalDateTime end,
+            ShowtimeStatus status
+    );
 
-    boolean existsByTheaterRoomRoomIdAndShowtimeIdNotAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
+    List<Showtime> findByTheaterRoomRoomIdAndStatus(
+            Long roomId,
+            ShowtimeStatus status
+    );
+
+    List<Showtime> findByStatus(ShowtimeStatus status);
+
+    boolean existsByTheaterRoomRoomIdAndStatusAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
+            Long roomId,
+            ShowtimeStatus status,
+            LocalDateTime start,
+            LocalDateTime end
+    );
+
+    boolean existsByTheaterRoomRoomIdAndShowtimeIdNotAndStatusAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
             Long roomId,
             Long showtimeId,
-            LocalDateTime end,
-            LocalDateTime start);
+            ShowtimeStatus status,
+            LocalDateTime start,
+            LocalDateTime end
+    );
 }
 

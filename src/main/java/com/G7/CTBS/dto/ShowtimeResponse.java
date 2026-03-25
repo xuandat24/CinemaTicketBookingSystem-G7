@@ -1,6 +1,7 @@
 package com.G7.CTBS.dto;
 
 import com.G7.CTBS.enums.ShowtimeFormat;
+import com.G7.CTBS.enums.ShowtimeStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,4 +23,5 @@ public class ShowtimeResponse {
     private LocalDateTime endTime;
     private ShowtimeFormat format;
     private Double price;
+    private ShowtimeStatus status;
 }

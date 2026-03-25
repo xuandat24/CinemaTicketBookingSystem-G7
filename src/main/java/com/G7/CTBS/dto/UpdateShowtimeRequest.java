@@ -1,6 +1,7 @@
 package com.G7.CTBS.dto;
 
 import com.G7.CTBS.enums.ShowtimeFormat;
+import com.G7.CTBS.enums.ShowtimeStatus;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
@@ -22,4 +23,5 @@ public class UpdateShowtimeRequest {
     private Double price;
 
     private ShowtimeFormat format;
+    private ShowtimeStatus status;
 }

@@ -1,6 +1,7 @@
 package com.G7.CTBS.entity;
 
 import com.G7.CTBS.enums.ShowtimeFormat;
+import com.G7.CTBS.enums.ShowtimeStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -34,4 +35,15 @@ public class Showtime {
 
     @OneToMany(mappedBy = "showtime")
     private List<Booking> bookings;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ShowtimeStatus status;
+
+    @PrePersist
+    public void prePersist() {
+        if (status == null) {
+            status = ShowtimeStatus.ACTIVE;
+        }
+    }
 }

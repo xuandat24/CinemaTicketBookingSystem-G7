@@ -1,34 +1,84 @@
 const API = "/api/showtimes";
+const MOVIE_API = "/api/admin/movies";
+const ROOM_API = "/api/theater-rooms";
 
 document.addEventListener("DOMContentLoaded", () => {
     showSuccessMessage();
     loadAll();
+    loadMovies();
+    loadRooms();
 });
 
 function loadAll() {
-    const token = localStorage.getItem('jwtToken');
-    fetch(API, {
-        headers: { "Authorization": `Bearer ${token}` }
-    })
+    fetch(API)
         .then(res => res.json())
         .then(renderTable);
 }
 
+function loadMovies() {
+    fetch(MOVIE_API)
+        .then(res => res.json())
+        .then(data => {
+            const select = document.getElementById("filterMovie");
+            data.forEach(m => {
+                select.innerHTML += `<option value="${m.movieId}">${m.title}</option>`;
+            });
+        });
+}
+
+function loadRooms() {
+   fetch(ROOM_API)
+       .then(res => res.json())
+       .then(data => {
+           const select = document.getElementById("filterRoom");
+           data.forEach(r => {
+               select.innerHTML += `<option value="${r.roomId}">${r.roomName}</option>`;
+           });
+       });
+}
+
+
+
+
 function applyFilter() {
+
+    const id = document.getElementById("filterId").value;
+    const movieId = document.getElementById("filterMovie").value;
+    const roomId = document.getElementById("filterRoom").value;
     const date = document.getElementById("filterDate").value;
 
-    if (!date) return loadAll();
+    // ưu tiên ID (search riêng)
+    if (id) {
+        fetch(`${API}/${id}`)
+            .then(res => {
+                if (!res.ok) throw new Error();
+                return res.json();
+            })
+            .then(data => renderTable([data]))
+            .catch(() => renderTable([]));
+        return;
+    }
 
-    // SỬA Ở ĐÂY: Thêm Token vào quá trình gọi API lọc theo ngày
-    const token = localStorage.getItem('jwtToken');
-    fetch(`${API}/date?date=${date}`, {
-        method: "GET",
-        headers: {
-            "Authorization": `Bearer ${token}`
-        }
-    })
+    // build query
+    let query = [];
+
+    if (movieId) query.push(`movieId=${movieId}`);
+    if (roomId) query.push(`roomId=${roomId}`);
+    if (date) query.push(`date=${date}`);
+
+    const url = `${API}/search?${query.join("&")}`;
+
+    fetch(url)
         .then(res => res.json())
         .then(renderTable);
+}
+
+function resetFilter() {
+    document.getElementById("filterId").value = "";
+    document.getElementById("filterMovie").value = "";
+    document.getElementById("filterRoom").value = "";
+    document.getElementById("filterDate").value = "";
+    loadAll();
 }
 
 function renderTable(data) {
@@ -41,13 +91,13 @@ function renderTable(data) {
     }
 
     data.forEach(s => {
-        let format = s.format; // Đã thêm 'let' để khai báo biến đúng chuẩn
-        if(format === "TWO_D") {
-            format = "2D";
-        } else if(format === "THREE_D") {
-            format = "3D";
+        format = s.format
+        if(format == "TWO_D") {
+            format = "2D"
+        } else if(format == "THREE_D") {
+            format = "3D"
         } else {
-            format = "IMAX";
+            format = "IMAX"
         }
         tbody.innerHTML += `
             <tr>
@@ -58,11 +108,10 @@ function renderTable(data) {
                 <td>${formatDate(s.endTime)}</td>
                 <td>${s.price}</td>
                 <td>${format}</td>
+                <td>${s.status}</td>
                 <td class="text-end">
                     <button class="btn btn-sm btn-warning"
                         onclick="edit(${s.showtimeId})">Edit</button>
-                    <button class="btn btn-sm btn-danger"
-                        onclick="del(${s.showtimeId})">Delete</button>
                 </td>
             </tr>
         `;
@@ -71,19 +120,6 @@ function renderTable(data) {
 
 function edit(id) {
     window.location.href = `/admin/showtimes/update?id=${id}`;
-}
-
-function del(id) {
-    if (!confirm("Delete this showtime?")) return;
-    const token = localStorage.getItem('jwtToken');
-    fetch(`${API}/${id}`, {
-        method: "DELETE",
-        headers: { "Authorization": `Bearer ${token}` }
-    })
-        .then(res => {
-            if (res.ok) loadAll();
-            else alert("Delete failed");
-        });
 }
 
 function formatDate(dt) {

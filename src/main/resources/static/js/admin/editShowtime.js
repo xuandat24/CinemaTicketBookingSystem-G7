@@ -7,13 +7,7 @@ const id = urlParams.get("id");
 
 async function loadShowtime() {
     try {
-        const token = localStorage.getItem('jwtToken'); // Lấy token
-        const response = await fetch(`${API}/${id}`, {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}` // THÊM TOKEN VÀO ĐÂY
-            }
-        });
+        const response = await fetch(`${API}/${id}`);
         const data = await response.json();
 
         document.getElementById("movieTitle").value = data.movieTitle;
@@ -24,6 +18,7 @@ async function loadShowtime() {
         document.getElementById("startTime").value = data.startTime.substring(0, 16);
         document.getElementById("price").value = data.price;
         document.getElementById("format").value = data.format;
+        document.getElementById("status").value = data.status;
 
     } catch (error) {
         console.error("Cannot load showtime:", error);
@@ -43,18 +38,17 @@ document
             theaterRoomId: document.getElementById("roomId").value,
             startTime: document.getElementById("startTime").value,
             price: document.getElementById("price").value,
-            format: document.getElementById("format").value
+            format: document.getElementById("format").value,
+            status: document.getElementById("status").value
         };
 
         const message = document.getElementById("message");
 
         try {
-            const token = localStorage.getItem('jwtToken'); // Lấy token
             const response = await fetch(`${API}/${id}`, {
                 method: "PUT",
                 headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}` // THÊM TOKEN VÀO ĐÂY
+                    "Content-Type": "application/json"
                 },
                 body: JSON.stringify(data)
             });
@@ -79,23 +73,6 @@ document
             console.error(err);
         }
     });
-
-/* ================= DELETE ================= */
-
-async function deleteShowtime() {
-
-    if (!confirm("Delete this showtime?")) return;
-
-    const token = localStorage.getItem('jwtToken'); // Lấy token
-    await fetch(`${API}/${id}`, {
-        method: "DELETE",
-        headers: {
-            "Authorization": `Bearer ${token}` // THÊM TOKEN VÀO ĐÂY
-        }
-    });
-
-    window.location.href = "/admin/showtimes";
-}
 
 /* ================= INIT ================= */
 

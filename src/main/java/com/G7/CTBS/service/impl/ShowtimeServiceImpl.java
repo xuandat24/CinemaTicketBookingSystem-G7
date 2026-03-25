@@ -6,6 +6,7 @@ import com.G7.CTBS.dto.UpdateShowtimeRequest;
 import com.G7.CTBS.entity.Movie;
 import com.G7.CTBS.entity.Showtime;
 import com.G7.CTBS.entity.TheaterRoom;
+import com.G7.CTBS.enums.ShowtimeStatus;
 import com.G7.CTBS.exception.*;
 import com.G7.CTBS.repository.BookingRepository;
 import com.G7.CTBS.repository.MovieRepository;
@@ -58,8 +59,9 @@ public class ShowtimeServiceImpl implements ShowtimeService {
 
         // 5. Check schedule conflict in the same room
         boolean conflict = showtimeRepository
-                .existsByTheaterRoomRoomIdAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
+                .existsByTheaterRoomRoomIdAndStatusAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
                         room.getRoomId(),
+                        ShowtimeStatus.ACTIVE,
                         endTime,
                         request.getStartTime());
 
@@ -91,7 +93,7 @@ public class ShowtimeServiceImpl implements ShowtimeService {
         boolean hasBooking =
                 bookingRepository.existsByShowtimeShowtimeId(showtimeId);
 
-        // ❌ nếu đã có booking → block toàn bộ
+        // If it has booking → block all
         if (hasBooking) {
             throw new ShowtimeHasBookingException(
                     "Cannot update showtime because bookings already exist");
@@ -109,9 +111,10 @@ public class ShowtimeServiceImpl implements ShowtimeService {
 
         boolean conflict =
                 showtimeRepository
-                        .existsByTheaterRoomRoomIdAndShowtimeIdNotAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
+                        .existsByTheaterRoomRoomIdAndShowtimeIdNotAndStatusAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
                                 room.getRoomId(),
                                 showtimeId,
+                                ShowtimeStatus.ACTIVE,
                                 newEndTime,
                                 request.getStartTime());
 
@@ -120,33 +123,16 @@ public class ShowtimeServiceImpl implements ShowtimeService {
                     "Updated showtime conflicts with existing schedule");
         }
 
-        // ✅ update full
+        // Update full
         showtime.setStartTime(request.getStartTime());
         showtime.setEndTime(newEndTime);
         showtime.setBasePrice(request.getPrice());
         showtime.setFormat(request.getFormat());
+        showtime.setStatus(request.getStatus());
 
         Showtime updated = showtimeRepository.save(showtime);
 
         return responseDTO(updated, movie, room);
-    }
-
-    @Override
-    public void deleteShowtime(Long showtimeId) {
-
-        Showtime showtime = showtimeRepository.findById(showtimeId)
-                .orElseThrow(() -> new ResourceNotFoundException("Showtime not found"));
-
-        // booking is not matching with this block code
-//        boolean hasBooking =
-//                bookingRepository.existsByShowtimeShowtimeId(showtimeId);
-//
-//        if(hasBooking){
-//            throw new ShowtimeHasBookingException(
-//                    "Cannot delete showtime because bookings already exist");
-//        }
-
-        showtimeRepository.delete(showtime);
     }
 
     @Override
@@ -196,8 +182,7 @@ public class ShowtimeServiceImpl implements ShowtimeService {
         LocalDateTime endOfDay = date.atTime(23,59,59);
 
         List<Showtime> showtime =
-                showtimeRepository
-                        .findByStartTimeBetween(startOfDay, endOfDay);
+                showtimeRepository.findByStartTimeBetween(startOfDay, endOfDay);
 
         return showtime.stream()
                 .map(s -> responseDTO(s, s.getMovie(), s.getTheaterRoom()))
@@ -214,6 +199,71 @@ public class ShowtimeServiceImpl implements ShowtimeService {
                 .toList();
     }
 
+    @Override
+    public List<ShowtimeResponse> getAvailableShowtime(Long movieId, LocalDate date) {
+
+        // 1. Validate movie
+        movieRepository.findById(movieId)
+                .orElseThrow(() -> new ResourceNotFoundException("Movie not found"));
+
+        // 2. Convert date → time range
+        LocalDateTime startOfDay = date.atStartOfDay();
+        LocalDateTime endOfDay = date.atTime(23, 59, 59);
+
+        // 3. Query only ACTIVE
+        List<Showtime> showtimes =
+                showtimeRepository.findByMovieMovieIdAndStartTimeBetweenAndStatus(
+                        movieId,
+                        startOfDay,
+                        endOfDay,
+                        ShowtimeStatus.ACTIVE
+                );
+
+        // 4. Map DTO
+        return showtimes.stream()
+                .map(s -> responseDTO(s, s.getMovie(), s.getTheaterRoom()))
+                .toList();
+    }
+
+    @Override
+    public List<ShowtimeResponse> searchShowtime(
+            Long movieId,
+            Long roomId,
+            LocalDate date,
+            ShowtimeStatus status
+    ) {
+
+        List<Showtime> showtimes = showtimeRepository.findAll();
+
+        if (movieId != null) {
+            showtimes = showtimes.stream()
+                    .filter(s -> s.getMovie().getMovieId().equals(movieId))
+                    .toList();
+        }
+
+        if (roomId != null) {
+            showtimes = showtimes.stream()
+                    .filter(s -> s.getTheaterRoom().getRoomId().equals(roomId))
+                    .toList();
+        }
+
+        if (date != null) {
+            showtimes = showtimes.stream()
+                    .filter(s -> s.getStartTime().toLocalDate().equals(date))
+                    .toList();
+        }
+
+        if (status != null) {
+            showtimes = showtimes.stream()
+                    .filter(s -> s.getStatus() == status)
+                    .toList();
+        }
+
+        return showtimes.stream()
+                .map(s -> responseDTO(s, s.getMovie(), s.getTheaterRoom()))
+                .toList();
+    }
+
     // Convert to response DTO
     private ShowtimeResponse responseDTO(
             Showtime savedShowtime,
@@ -221,12 +271,15 @@ public class ShowtimeServiceImpl implements ShowtimeService {
             TheaterRoom room) {
         ShowtimeResponse response = new ShowtimeResponse();
         response.setShowtimeId(savedShowtime.getShowtimeId());
+        response.setMovieId(movie.getMovieId());
         response.setMovieTitle(movie.getTitle());
+        response.setTheaterRoomId(room.getRoomId());
         response.setTheaterRoomName(room.getRoomName());
         response.setStartTime(savedShowtime.getStartTime());
         response.setEndTime(savedShowtime.getEndTime());
         response.setFormat(savedShowtime.getFormat());
         response.setPrice(savedShowtime.getBasePrice());
+        response.setStatus(savedShowtime.getStatus());
 
         return response;
     }

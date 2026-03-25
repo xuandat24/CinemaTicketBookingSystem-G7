@@ -106,7 +106,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         if (account.isEmpty()) {
             UserCreateRequest pendingUser = UserCreateRequest.builder()
                     .email(email)
-                    .userName(email.split("@")[0] + "_" + new Random().nextInt(1000)) // Tránh lỗi email dài quá 50 kí tự
+                    .userName(email.split("@")[0])
                     .firstName(firstName)
                     .lastName(lastName)
                     .password("Google_Auth_Default@123")
@@ -139,10 +139,13 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                     : user.getEmail();
 
             String token = authenticationService.tokenGeneration(identifier);
-            String rawName = user.getUserName() != null ? user.getUserName() : user.getEmail();
-            if (rawName == null || rawName.trim().isEmpty()) rawName = "Google User";
-            String encodedName = URLEncoder.encode(rawName, StandardCharsets.UTF_8.toString());
+            // SỬA LẠI: Luôn lấy userName (đã được cắt đuôi @) để hiển thị
+            String rawName = user.getUserName();
+            if (rawName == null || rawName.trim().isEmpty()) {
+                rawName = user.getEmail().split("@")[0];
+            }
 
+            String encodedName = URLEncoder.encode(rawName, StandardCharsets.UTF_8.toString());
             HttpSession session = req.getSession(false);
             if (session != null) session.invalidate();
             org.springframework.security.core.context.SecurityContextHolder.clearContext();

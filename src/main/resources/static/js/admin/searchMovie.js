@@ -44,7 +44,12 @@ function setupLiveSearch(elementId) {
 
 async function loadCategoriesForFilter() {
     try {
-        const response = await fetch('/api/admin/categories');
+        const token = localStorage.getItem('jwtToken'); // LẤY TOKEN
+        const response = await fetch('/api/admin/categories', {
+            headers: { 'Authorization': `Bearer ${token}` } // GÀI TOKEN VÀO HEADER
+        });
+        if (!response.ok) throw new Error("Cannot fetch categories");
+
         const categories = await response.json();
         const select = document.getElementById('filterCategory');
         categories.forEach(cat => {
@@ -77,7 +82,11 @@ async function loadMovies() {
         if (fromDate) apiUrl += `&fromDate=${fromDate}`;
         if (toDate) apiUrl += `&toDate=${toDate}`;
 
-        const response = await fetch(apiUrl);
+        const token = localStorage.getItem('jwtToken'); // LẤY TOKEN
+        const response = await fetch(apiUrl, {
+            headers: { 'Authorization': `Bearer ${token}` } // GÀI TOKEN VÀO HEADER
+        });
+
         if (!response.ok) throw new Error("Network response was not ok");
         const movies = await response.json();
 

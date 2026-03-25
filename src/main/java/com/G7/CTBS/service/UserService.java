@@ -30,7 +30,7 @@ public class UserService {
         return repository.findAll();
     }
 
-    public User findById(Integer id) {
+    public User findById(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy Account với ID: " + id));
     }
@@ -80,7 +80,7 @@ public class UserService {
         return repository.save(user);
     }
 
-    public void delete(Integer id) {
+    public void delete(Long id) {
         findById(id);
         repository.deleteById(id);
     }

@@ -3,13 +3,8 @@ async function loadMovies() {
     const movieSelect = document.getElementById("movieId");
 
     try {
-        const token = localStorage.getItem('jwtToken'); // Lấy token
-        const response = await fetch("/api/admin/movies", {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}` // THÊM TOKEN VÀO ĐÂY
-            }
-        });
+
+        const response = await fetch("/api/admin/movies");
 
         const movies = await response.json();
 
@@ -34,33 +29,24 @@ async function loadMovies() {
 
 async function loadRooms(){
 
-    const roomSelect = document.getElementById("roomId");
+   const response = await fetch("/api/rooms");
 
-    try {
-        const token = localStorage.getItem('jwtToken');
-        const response = await fetch("/api/admin/rooms", {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`
-            }
-        });
+   const rooms = await response.json();
 
-        const rooms = await response.json();
+   const roomSelect = document.getElementById("roomId");
 
-        rooms.forEach(room => {
+   rooms.forEach(room => {
 
-            const option = document.createElement("option");
+       const option = document.createElement("option");
 
-            option.value = room.roomId;
+       option.value = room.id;
 
-            option.text = room.roomName;
+       option.text = room.name;
 
-            roomSelect.appendChild(option);
+       roomSelect.appendChild(option);
 
-        });
-    } catch (error) {
-        console.error("Cannot load rooms:", error);
-    }
+   });
+
 }
 
 document
@@ -79,20 +65,22 @@ document
 
             format: document.getElementById("format").value,
 
-            price: document.getElementById("price").value
+            price: document.getElementById("price").value,
+
+            status: document.getElementById("status").value
 
         };
 
-        const message = document.getElementById("message"); // Declare message here
-
-        const token = localStorage.getItem('jwtToken'); // Lấy token
         const response = await fetch("/api/showtimes", {
+
             method: "POST",
+
             headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}` // Bổ sung dòng này
+                "Content-Type": "application/json"
             },
+
             body: JSON.stringify(data)
+
         });
 
         if(response.ok){
