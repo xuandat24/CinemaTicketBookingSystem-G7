@@ -63,6 +63,14 @@ public class SecurityConfig {
                 // BỘ XỬ LÝ NGOẠI LỆ THÔNG MINH (Kế thừa từ bản cập nhật mới)
                 // ==========================================================
                 .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            String requestURI = request.getRequestURI();
+                            if (requestURI.startsWith("/api/")) {
+                                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+                            } else {
+                                response.sendRedirect("/login");
+                            }
+                        })
                         .accessDeniedHandler((request, response, accessDeniedException) -> {
                             String requestURI = request.getRequestURI();
                             System.out.println(">> [SECURITY BLOCK] Truy cập bị từ chối tại: " + requestURI);
