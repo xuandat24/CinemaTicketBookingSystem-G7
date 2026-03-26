@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <title>Đăng nhập | Movie Theme</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+</head>
+<body class="login-body">
+<div class="login-wrapper auth-wrapper">
+    <div class="login-card">
+        <div class="login-side-left">
+            <div class="login-slideshow">
+                <div class="login-slide active"
+                     style="background-image: url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=2070')"></div>
+                <div class="login-slide"
+                     style="background-image: url('https://images.unsplash.com/photo-1478720568477-152d9b164e26?q=80&w=2070')"></div>
+                <div class="login-slide"
+                     style="background-image: url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=2025')"></div>
+                <div class="login-slideshow-overlay">
+                    <h2 class="fw-bold text-white">MOVIE THEME</h2>
+                    <p class="text-white-50">Unlimited movies, TV shows, and more</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="login-side-right">
+            <a class="login-brand" th:href="@{/}">
+                <i class="fa fa-modx"></i> <span>CTBS</span>
+            </a>
+
+            <div class="mb-4 mt-5">
+                <div class="d-flex align-items-center mb-1">
+                    <h2 class="fw-bold m-0">Sign In</h2>
+                    <div class="login-cute-camera ms-3">
+                        <div class="login-cam-body">
+                            <div class="login-cam-lens"></div>
+                            <div class="login-cam-roll" style="left:0"></div>
+                            <div class="login-cam-roll" style="left:12px"></div>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-muted small">Welcome back! Please enter your details.</p>
+            </div>
+
+            <form id="loginForm">
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Username or Email</label>
+                    <input class="form-control shadow-none" id="username" placeholder="Enter your username" required
+                           type="text">
+                </div>
+
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <label class="form-label small fw-bold m-0">Password</label>
+                        <a class="small text-decoration-none col_oran" th:href="@{/forgot-password}">Forgot password?</a>
+                    </div>
+                    <div style="position: relative;">
+                        <input class="form-control shadow-none" id="password" placeholder="••••••••" required
+                               type="password" style="padding-right: 40px;">
+                        <i class="fa fa-eye-slash" id="toggleLoginPassword"
+                           style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #aaa; font-size: 18px;"
+                           title="Hiện mật khẩu"></i>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin: 15px 0 25px 0; font-size: 14px;">
+                    <label style="cursor: pointer; display: flex; align-items: center; gap: 5px; color: #555; font-weight: 500;">
+                        <input id="rememberMe" style="width: 16px; height: 16px; margin: 0; cursor: pointer;" type="checkbox">
+                        Remember Me
+                    </label>
+                    <a style="color: #d96c2c; text-decoration: none; font-weight: 500;" th:href="@{/}">
+                        <i class="fa fa-home"></i> Back to Home
+                    </a>
+                </div>
+
+                <button class="login-btn-submit w-100 mb-3" type="submit">SIGN IN</button>
+
+                <div class="login-divider"><span>OR</span></div>
+
+                <a class="login-btn-google w-100" th:href="@{/oauth2/authorization/google}">
+                    <img alt="Google" src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png">
+                    Sign in with Google
+                </a>
+
+                <p class="text-center mt-4 mb-0 small text-muted">
+                    Don't have an account?
+                    <a class="fw-bold text-dark text-decoration-none" th:href="@{/register}">Sign up for free</a>
+                </p>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    let current = 0;
+    const slides = document.querySelectorAll('.login-slide');
+    setInterval(() => {
+        if (slides.length > 0) {
+            slides[current].classList.remove('active');
+            current = (current + 1) % slides.length;
+            slides[current].classList.add('active');
+        }
+    }, 4000);
+</script>
+
+<footer th:replace="~{layout/footer :: footer}"></footer>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const toggleLoginPassword = document.getElementById("toggleLoginPassword");
+        const loginPassword = document.getElementById("password");
+
+        if (toggleLoginPassword && loginPassword) {
+            toggleLoginPassword.addEventListener("click", function () {
+                const type = loginPassword.getAttribute("type") === "password" ? "text" : "password";
+                loginPassword.setAttribute("type", type);
+
+                this.classList.toggle("fa-eye");
+                this.classList.toggle("fa-eye-slash");
+            });
+        }
+    });
+</script>
+
+<script th:src="@{/js/auth.js}"></script>
+</body>
+</html>

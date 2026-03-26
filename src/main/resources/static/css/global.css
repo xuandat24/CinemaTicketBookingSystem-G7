@@ -1,0 +1,1650 @@
+/*
+Template Name: Movie Theme
+File: Layout CSS
+Author: TemplatesOnWeb
+Author URI: https://www.templateonweb.com/
+Licence: <a href="https://www.templateonweb.com/license">Website Template Licence</a>
+*/
+body{
+font-family: "Platypi", serif;
+}
+p{
+font-family: 'Poppins', sans-serif;
+font-size:15px;
+ }
+ul{
+list-style:none;
+padding:0;
+ }
+
+h1,h2,h3,h4,h5{
+font-weight:bold;
+ }
+h6{
+font-weight:normal;
+ }
+a{
+color: #333;
+text-decoration:none;
+ }
+a:hover{
+text-decoration:none;
+color:#d96c2c;
+ }
+a:focus{
+text-decoration:none;
+color: #d96c2c;
+ }
+
+.a_tag:hover{
+color:#d96c2c!important;
+ }
+.a_tag:focus{
+color: #d96c2c!important;
+ }
+
+
+.button{
+transition: 0.3s;
+padding: 16px 40px 18px 40px;
+display: inline-block;
+font-size:16px;
+background:#d96c2c;
+color:#fff;
+ }
+
+.button:hover{
+background:#fff!important;
+color:#000!important;
+ }
+
+.button_1{
+transition: 0.3s;
+padding: 16px 40px 18px 40px;
+display: inline-block;
+font-size:16px;
+background:#fff;
+color:#000;
+ }
+
+.button_1:hover{
+background:#d96c2c!important;
+color:#fff!important;
+ }
+
+.button_2{
+transition: 0.3s;
+padding: 16px 40px 18px 40px;
+display: inline-block;
+font-size:16px;
+background:#d96c2c;
+color:#fff;
+ }
+
+.button_2:hover{
+background:#000!important;
+color:#fff!important;
+ }
+
+.button_3{
+transition: 0.3s;
+padding: 16px 40px 18px 40px;
+display: inline-block;
+font-size:16px;
+background:#fff;
+color:#000;
+ }
+
+.button_3:hover{
+background:#000!important;
+color:#fff!important;
+ }
+
+.grid figure {
+position: relative;
+float: left;
+overflow: hidden;
+width: 100%;
+text-align: center;
+cursor: pointer;
+}
+figure.effect-jazz figcaption::after,
+figure.effect-jazz img
+{
+-webkit-transition: opacity 0.35s, -webkit-transform 0.35s;
+transition: opacity 0.35s, transform 0.35s;
+}
+
+figure.effect-jazz:hover img {
+-webkit-transform: scale3d(1.05,1.05,1);
+transform: scale3d(1.05,1.05,1);
+}
+.col_oran{
+color:#d96c2c!important;
+ }
+.bg_oran{
+background-color: #d96c2c!important;
+ }
+
+.bg_back{
+background-color: rgba(0,0,0,.4)!important;
+}
+.bg_backn{
+background-color: rgba(217,108,44,.9)!important;
+}
+.bg_backn1{
+background-color: rgba(217,108,44,.6)!important;
+}
+.bg_backo{
+background-color: rgba(0,0,0,.9)!important;
+}
+
+hr{
+opacity:1;
+background-color:#f5d8c7;
+ }
+
+/* =========================================
+   LOGIN & REGISTER PAGE CSS (Đã đóng gói để không lỗi Index)
+   ========================================= */
+
+.login-body {
+    background-color: #f8f9fa !important;
+}
+
+.login-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.login-card {
+    display: flex;
+    width: 100%;
+    max-width: 1050px;
+    height: 650px;
+    background: #fff;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+
+/* Bên trái: Slideshow */
+.login-side-left {
+    flex: 1.3;
+    position: relative;
+    background: #000;
+}
+
+.login-slideshow { width: 100%; height: 100%; position: relative; }
+
+.login-slide {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transition: opacity 1.2s ease-in-out;
+}
+.login-slide.active { opacity: 1; }
+
+.login-slideshow-overlay {
+    position: absolute;
+    bottom: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(transparent, rgba(0,0,0,0.8));
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 50px;
+    z-index: 10;
+}
+
+/* Bên phải: Form */
+.login-side-right {
+    flex: 1;
+    padding: 60px 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    background: white;
+}
+
+.login-brand {
+    position: absolute;
+    top: 40px; left: 50px;
+    text-decoration: none !important;
+}
+.login-brand i { color: #d96c2c; font-size: 26px; }
+.login-brand span { color: #333; font-weight: 800; font-size: 22px; margin-left: 10px; }
+
+/* Animation Máy Quay Cute */
+.login-cute-camera { position: relative; width: 35px; height: 30px; }
+.login-cam-body { width: 25px; height: 18px; background: #d96c2c; border-radius: 4px; position: absolute; bottom: 0; }
+.login-cam-lens { width: 9px; height: 11px; background: #333; position: absolute; right: -7px; top: 3px; border-radius: 2px; border: 2px solid #d96c2c; }
+.login-cam-roll {
+    width: 12px; height: 12px; background: #222; border: 2px solid #d96c2c;
+    border-radius: 50%; position: absolute; top: -10px;
+    animation: loginSpinCam 2s linear infinite;
+}
+
+@keyframes loginSpinCam { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+/* Form Elements */
+.login-side-right .form-control {
+    border-radius: 12px; padding: 14px; background: #f8f9fa; border: 1px solid #eee; font-size: 15px;
+}
+.login-btn-submit {
+    background: #222; color: #fff; border-radius: 12px; padding: 14px; font-weight: 700; border: none; transition: 0.3s;
+}
+.login-btn-submit:hover { background: #d96c2c; transform: translateY(-2px); color: white; }
+
+.login-divider {
+    text-align: center; position: relative; margin: 25px 0;
+}
+.login-divider::before { content: ""; position: absolute; top: 50%; left: 0; width: 100%; height: 1px; background: #eee; }
+.login-divider span { position: relative; background: #fff; padding: 0 15px; color: #999; font-size: 13px; }
+
+.login-btn-google {
+    border: 1px solid #ddd; border-radius: 12px; padding: 12px; display: flex; align-items: center; justify-content: center;
+    text-decoration: none; color: #555; font-weight: 600; font-size: 15px;
+}
+.login-btn-google img { width: 20px; margin-right: 12px; }
+
+@media (max-width: 768px) {
+    .login-side-left { display: none; }
+    .login-side-right { padding: 60px 25px; }
+    .login-brand { left: 25px; }
+}
+.font_14{
+font-size:14px;
+ }
+.font_8{
+font-size:8px;
+ }
+.font_10{
+font-size:10px;
+ }
+.font_12{
+font-size:12px;
+ }
+.font_13{
+font-size:13px;
+ }
+.font_15{
+font-size:15px;
+ }
+.font_60{
+font-size:60px;
+ }
+
+.font_50{
+font-size:50px;
+ }
+.line {
+height:4px!important;
+width: 100px;
+background-color:#d96c2c;
+}
+
+/* =========================================
+   REGISTER PAGE CSS (Prefix: reg-)
+   ========================================= */
+
+.reg-body {
+    background: linear-gradient(45deg, #f3f4f7 0%, #e2e5ec 100%) !important;
+}
+
+.reg-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+}
+
+.reg-card {
+    display: flex;
+    width: 100%;
+    max-width: 1100px;
+    background: #fff;
+    border-radius: 30px;
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+}
+
+/* Bên trái: Ảnh nền và hiệu ứng */
+.reg-side-left {
+    flex: 1;
+    background-image: url('https://images.unsplash.com/photo-1517604401157-538a9663ecf3?q=80&w=2070');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    padding: 60px;
+    display: flex;
+    align-items: flex-end;
+}
+
+.reg-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(to top, rgba(217,108,44, 0.9), rgba(0,0,0,0.3));
+}
+
+.reg-content { position: relative; z-index: 2; }
+
+.reg-badge {
+    background: rgba(255,255,255,0.2);
+    backdrop-filter: blur(5px);
+    color: #fff;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    display: inline-block;
+    margin-bottom: 20px;
+}
+
+/* Animation Vé phim bay */
+.movie-ticket-animation {
+    margin-top: 40px;
+}
+.ticket {
+    font-size: 50px;
+    color: #fff;
+    animation: floatTicket 3s ease-in-out infinite;
+}
+
+@keyframes floatTicket {
+    0%, 100% { transform: translateY(0) rotate(-10deg); }
+    50% { transform: translateY(-20px) rotate(10deg); }
+}
+
+/* Bên phải: Form */
+.reg-side-right {
+    flex: 1.2;
+    padding: 60px;
+    background: #fff;
+    position: relative;
+}
+
+.reg-brand {
+    position: absolute;
+    top: 30px; right: 60px;
+    text-decoration: none !important;
+}
+.reg-brand i { color: #d96c2c; font-size: 24px; }
+.reg-brand span { color: #333; font-weight: 800; font-size: 20px; margin-left: 8px; }
+
+.reg-side-right .form-control {
+    border-radius: 12px;
+    padding: 12px 15px;
+    border: 1px solid #eee;
+    background: #fcfcfc;
+    font-size: 0.9rem;
+    transition: 0.3s;
+}
+
+.reg-side-right .form-control:focus {
+    border-color: #d96c2c;
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(217,108,44, 0.1);
+}
+
+.reg-btn-submit {
+    background: #d96c2c;
+    color: #fff;
+    border-radius: 12px;
+    padding: 14px;
+    font-weight: 700;
+    border: none;
+    transition: 0.3s;
+}
+
+.reg-btn-submit:hover {
+    background: #222;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(217,108,44, 0.2);
+}
+
+.reg-divider {
+    text-align: center; position: relative; margin: 25px 0;
+}
+.reg-divider::before { content: ""; position: absolute; top: 50%; left: 0; width: 100%; height: 1px; background: #eee; }
+.reg-divider span { position: relative; background: #fff; padding: 0 15px; color: #bbb; font-size: 12px; }
+
+.reg-btn-google {
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #444;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.reg-btn-google:hover { background: #f8f9fa; }
+.reg-btn-google img { width: 18px; margin-right: 12px; }
+
+.x-small { font-size: 11px; }
+
+@media (max-width: 992px) {
+    .reg-side-right { padding: 40px; }
+}
+
+@media (max-width: 768px) {
+    .reg-side-left { display: none; }
+    .reg-card { max-width: 500px; border-radius: 20px; }
+    .reg-brand { right: 40px; }
+}
+.p_3{
+padding-top:30px;
+padding-bottom:30px;
+ }
+
+.border_1{
+border:1px solid #f5d8c7;
+ }
+/* =========================================
+   USER PROFILE PAGE CSS (Prefix: prof-)
+   ========================================= */
+
+.prof-body {
+    background-color: #f4f7f6 !important;
+}
+
+.prof-card {
+    background: #fff;
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+.prof-avatar-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.prof-avatar {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 5px solid #fff;
+}
+
+.prof-upload-btn {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background: #d96c2c;
+    color: #fff;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 3px solid #fff;
+    transition: 0.3s;
+}
+
+.prof-upload-btn:hover {
+    background: #222;
+    transform: scale(1.1);
+}
+
+.prof-body .form-control {
+    border-radius: 10px;
+    padding: 12px 15px;
+    border: 1px solid #eee;
+    background: #fcfcfc;
+}
+
+.prof-body .form-control:focus {
+    border-color: #d96c2c;
+    box-shadow: 0 0 0 4px rgba(217,108,44, 0.1);
+    background: #fff;
+}
+
+.prof-body .nav-pills .nav-link {
+    border-radius: 10px;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+.prof-body .nav-pills .nav-link.active {
+    background-color: rgba(217,108,44, 0.1);
+    color: #d96c2c;
+}
+
+.prof-body .nav-pills .nav-link:hover:not(.active) {
+    background-color: #f8f9fa;
+}
+
+@media (max-width: 768px) {
+    .prof-card { margin-bottom: 20px; }
+}
+
+/* CSS cho Booking History */
+.booking-item {
+    background: #fff;
+    transition: 0.3s;
+    border-left: 4px solid #d96c2c !important; /* Tạo điểm nhấn màu cam */
+}
+
+.booking-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1) !important;
+}
+
+.movie-poster-sm img {
+    width: 60px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.text-orange {
+    color: #d96c2c;
+}
+
+/* Badge tùy chỉnh */
+.bg-success-light {
+    background-color: rgba(40, 167, 69, 0.1);
+}
+.bg-secondary-light {
+    background-color: rgba(108, 117, 125, 0.1);
+}
+
+/* Tùy chỉnh tab bootstrap cho khớp style */
+.prof-body .nav-pills .nav-link {
+    color: #333;
+    padding: 12px 20px;
+}
+.prof-body .nav-pills .nav-link.active {
+    background-color: #d96c2c !important;
+    color: #fff !important;
+}
+.carousel_p .carousel-indicators {
+bottom: -60px!important;
+}
+.carousel_p {
+padding-bottom: 70px!important;
+}
+
+.dropdown:hover .dropdown-menu {
+display: block;
+}
+.dropdown>.dropdown-toggle:active {
+/*Without this, clicking will make it sticky*/
+pointer-events: none;
+}
+
+.px_4{
+padding-left:25px;
+padding-right:25px;
+ }
+.border_dashed{
+border-top:10px dashed #000;
+margin-top:10px;
+ }
+/*********************header****************/
+.nav_hide:after{
+display:none;
+ }
+.navbar{
+border-bottom:1px solid #262625;
+ }
+.navbar-collapse {
+align-items:start;
+}
+.main_1{
+z-index:2;
+ }
+
+#header .navbar-brand{
+font-size:24px;
+ }
+#header .nav-link{
+padding: 22px 18px;
+color: #fff;
+font-size:17px;
+ }
+#header .nav-link:hover{
+background:none;
+color:#d96c2c;
+ }
+#header .nav-link:focus{
+background:none;
+color:#d96c2c;
+ }
+#header .active{
+background:none;
+color:#d96c2c;
+ }
+
+#header .drop_1{
+min-width:240px;
+border-radius:0;
+margin-top:0px!important;
+border:1px solid #1a1a1a;
+background:#010202;
+padding:0;
+ }
+#header .drop_1 a{
+padding-top:10px;
+padding-bottom:13px;
+border-bottom:1px solid #1a1a1a;
+color:#ccc;
+transition: 0.3s;
+ }
+#header .drop_1 a:hover{
+background:#111;
+color:#d96c2c;
+ }
+
+.sticky {
+position: fixed;
+top: 0;
+width: 100%!important;
+z-index:3;
+background-color:#000!important;
+border-radius:0;
+}
+.sticky {
+top: -40px;
+transform: translateY(40px);
+transition: transform .3s;
+}
+
+.main .input-group .form-control{
+font-size:16px;
+color:#333;
+}
+.main .input-group .form-control:focus{
+box-shadow:none;
+}
+
+.main ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+color: #666!important;
+opacity: 1; /* Firefox */
+}
+.main .btn {
+font-size:20px;
+color: #fff;
+border-color:#d96c2c;
+ }
+.main .modal-dialog{
+min-width:400px;
+ }
+.main .modal-header .btn-close {
+color: #ef6330!important;
+background:none;
+width:auto!important;
+opacity:1!important;
+font-size:40px;
+margin-bottom:100px;
+}
+.main .fade {
+background-color: #000000c7;
+padding-top:100px;
+ }
+/*********************header_end****************/
+
+
+/*********************common****************/
+.pages ul li{
+ display:inline-block;
+ }
+.pages ul li a{
+display:block;
+color: #0c121d;
+ margin: 0 2px;
+ width:40px;
+ height:40px;
+ line-height:38px;
+ text-align:center;
+ border:1px solid #f5d8c7;
+ background:#fff;
+ }
+.pages ul li a:hover{
+ background: #d96c2c;
+ border:1px solid #d96c2c;
+ }
+.pages ul li a:hover{
+ color: #fff!important;
+ }
+.act{
+background:#d96c2c!important;
+border:1px solid #d96c2c!important;
+color:#fff!important;
+ }
+
+ /* footer social icons */
+ul.social-network {
+list-style: none;
+display: block;
+margin-left:0 !important;
+padding: 0;
+}
+ul.social-network li {
+display: inline-block;
+}
+
+/* footer social icons */
+.social-network a.icoRss:hover {
+background-color: #F56505;
+}
+.social-network a.icoFacebook:hover {
+background-color:#3B5998;
+}
+.social-network a.icoTwitter:hover {
+background-color:#33ccff;
+}
+.social-network a.icoGoogle:hover {
+background-color:#BD3518;
+}
+.social-network a.icoVimeo:hover {
+background-color:#0590B8;
+}
+.social-network a.icoLinkedin:hover {
+background-color:#007bb7;
+}
+.social-network a.icoRss:hover i, .social-network a.icoFacebook:hover i, .social-network a.icoTwitter:hover i,
+.social-network a.icoGoogle:hover i, .social-network a.icoVimeo:hover i, .social-network a.icoLinkedin:hover i {
+color:#fff;
+}
+a.socialIcon:hover, .socialHoverClass {
+color:#44BCDD;
+}
+
+.social-circle li a {
+display:inline-block;
+position:relative;
+margin:0 2px 0 2px;
+-moz-border-radius:50%;
+-webkit-border-radius:50%;
+border-radius:50%;
+text-align:center;
+width: 40px;
+height: 40px;
+}
+.social-circle li i {
+margin:0;
+line-height:40px;
+text-align: center;
+}
+
+.social-circle li a:hover i, .triggeredHover {
+-moz-transform: rotate(360deg);
+-webkit-transform: rotate(360deg);
+-ms--transform: rotate(360deg);
+transform: rotate(360deg);
+-webkit-transition: all 0.2s;
+-moz-transition: all 0.2s;
+-o-transition: all 0.2s;
+-ms-transition: all 0.2s;
+transition: all 0.2s;
+}
+.social-circle i {
+color: #fff;
+-webkit-transition: all 0.8s;
+-moz-transition: all 0.8s;
+-o-transition: all 0.8s;
+-ms-transition: all 0.8s;
+transition: all 0.8s;
+}
+.form-control:focus{
+  box-shadow:none;
+ border-color:#f5d8c7;
+ }
+.form-select:focus{
+ box-shadow:none;
+ border-color:#f5d8c7;
+ }
+.form-control{
+border-color:#f5d8c7;
+box-shadow:none;
+border-radius:0;
+height:50px;
+ }
+.form-select{
+border-color:#f5d8c7;
+box-shadow:none;
+border-radius:0;
+height:50px;
+color:#777;
+ }
+
+.shadow_box{
+box-shadow: 0px 4px 20px -3px rgb(22 36 62 / 15%);
+ }
+.carousel-indicators [data-bs-target] {
+ background-color:#d96c2c;
+}
+
+.input-group .form-control{
+height:auto;
+ }
+.input-group .form-control:focus{
+box-shadow:none;
+ }
+.form-check .form-check-input:checked {
+background-color: #d96c2c;
+border-color: #d96c2c;
+}
+.form_text{
+height:150px!important;
+ }
+
+.main_o {
+background-image: url(../img/28.jpg);
+}
+.social_icon1{
+background:#ffeaea!important;
+color:#000!important;
+ }
+.social_icon1:hover{
+color:#d96c2c!important;
+ }
+/*********************common_end****************/
+
+/*********************testim****************/
+.testim_1i1 .span_1 {
+width: 40px;
+height: 40px;
+line-height: 40px;
+}
+
+/*********************testim_end****************/
+
+/*********************trend****************/
+.trend_2i2{
+padding-top:94%;
+ }
+.trend_2i{
+border:5px solid  transparent;
+transition: 0.3s;
+ }
+.trend_2i:hover{
+border:5px solid #d96c2c;
+ }
+.trend_o1i1il{
+ padding-left:15px;
+ padding-right:15px;
+ }
+.trend_o1i1ir{
+ padding-left:15px;
+ padding-right:15px;
+ }
+/*********************trend_end****************/
+
+/*********************blog_h****************/
+.blog_h1m2 h2{
+line-height:0.8em;
+ }
+.blog_h1m2{
+bottom:0;
+ }
+/*********************blog_h_end****************/
+
+/* =========================================================
+   10. FOOTER REDESIGN (THIẾT KẾ LẠI CHÂN TRANG)
+========================================================= */
+
+/* B. CHÂN TRANG CHÍNH (MAIN FOOTER) */
+.main-footer {
+    background-color: #1a1a24;
+    color: #adb5bd;
+    padding: 80px 0;
+    position: relative;
+    /* Hiệu ứng răng cưa đồng bộ với Header */
+    border-top: 2px dashed rgba(255, 255, 255, 0.15);
+    margin-top: -1px;
+}
+
+.footer-brand {
+    color: #ffffff !important;
+    font-size: 28px !important;
+}
+.footer-brand span {
+    animation: none !important; /* Tắt hiệu ứng bling bling ở footer */
+}
+.footer-brand::after {
+    display: none !important; /* Tắt hiệu ứng tia sáng ở footer */
+}
+.footer-about-text {
+    font-size: 15px;
+    line-height: 1.7;
+    color: #86909a;
+}
+.footer-social-icons a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+    margin-right: 10px;
+    transition: all 0.3s ease;
+}
+.footer-social-icons a:hover {
+    background: #d96c2c;
+    transform: translateY(-3px);
+}
+
+.footer-title {
+    color: #ffffff;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 16px;
+    margin-bottom: 25px;
+    position: relative;
+    padding-bottom: 10px;
+}
+.footer-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 30px;
+    height: 3px;
+    background-color: #d96c2c;
+}
+
+.footer-links li, .footer-contact li {
+    margin-bottom: 12px;
+}
+.footer-links a, .footer-contact span {
+    color: #86909a;
+    transition: all 0.3s ease;
+}
+.footer-links a:hover {
+    color: #d96c2c !important;
+    padding-left: 5px;
+}
+.footer-contact i {
+    color: #d96c2c;
+    margin-right: 12px;
+    width: 16px;
+}
+
+/* C. THANH BẢN QUYỀN (BOTTOM BAR) */
+.footer-bottom {
+    background-color: #000000;
+    padding: 15px 0;
+    font-size: 14px;
+    color: #6c757d;
+}
+
+/* =========================================================
+   11. COMPACT CONTACT FORM
+========================================================= */
+.compact-contact-section {
+    background-color: #141419;
+    padding: 60px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.contact-form-compact .form-control {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: #fff !important;
+    border-radius: 12px !important;
+    padding: 14px 20px !important;
+    transition: all 0.3s ease;
+    height: auto !important;
+}
+.contact-form-compact .form-control:focus {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+    border-color: #d96c2c !important;
+    box-shadow: 0 0 0 4px rgba(217, 108, 44, 0.2) !important;
+}
+.contact-form-compact .form-control::placeholder {
+    color: rgba(255, 255, 255, 0.4) !important;
+}
+
+.contact-form-compact textarea.form-control {
+    min-height: 120px !important;
+    resize: vertical;
+}
+
+.btn-submit-compact {
+    background: #d96c2c;
+    color: #ffffff;
+    border: none;
+    border-radius: 50px;
+    padding: 14px 45px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+}
+
+.btn-submit-compact:hover {
+    background: #ffffff;
+    color: #d96c2c;
+    transform: scale(1.05);
+}
+
+@media screen and (max-width : 767px){
+.navbar-collapse{
+max-height:300px;
+overflow-y:scroll;
+border-top:1px solid #201f1f;
+margin-top:15px;
+ }
+#header .nav-link{
+font-size:26px!important;
+border-bottom:1px solid #201f1f;
+padding-top:10px;
+padding-bottom:10px;
+border-radius:0!important;
+border-right:none;
+ }
+
+.navbar .navbar-toggler{
+box-shadow:none!important;
+background:#fafafa;
+border:none;
+border-radius:0;
+margin-top:0;
+ }
+#header .drop_1{
+margin-top:0!important;
+min-width:100%;
+ }
+#header .drop_1 a{
+font-size:22px;
+ }
+.navbar{
+padding-top:10px!important;
+padding-bottom:10px!important;
+padding-left:0!important;
+padding-right:0!important;
+width:100%;
+border-radius:0;
+background-color: rgba(0,0,0,1)!important;
+ }
+
+.sticky .drop_1{
+margin-top:0!important;
+ }
+.line{
+margin-left:auto;
+margin-right:auto;
+ }
+.line_1{
+margin-left:auto;
+margin-right:auto;
+ }
+
+.pages ul li{
+margin-top:5px;
+margin-bottom:5px;
+ }
+
+.center_sm{
+text-align:center!important;
+ }
+.center_left{
+text-align:left!important;
+ }
+.font_60{
+font-size:45px;
+ }
+.font_50{
+font-size:36px;
+ }
+
+.main_1 {
+position:static!important;
+}
+
+.px_4{
+padding-left:0;
+padding-right:0;
+ }
+.main .modal-dialog{
+min-width:80%;
+margin: 0!important;
+margin-left:auto;
+margin-right:auto;
+ }
+.footer_2i {
+margin-top:8px;
+margin-bottom:8px;
+ }
+.centre_o1  .font_60{
+font-size:36px;
+ }
+.centre_o1  h5{
+font-size:16px;
+ }
+.spec_main2 {
+position:static!important;
+ }
+.testim_1l{
+text-align:center;
+margin-bottom:15px;
+ }
+.testim_1l p{
+text-align:left;
+ }
+.testim_1i1 {
+text-align:left;
+ }
+.blog_h1m{
+margin-top:8px;
+margin-bottom:8px;
+ }
+ }
+@media (min-width:576px) and (max-width:767px) {
+
+ }
+@media (min-width:768px) and (max-width:991px) {
+.navbar-expand-md {
+flex-wrap:wrap!important;
+}
+.drop_1{
+left:auto!important;
+right:0!important;
+ }
+.px_4{
+padding-left:0;
+padding-right:0;
+ }
+#header .nav-link {
+padding: 22px 5px;
+font-size:16px;
+}
+#header .fs-5 {
+font-size:16px!important;
+}
+.trend_2i1 img{
+min-height:300px;
+ }
+.blog_h1m2  h4{
+font-size:18px;
+ }
+ }
+@media (min-width:871px) and (max-width:991px) {
+#header .nav-link {
+padding: 22px 12px;
+}
+ }
+@media (min-width:992px) and (max-width:1200px) {
+.navbar-expand-md {
+flex-wrap:wrap!important;
+}
+.drop_1{
+left:auto!important;
+right:0!important;
+ }
+.trend_2i1 img{
+min-height:350px;
+ }
+#header .nav-link{
+padding: 22px 14px;
+ }
+ }
+
+@media (min-width:1400px) and (max-width:1600px) {
+
+ }
+/********************* CINEMA TICKET BUTTON START ****************/
+.btn-cinema-ticket {
+    background-color: #d96c2c;
+    color: #fff !important;
+    border: 2px dashed #fff;
+    padding: 12px 30px;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+    border-radius: 8px;
+    position: relative;
+    display: inline-block;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+.btn-cinema-ticket:hover {
+    background-color: #b55520;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(217, 108, 44, 0.4);
+}
+/* Hiệu ứng 2 lỗ tròn 2 bên mép vé */
+.btn-cinema-ticket::before, .btn-cinema-ticket::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 16px;
+    height: 16px;
+    background-color: #111; /* Màu nền trùng với section để tạo hiệu ứng đục lỗ */
+    border-radius: 50%;
+    transform: translateY(-50%);
+}
+.btn-cinema-ticket::before { left: -8px; }
+.btn-cinema-ticket::after { right: -8px; }
+/********************* CINEMA TICKET BUTTON END ****************/
+
+/* =======================================================
+   TECH CINEMA NAVBAR ANIMATIONS (THANH ĐIỀU HƯỚNG CÔNG NGHỆ)
+======================================================= */
+
+/* Nền kính mờ & Viền vé phát sáng */
+.tech-cinema-navbar {
+    background: rgba(15, 15, 20, 0.90) !important;
+    backdrop-filter: blur(12px);
+    border-bottom: 2px dashed #d96c2c;
+    box-shadow: 0 4px 20px rgba(217, 108, 44, 0.2);
+    transition: all 0.4s ease;
+}
+
+/* Chữ Neon chuyển động liên tục */
+.brand-colorful {
+    background: linear-gradient(90deg, #ff9a9e, #fecfef, #f64f59, #c471ed, #12c2e9, #ff9a9e);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradientShine 4s linear infinite;
+    font-size: 1.8rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+@keyframes gradientShine {
+    to { background-position: 200% center; }
+}
+.brand-colorful i {
+    -webkit-text-fill-color: #fbc02d;
+    text-shadow: 0 0 10px rgba(251, 192, 45, 0.8);
+}
+
+/* Laser Hover cho Menu Links */
+.tech-nav-link {
+    position: relative;
+    color: #e0e0e0 !important;
+    font-weight: 500;
+    padding: 10px 15px !important;
+    transition: color 0.3s ease;
+}
+.tech-nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 50%;
+    background-color: #d96c2c;
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+    box-shadow: 0 0 10px #d96c2c;
+}
+.tech-nav-link:hover::after { width: 80%; }
+.tech-nav-link:hover {
+    color: #fff !important;
+    text-shadow: 0 0 8px rgba(255,255,255,0.5);
+}
+
+/* Nút bấm mang phong cách Vé VIP */
+.btn-tech-ticket {
+    background: #d96c2c;
+    color: #fff !important;
+    border: 1px dashed #fff;
+    border-radius: 6px;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    font-weight: bold;
+}
+.btn-tech-ticket::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 50%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+    transform: skewX(-25deg);
+    transition: left 0.5s ease;
+    z-index: -1;
+}
+.btn-tech-ticket:hover::before { left: 150%; }
+.btn-tech-ticket:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 15px rgba(217, 108, 44, 0.5);
+    border-color: #fbc02d;
+}
+
+/* Hiệu ứng nhịp đập cho Avatar */
+.avatar-pulse {
+    animation: pulse-border 2s infinite;
+}
+@keyframes pulse-border {
+    0% { box-shadow: 0 0 0 0 rgba(217, 108, 44, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(217, 108, 44, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(217, 108, 44, 0); }
+}
+
+/* Dropdown Menu Glassmorphism */
+.tech-dropdown-menu {
+    background: rgba(20, 20, 25, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid #333;
+    border-top: 3px solid #d96c2c;
+    border-radius: 8px;
+}
+.tech-dropdown-menu .dropdown-item { color: #ccc; transition: all 0.2s; }
+.tech-dropdown-menu .dropdown-item:hover { background: #d96c2c; color: #fff; padding-left: 20px; }
+/* =========================================================
+   BẢN VÁ LỖI CUỐI CÙNG - THỐNG NHẤT TOÀN BỘ CODE NAVBAR
+========================================================= */
+
+/* 1. TRỊ DỨT ĐIỂM KHOẢNG TRẮNG: Tô màu nền gốc & Đẩy nội dung */
+body {
+    /* Quan trọng: Tô màu đen/tối cho nền gốc để khoảng trắng biến mất hoàn toàn */
+    background-color: #0b0b0e !important;
+    color: #fff;
+    /* Đẩy trang lùi xuống đúng bằng độ dày của Navbar để ảnh không bị đè */
+    padding-top: 65px !important;
+}
+
+/* 2. ÉP NAVBAR ĐỨNG IM 100% (VÔ HIỆU HÓA JS NGẦM) */
+#navbar_sticky {
+    position: fixed !important;
+    top: 0 !important; left: 0 !important; right: 0 !important;
+    width: 100% !important; z-index: 1030 !important;
+    /* Dùng mức z-index chuẩn của Bootstrap 5 */
+    background-color: #ffffff !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06) !important;
+    border-bottom: 2px dashed #cbd5e1 !important;
+    padding-top: 12px !important;
+    padding-bottom: 12px !important;
+    /* Các dòng dưới giúp chặn đứng JavaScript của template làm trôi Navbar */
+    transform: none !important;
+    margin: 0 !important;
+    transition: none !important;
+}
+
+/* 3. MENU DROPDOWN XỔ MƯỢT, KHÔNG BỊ HÌNH ẢNH CHE */
+#navbar_sticky .dropdown-menu {
+    position: absolute !important;
+    z-index: 1050 !important; /* Lớn hơn mức 1030 của Navbar */
+    background-color: #141419; /* Đồng bộ màu đen nhám */
+    border: 1px solid #333;
+}
+
+/* 4. HÌNH ẢNH CAROUSEL HIỂN THỊ FULL ĐẸP, KHÔNG CẮT ĐẦU */
+.main, .carousel, .center_home {
+    position: relative;
+    z-index: 1; /* Hạ lớp xuống đáy để menu dễ dàng đè lên */
+    margin-top: 0 !important; /* Dọn dẹp margin rác cũ */
+}
+
+.carousel-item img, .center_home img {
+    width: 100%;
+    height: auto !important;
+    max-height: 85vh; /* Chiều cao vừa vặn cho màn hình */
+    object-fit: cover;
+    object-position: top center; /* Giữ tiêu điểm ở phía trên bức ảnh */
+}
+/* =========================================================
+   5. TÙY CHỈNH RIÊNG DROPDOWN CỦA USERNAME (NỀN TRẮNG, CHỮ ĐEN)
+========================================================= */
+
+/* Nâng cấp Dropdown User thành dạng Vé Ticket sang trọng */
+#navbar_sticky #navUser .dropdown-menu { /* SỬA LỖI: #nav-user -> #navUser */
+    background-color: #fffaf6 !important; /* Nền màu cam nhạt kiểu vé */
+    border: 2px dashed #fde8d7 !important; /* Viền đứt nét kiểu vé */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+    margin-top: 38px !important; /* TĂNG KHOẢNG CÁCH: Đẩy menu xuống hẳn dưới username và vạch kẻ */
+    padding: 15px 0 !important; /* Thêm khoảng đệm trên dưới cho đẹp */
+    border-radius: 12px !important;
+    z-index: 1050 !important; /* Đảm bảo nó nổi lên trên mọi thứ */
+
+    /* TUYỆT KỸ: Đục lỗ răng cưa trên và dưới để tạo hiệu ứng vé */
+    -webkit-mask-image: radial-gradient(circle at 50% 0, transparent 8px, black 9px),
+                        radial-gradient(circle at 50% 100%, transparent 8px, black 9px);
+    mask-image: radial-gradient(circle at 50% 0, transparent 8px, black 9px),
+                        radial-gradient(circle at 50% 100%, transparent 8px, black 9px);
+    -webkit-mask-size: 100% 51%;
+    mask-size: 100% 51%;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: top, bottom;
+    mask-position: top, bottom;
+}
+
+/* Ép màu chữ các mục bên trong (Profile, Logout) thành màu đen để nổi bật trên nền trắng */
+#navbar_sticky #navUser .dropdown-menu .dropdown-item { /* SỬA LỖI: #nav-user -> #navUser */
+    color: #4a4a4a !important; /* Chữ màu xám đậm cho dễ đọc */
+    font-weight: 700 !important;
+    background-color: transparent !important;
+    transition: all 0.2s ease !important;
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+}
+
+/* Hiệu ứng khi hover (di chuột) vào từng mục */
+#navbar_sticky #navUser .dropdown-menu .dropdown-item:hover { /* SỬA LỖI: #nav-user -> #navUser */
+    background-color: rgba(217, 108, 44, 0.1) !important; /* Nền cam trong suốt */
+    color: #d96c2c !important; /* Đổi chữ thành màu cam chủ đạo */
+    padding-left: 24px !important; /* Thụt lề nhẹ tạo hiệu ứng chuyển động */
+}
+
+/* Chỉnh lại vạch kẻ ngang phân cách (nếu có) cho tiệp với nền trắng */
+#navbar_sticky #navUser .dropdown-divider { /* SỬA LỖI: #nav-user -> #navUser */
+    border-top-color: #fde8d7 !important; /* Màu cam nhạt đồng bộ */
+    opacity: 1 !important;
+    margin: 8px 15px !important; /* Thu hẹp lại cho đẹp */
+}
+/* =========================================================
+   6. KHẮC PHỤC LỖI CHỮ TÀNG HÌNH TRÊN NỀN TRẮNG Ở TRANG PROFILE
+========================================================= */
+
+/* 1. Ép chữ đen cho tất cả các ô nhập liệu (Input, Form, Textarea) */
+.form-control, .form-select, input, textarea, select {
+    color: #2b2b2b !important;
+    background-color: #ffffff !important;
+    border: 1px solid #ced4da !important;
+}
+
+/* 2. Ép chữ đen cho các khối giao diện nền trắng (Card, Bg-white, List-group) */
+.bg-white, .card, .list-group-item {
+    color: #2b2b2b !important;
+}
+
+/* 3. Lớp bảo vệ riêng cho toàn bộ Text (Tiêu đề, Label, Thẻ P) trong Profile */
+.profile-wrapper,
+.profile-wrapper h1, .profile-wrapper h2, .profile-wrapper h3,
+.profile-wrapper h4, .profile-wrapper h5, .profile-wrapper h6,
+.profile-wrapper p, .profile-wrapper label, .profile-wrapper span,
+.profile-wrapper div {
+    color: #2b2b2b !important;
+}
+
+/* =========================================================
+   7. KHÔI PHỤC MÀU ĐỎ CHO CHỮ CẢNH BÁO / BÁO LỖI
+========================================================= */
+/* Trả lại màu đỏ cho các dòng thông báo lỗi dưới ô nhập liệu */
+.profile-wrapper .text-danger,
+.profile-wrapper .error-text {
+    color: #dc3545 !important; /* Màu đỏ chuẩn của Bootstrap */
+}
+
+/* Trả lại màu đỏ cho nút Xóa tài khoản */
+.profile-wrapper .btn-outline-danger {
+    color: #dc3545 !important;
+    border-color: #dc3545 !important;
+}
+
+/* Hiệu ứng khi di chuột vào nút Xóa tài khoản (nền đỏ, chữ trắng) */
+.profile-wrapper .btn-outline-danger:hover {
+    color: #fff !important;
+    background-color: #dc3545 !important;
+}
+/* =========================================================
+   8. KHẮC PHỤC LỖI CHỮ TRẮNG Ở TRANG LOGIN VÀ REGISTER
+========================================================= */
+
+/* 1. Nhuộm đen toàn bộ chữ (Tiêu đề, Label, Thẻ P, Span) trong Form Login/Register */
+.auth-wrapper,
+.auth-wrapper h1, .auth-wrapper h2, .auth-wrapper h3,
+.auth-wrapper h4, .auth-wrapper h5, .auth-wrapper h6,
+.auth-wrapper p, .auth-wrapper label, .auth-wrapper span,
+.auth-wrapper div {
+    color: #2b2b2b !important;
+}
+
+/* 2. BẢO VỆ MÀU ĐỎ CHO CÁC DÒNG CẢNH BÁO/LỖI */
+.auth-wrapper .text-danger,
+.auth-wrapper .error-text {
+    color: #dc3545 !important; /* Trả lại màu đỏ rực rỡ chuẩn Bootstrap */
+}
+
+/* 3. Tinh chỉnh màu cho các đường link (Quên mật khẩu, Đăng ký ngay...) để dễ nhìn */
+.auth-wrapper a {
+    color: #d96c2c !important; /* Đổi thành màu cam chủ đạo cho link */
+    font-weight: 500;
+    text-decoration: none;
+}
+.auth-wrapper a:hover {
+    text-decoration: underline !important;
+}
+
+/* =========================================================
+   9. HEADER PHONG CÁCH TẤM VÉ (TRẮNG SÁNG & BLING BLING)
+========================================================= */
+/* LOGO PREMIUM - THÊM HIỆU ỨNG BLING BLING */
+.brand-premium {
+    font-family: 'Poppins', sans-serif;
+    font-size: 26px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #1a1a24 !important;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    padding: 0 5px;
+}
+
+.brand-premium span {
+    color: #d96c2c;
+    margin-left: 6px;
+    position: relative;
+    display: inline-block;
+    /* Hiệu ứng chữ tự phát sáng lấp lánh (Bling Bling) */
+    animation: textGlow 1.5s ease-in-out infinite alternate;
+}
+
+.brand-premium i {
+    font-size: 28px;
+    color: #d96c2c;
+    margin-right: 8px;
+    transform: rotate(-15deg);
+}
+
+/* Tia sáng xẹt qua Logo cực sang chảnh */
+.brand-premium::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -150%;
+    width: 30%;
+    height: 100%;
+    background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0) 100%);
+    transform: skewX(-20deg);
+    animation: shineSweep 3s infinite;
+}
+
+/* Keyframes cho Bling Bling */
+@keyframes textGlow {
+    from { text-shadow: 0 0 2px rgba(217,108,44,0.2); }
+    to { text-shadow: 0 0 12px rgba(217,108,44,0.8), 0 0 20px rgba(217,108,44,0.4); }
+}
+@keyframes shineSweep {
+    0% { left: -150%; }
+    20% { left: 150%; }
+    100% { left: 150%; }
+}
+
+/* Hiệu ứng gạch chân khi trỏ chuột vào Menu */
+.ticket-nav-link {
+    color: #475569 !important;
+    font-weight: 700;
+    font-size: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 0 12px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+.ticket-nav-link:hover, .ticket-nav-link.active {
+    color: #d96c2c !important;
+}
+.ticket-nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 50%;
+    width: 0;
+    height: 3px;
+    background: #d96c2c;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+.ticket-nav-link:hover::after, .ticket-nav-link.active::after {
+    width: 100%;
+}
+
+/* Nút Đăng nhập/Đăng ký dạng Vé Mini */
+.btn-header-ticket {
+    background: #d96c2c;
+    color: #ffffff !important;
+    padding: 8px 20px;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border: 1px dashed rgba(255,255,255,0.5);
+    -webkit-mask-image: radial-gradient(circle at 0 50%, transparent 4px, black 5px),
+    radial-gradient(circle at 100% 50%, transparent 4px, black 5px);
+    mask-image: radial-gradient(circle at 0 50%, transparent 4px, black 5px),
+    radial-gradient(circle at 100% 50%, transparent 4px, black 5px);
+    -webkit-mask-size: 51% 100%;
+    mask-size: 51% 100%;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: left, right;
+    mask-position: left, right;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+.btn-header-ticket:hover {
+    background: #1a1a24;
+    transform: translateY(-2px);
+    border-color: #d96c2c;
+    box-shadow: 0 5px 15px rgba(217,108,44,0.3);
+}
+
+.ticket-header .navbar-toggler {
+    border: 2px solid #d96c2c;
+    outline: none;
+}
+.ticket-header .navbar-toggler-icon {
+    filter: invert(40%) sepia(80%) saturate(1350%) hue-rotate(345deg) brightness(90%) contrast(90%);
+}

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<nav th:fragment="admin-nav">
+
+    <link rel="stylesheet" th:href="@{/css/admin/sidebar.css}">
+
+    <div class="admin-sidebar">
+
+        <a th:href="@{/admin/home}" class="brand-logo">Admin Dashboard</a>
+
+        <div class="sidebar-search">
+            <form th:action="@{/admin/movies/search}" method="GET">
+                <div class="input-group input-group-sm">
+                    <input type="search" class="form-control" placeholder="Search movie..." name="keyword">
+                    <button class="btn btn-outline-info" type="submit">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="section-title">Main Menu</div>
+        <a th:href="@{/admin/home}" class="menu-item"><i class="fa-solid fa-house me-2"></i> Dashboard</a>
+
+        <div class="section-title">Movie Management</div>
+        <a th:href="@{/admin/movies/add}" class="menu-item"><i class="fa-solid fa-plus-circle me-2"></i> Add Movie</a>
+        <a th:href="@{/admin/movies/search}" class="menu-item"><i class="fa-solid fa-list me-2"></i> View & Search</a>
+
+        <div class="section-title">Category Management</div>
+        <a th:href="@{/admin/categories/add}" class="menu-item"><i class="fa-solid fa-folder-plus me-2"></i> Add Category</a>
+        <a th:href="@{/admin/categories}" class="menu-item"><i class="fa-solid fa-tags me-2"></i> View Categories</a>
+
+        <div class="section-title">Showtimes Management</div>
+        <a th:href="@{/admin/showtimes/create}" class="menu-item"><i class="fa-solid fa-folder-plus me-2"></i> Add Showtime</a>
+        <a th:href="@{/admin/showtimes}" class="menu-item"><i class="fa-solid fa-tags me-2"></i> View Showtimes</a>
+
+        <div class="section-title">System</div>
+
+        <a th:href="@{/admin/profile}" class="menu-item"><i class="fa-solid fa-user-shield me-2"></i> My Profile</a>
+
+        <form th:action="@{/logout}" method="post" class="px-3 mt-3">
+            <button class="btn btn-danger btn-sm w-100 fw-bold" type="submit">
+                <i class="fa-solid fa-right-from-bracket me-2"></i> Logout
+            </button>
+        </form>
+
+    </div>
+</nav>
+<script>
+    function clearLocalData() {
+        localStorage.removeItem("jwtToken");
+        localStorage.removeItem("username");
+    }
+</script>
+</body>
+</html>
