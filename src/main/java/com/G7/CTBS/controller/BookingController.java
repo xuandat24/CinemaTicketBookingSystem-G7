@@ -179,11 +179,20 @@ public class BookingController {
 
         return null;
     }
-
+    
     @PostMapping("/api/booking/confirm")
     @ResponseBody
     public Map<String, Object> confirmBooking(@RequestBody BookingRequestDTO request) {
         try {
+            // Tự động lấy User đang đăng nhập từ Security Context (hoặc Token)
+            User user = resolveCurrentUser(null);
+            if (user == null) {
+                return Map.of("success", false, "message", "User not logged in or invalid token.");
+            }
+            
+            // Gán userId vào DTO trước khi đẩy xuống Service
+            request.setUserId(user.getUserId());
+            
             Long bId = bookingService.createBooking(request);
             return Map.of("success", true, "bookingId", bId);
         } catch (Exception e) {
@@ -191,20 +200,23 @@ public class BookingController {
             return Map.of("success", false, "message", e.getMessage());
         }
     }
-
+    
     @GetMapping("/booking/history")
     public String history(@RequestParam(value = "username", required = false) String username,
                           Model model) {
-
-        if (username == null) {
+        
+        // Tự động lấy user đang đăng nhập thay vì phụ thuộc vào param ?username=
+        User user = resolveCurrentUser(username);
+        
+        if (user == null) {
             return "redirect:/login";
         }
-
-        User user = userService.findByUsername(username);
-
+        
         model.addAttribute("user", user);
-
-        // TODO: lấy list booking theo user
+        
+        // Truyền luôn danh sách booking vào giao diện
+        model.addAttribute("bookings", bookingService.findByUser(user));
+        
         return "user/booking_history";
     }
 }

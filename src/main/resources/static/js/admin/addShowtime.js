@@ -28,24 +28,26 @@ async function loadMovies() {
 }
 
 async function loadRooms(){
+    const roomSelect = document.getElementById("roomId");
 
-   const response = await fetch("/api/rooms");
+    try {
+        const response = await fetch("/api/theater-rooms");
 
-   const rooms = await response.json();
+        if (!response.ok) {
+            throw new Error("Cannot load theater rooms");
+        }
 
-   const roomSelect = document.getElementById("roomId");
+        const rooms = await response.json();
 
-   rooms.forEach(room => {
-
-       const option = document.createElement("option");
-
-       option.value = room.id;
-
-       option.text = room.name;
-
-       roomSelect.appendChild(option);
-
-   });
+        rooms.forEach(room => {
+            const option = document.createElement("option");
+            option.value = room.roomId;
+            option.text = room.roomName;
+            roomSelect.appendChild(option);
+        });
+    } catch (error) {
+        console.error("Cannot load theater rooms:", error);
+    }
 
 }
 
@@ -54,6 +56,7 @@ document
     .addEventListener("submit", async function(e){
 
         e.preventDefault();
+        const message = document.getElementById("message");
 
         const data = {
 
@@ -88,25 +91,26 @@ document
             sessionStorage.setItem("successMessage", "Showtime created successfully");
 
             // redirect
-            window.location.href = "../../css/admin/showtimes";
+            window.location.href = "/admin/showtimes";
 
         }else{
-
-            const error = await response.json();
+            let errorMessage = "Cannot create showtime";
+            try {
+                const error = await response.json();
+                errorMessage = error.message || errorMessage;
+            } catch (ignored) {
+            }
 
             message.innerHTML =`
             <div class="alert alert-danger">
-                ${error.message}
+                ${errorMessage}
             </div>`;
 
         }
 
     });
 
-window.onload = function(){
-
+document.addEventListener("DOMContentLoaded", function(){
     loadMovies();
-
     loadRooms();
-
-};
+});

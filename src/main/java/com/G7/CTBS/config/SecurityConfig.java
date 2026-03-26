@@ -28,25 +28,31 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-
+                        
                         // 1. CÁC TÀI NGUYÊN TĨNH (Ai cũng được tải)
                         .requestMatchers("/css/**", "/js/**", "/img/**", "/fonts/**", "/banners/**", "/trailers/**").permitAll()
-
+                        
                         // 2. CÁC ĐƯỜNG DẪN PUBLIC BẮT BUỘC
                         .requestMatchers("/login", "/register", "/verify-otp", "/api/auth/**").permitAll()
                         .requestMatchers("/", "/index", "/index.html", "/about").permitAll()
-                        .requestMatchers("/movies", "/movies/**", "/detail").permitAll()
-                        .requestMatchers("/showtimes", "/api/showtimes/**", "/showtimes/**").permitAll() // Đã khôi phục để không lỗi Lịch chiếu
+                        
+                        // Đã mở rộng để bắt các lỗi gõ sai đuôi .html
+                        .requestMatchers("/movies", "/movies/**", "/detail", "/detail.html", "/detail/**").permitAll()
+                        
+                        .requestMatchers("/showtimes", "/api/showtimes/**", "/showtimes/**").permitAll()
                         .requestMatchers("/api/public/**").permitAll()
                         .requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
-
-                        // 3. KHÓA TRANG HTML ADMIN: Cho phép tải HTML để admin-auth.js kiểm tra Token (Không chặn ở đây)
+                        
+                        // 3. KHÓA TRANG HTML (Giao việc chặn cho auth.js)
                         .requestMatchers("/admin/**").permitAll()
-
-                        // 4. KHÓA CHẶT API ADMIN (BẢO VỆ DỮ LIỆU): Dùng hasAnyAuthority để tránh lỗi viết hoa/viết thường
+                        
+                        // BỔ SUNG QUAN TRỌNG: Cho phép tải giao diện User và mở khóa /error để tránh bẫy 404
+                        .requestMatchers("/profile", "/profile/**", "/booking/history", "/error").permitAll()
+                        
+                        // 4. KHÓA CHẶT API BẰNG ROLE (BẢO VỆ DỮ LIỆU)
                         .requestMatchers("/api/admin/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_Admin")
-
-                        // Các yêu cầu khác (như /profile) phải đăng nhập
+                        
+                        // Các yêu cầu API khác (như /api/users/my-profile, /api/booking/confirm) phải có Token
                         .anyRequest().authenticated()
                 )
 

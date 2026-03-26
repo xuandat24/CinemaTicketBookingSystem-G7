@@ -17,7 +17,8 @@ public class Movie {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long movieId;
     private String title;
-    private String bannerPath;
+    private String posterPath; //dọc
+    private String bannerPath;  //ngang
     private String trailerPath;
     @Column(columnDefinition = "TEXT")
     private String description;

@@ -45,11 +45,11 @@ public class DataSeeder implements CommandLineRunner {
 
         if (adminRole != null) {
             // TÀI KHOẢN ADMIN 1
-            if (!userRepository.existsByuserName("admin1")) {
+            if (!userRepository.existsByuserName("fujiokaharuhi")) {
                 User admin1 = User.builder()
-                        .userName("admin1")
+                        .userName("fujiokaharuhi")
                         .email("admin1@ctbs.com")
-                        .password(passwordEncoder.encode("Admin@123"))
+                        .password(passwordEncoder.encode("321yeuem:D@!"))
                         .firstName("System")
                         .lastName("Admin 1")
                         .phone("0999999991")
@@ -63,11 +63,11 @@ public class DataSeeder implements CommandLineRunner {
             }
 
             // TÀI KHOẢN ADMIN 2
-            if (!userRepository.existsByuserName("admin2")) {
+            if (!userRepository.existsByuserName("321yeuem")) {
                 User admin2 = User.builder()
-                        .userName("admin2")
+                        .userName("321yeuem")
                         .email("admin2@ctbs.com")
-                        .password(passwordEncoder.encode("Admin@123"))
+                        .password(passwordEncoder.encode("321yeuem:D@!"))
                         .firstName("System")
                         .lastName("Admin 2")
                         .phone("0999999992")

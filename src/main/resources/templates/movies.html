@@ -39,35 +39,34 @@
 
             <div class="col-md-3 col-sm-6 mb-3 mb-md-0">
                 <div class="input-group">
-                    <span class="input-group-text bg-white border-primary border-end-0"><i class="fa fa-search"></i></span>
-                    <input type="text" id="searchTitle" class="form-control border-primary filter-element" placeholder="Search title...">
+                    <span class="input-group-text bg-white border-end-0"><i class="fa fa-search text-muted"></i></span>
+                    <input type="text" id="searchTitle" class="form-control border-start-0 filter-element" placeholder="Search title...">
                 </div>
             </div>
             <div class="col-md-3 col-sm-6 mb-3 mb-md-0">
                 <div class="input-group">
-                    <span class="input-group-text bg-white border-primary border-end-0"><i class="fa fa-globe"></i></span>
-                    <input type="text" id="searchLanguage" class="form-control border-primary border-start-0 filter-element" placeholder="Language...">
+                    <span class="input-group-text bg-white border-end-0"><i class="fa fa-globe text-muted"></i></span>
+                    <input type="text" id="searchLanguage" class="form-control border-start-0 filter-element" placeholder="Language...">
                 </div>
             </div>
             <div class="col-md-2 col-sm-4 mb-2 mb-md-0">
-                <select id="sortBy" class="form-select border-primary filter-element">
-                    <option value="releaseDateDesc" selected>Newest Releases</option>
-                    <option value="releaseDateAsc">Oldest Releases</option>
-                    <option value="nameAsc">Title (A-Z)</option>
-                    <option value="nameDesc">Title (Z-A)</option>
+                <select id="filterCategory" class="form-select filter-element">
+                    <option value="">-- All Categories --</option>
                 </select>
             </div>
             <div class="col-md-2 col-sm-4 mb-2 mb-md-0">
-                <select id="filterStatus" class="form-select border-primary filter-element">
+                <select id="filterStatus" class="form-select filter-element">
                     <option value="">-- All Status --</option>
                     <option value="Now Playing">Now Playing</option>
                     <option value="Coming Soon">Coming Soon</option>
                 </select>
             </div>
             <div class="col-md-2 col-sm-4 mb-2 mb-md-0">
-                <select id="sortBy" class="form-select border-primary filter-element">
-                    <option value="newest">Newest First</option>
-                    <option value="oldest">Oldest First</option>
+                <select id="sortBy" class="form-select filter-element">
+                    <option value="releaseDateDesc" selected>Newest Releases</option>
+                    <option value="releaseDateAsc">Oldest Releases</option>
+                    <option value="nameAsc">Title (A-Z)</option>
+                    <option value="nameDesc">Title (Z-A)</option>
                 </select>
             </div>
         </div>

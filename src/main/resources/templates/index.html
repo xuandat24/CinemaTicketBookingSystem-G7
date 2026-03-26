@@ -16,6 +16,7 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
 <body class="home-light-theme">
 
@@ -25,46 +26,8 @@
 
     <section id="center_h" class="center_home overflow-hidden">
         <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-indicators">
-                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
-            </div>
-
-            <div class="carousel-inner">
-                <div class="carousel-item active">
-                    <a href="#" class="banner-link-wrapper">
-                        <img th:src="@{/img/1.jpg}" onerror="this.src='https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=1925'" class="d-block w-100" alt="Banner 1" style="height: 85vh; object-fit: cover; object-position: top;">
-                        <div class="carousel-caption">
-                            <h6 class="text-uppercase text-white-50 fw-bold tracking-wider mb-2">
-                                <i class="fa fa-star text-warning me-1"></i> Blockbuster Release
-                            </h6>
-                            <h1>The Avengers</h1>
-                            <p class="text-truncate" style="max-width: 600px;">Experience the epic conclusion to the Infinity Saga. Now playing in theaters.</p>
-
-                            <div class="mt-4 mb-2">
-                                <div class="hero-ticket-btn"><i class="fa fa-ticket fs-5 me-2"></i> GET TICKETS</div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-
-                <div class="carousel-item">
-                    <a href="#" class="banner-link-wrapper">
-                        <img th:src="@{/img/2.jpg}" onerror="this.src='https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=1925'" class="d-block w-100" alt="Banner 2" style="height: 85vh; object-fit: cover; object-position: top;">
-                        <div class="carousel-caption">
-                            <h6 class="text-uppercase text-white-50 fw-bold tracking-wider mb-2">
-                                <i class="fa fa-star text-warning me-1"></i> Highly Anticipated
-                            </h6>
-                            <h1>Joker</h1>
-                            <p class="text-truncate" style="max-width: 600px;">Put on a happy face. Witness the origin of the most iconic villain.</p>
-
-                            <div class="mt-4 mb-2">
-                                <div class="hero-ticket-btn"><i class="fa fa-ticket fs-5 me-2"></i> GET TICKETS</div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-            </div>
+            <div class="carousel-indicators" id="bannerIndicators"></div>
+            <div class="carousel-inner" id="bannerInner"></div>
 
             <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
                 <span class="carousel-control-prev-icon"></span>
@@ -85,152 +48,10 @@
                 </div>
             </div>
 
-            <div class="movie-slider-wrapper">
+            <div class="movie-slider-wrapper" id="nowShowingWrapper">
                 <button class="slider-nav-btn left" onclick="scrollSlider(this, 'left')"><i class="fa fa-chevron-left"></i></button>
                 <button class="slider-nav-btn right" onclick="scrollSlider(this, 'right')"><i class="fa fa-chevron-right"></i></button>
-
-                <div class="movie-slider">
-
-                    <div class="movie-slider-item">
-                        <div class="movie-card mb-0">
-                            <div class="movie-poster-wrapper">
-                                <a href="#" class="mini-ticket-btn"><i class="fa fa-ticket"></i> BOOK</a>
-                                <img th:src="@{/img/12.jpg}" onerror="this.src='https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=1925'" alt="Movie Poster">
-                                <div class="movie-overlay">
-                                    <button class="play-btn-circle" data-bs-toggle="modal" data-bs-target="#templateVideoModal">
-                                        <i class="fa fa-play"></i>
-                                    </button>
-                                    <a href="#" class="btn-book-now mt-3">Book Ticket</a>
-                                </div>
-                            </div>
-                            <div class="ticket-divider"></div>
-                            <div class="movie-info p-3 text-center">
-                                <span class="movie-badge mb-2">HD / 4K</span>
-                                <h5 class="text-truncate">The Batman</h5>
-                                <div class="d-flex justify-content-between align-items-center mt-2">
-                                    <span class="movie-category"><i class="fa fa-film text-orange me-1"></i> Action</span>
-                                    <span class="movie-rating"><i class="fa fa-star text-warning me-1"></i> 4.8</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="movie-slider-item">
-                        <div class="movie-card mb-0">
-                            <div class="movie-poster-wrapper">
-                                <a href="#" class="mini-ticket-btn"><i class="fa fa-ticket"></i> BOOK</a>
-                                <img th:src="@{/img/13.jpg}" onerror="this.src='https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=1925'" alt="Movie Poster">
-                                <div class="movie-overlay">
-                                    <button class="play-btn-circle" data-bs-toggle="modal" data-bs-target="#templateVideoModal">
-                                        <i class="fa fa-play"></i>
-                                    </button>
-                                    <a href="#" class="btn-book-now mt-3">Book Ticket</a>
-                                </div>
-                            </div>
-                            <div class="ticket-divider"></div>
-                            <div class="movie-info p-3 text-center">
-                                <span class="movie-badge mb-2">IMAX</span>
-                                <h5 class="text-truncate">Dune: Part Two</h5>
-                                <div class="d-flex justify-content-between align-items-center mt-2">
-                                    <span class="movie-category"><i class="fa fa-film text-orange me-1"></i> Sci-Fi</span>
-                                    <span class="movie-rating"><i class="fa fa-star text-warning me-1"></i> 4.9</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="movie-slider-item">
-                        <div class="movie-card mb-0">
-                            <div class="movie-poster-wrapper">
-                                <a href="#" class="mini-ticket-btn"><i class="fa fa-ticket"></i> BOOK</a>
-                                <img th:src="@{/img/14.jpg}" onerror="this.src='https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=1925'" alt="Movie Poster">
-                                <div class="movie-overlay">
-                                    <button class="play-btn-circle" data-bs-toggle="modal" data-bs-target="#templateVideoModal">
-                                        <i class="fa fa-play"></i>
-                                    </button>
-                                    <a href="#" class="btn-book-now mt-3">Book Ticket</a>
-                                </div>
-                            </div>
-                            <div class="ticket-divider"></div>
-                            <div class="movie-info p-3 text-center">
-                                <span class="movie-badge mb-2">HD / 4K</span>
-                                <h5 class="text-truncate">Spider-Man</h5>
-                                <div class="d-flex justify-content-between align-items-center mt-2">
-                                    <span class="movie-category"><i class="fa fa-film text-orange me-1"></i> Action</span>
-                                    <span class="movie-rating"><i class="fa fa-star text-warning me-1"></i> 4.7</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="movie-slider-item">
-                        <div class="movie-card mb-0">
-                            <div class="movie-poster-wrapper">
-                                <a href="#" class="mini-ticket-btn"><i class="fa fa-ticket"></i> BOOK</a>
-                                <img th:src="@{/img/15.jpg}" onerror="this.src='https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=1925'" alt="Movie Poster">
-                                <div class="movie-overlay">
-                                    <button class="play-btn-circle" data-bs-toggle="modal" data-bs-target="#templateVideoModal">
-                                        <i class="fa fa-play"></i>
-                                    </button>
-                                    <a href="#" class="btn-book-now mt-3">Book Ticket</a>
-                                </div>
-                            </div>
-                            <div class="ticket-divider"></div>
-                            <div class="movie-info p-3 text-center">
-                                <span class="movie-badge mb-2">3D</span>
-                                <h5 class="text-truncate">Avatar: The Way of Water</h5>
-                                <div class="d-flex justify-content-between align-items-center mt-2">
-                                    <span class="movie-category"><i class="fa fa-film text-orange me-1"></i> Adventure</span>
-                                    <span class="movie-rating"><i class="fa fa-star text-warning me-1"></i> 4.9</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="movie-slider-item">
-                        <div class="movie-card mb-0">
-                            <div class="movie-poster-wrapper">
-                                <a href="#" class="mini-ticket-btn"><i class="fa fa-ticket"></i> BOOK</a>
-                                <img src="https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?q=80&w=1000" alt="Movie Poster">
-                                <div class="movie-overlay">
-                                    <button class="play-btn-circle" data-bs-toggle="modal" data-bs-target="#templateVideoModal">
-                                        <i class="fa fa-play"></i>
-                                    </button>
-                                    <a href="#" class="btn-book-now mt-3">Book Ticket</a>
-                                </div>
-                            </div>
-                            <div class="ticket-divider"></div>
-                            <div class="movie-info p-3 text-center">
-                                <span class="movie-badge mb-2">2D</span>
-                                <h5 class="text-truncate">John Wick: Chapter 4</h5>
-                                <div class="d-flex justify-content-between align-items-center mt-2">
-                                    <span class="movie-category"><i class="fa fa-film text-orange me-1"></i> Action</span>
-                                    <span class="movie-rating"><i class="fa fa-star text-warning me-1"></i> 4.8</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="promo-banner" class="py-5">
-        <div class="container">
-            <div class="promo-ticket-wrapper">
-                <div class="promo-ticket-content row align-items-center m-0">
-                    <div class="col-md-8 promo-ticket-left p-4 p-md-5">
-                        <span class="badge bg-dark mb-3 px-3 py-2 fs-6">S I G N A T U R E</span>
-                        <h2 class="fw-bold text-white mb-3" style="font-size: 2.2rem; line-height: 1.3;">PREMIUM CINEMATIC EXPERIENCE</h2>
-                        <p class="text-white-50 fs-5 mb-0">Immersive surround sound and giant screens. Enjoy blockbuster hits with the sharpest image quality.</p>
-                    </div>
-                    <div class="col-md-4 promo-ticket-right p-4 p-md-5 d-flex flex-column align-items-center justify-content-center text-center">
-                        <h3 class="fw-bold text-white mb-3" style="font-size: 3.5rem;"><i class="fa fa-qrcode"></i></h3>
-                        <p class="text-white mb-4 fw-bold" style="letter-spacing: 2px;">EXCLUSIVE ACCESS</p>
-                        <a href="#now-showing" class="btn-ticket-action">VIEW SHOWTIMES <i class="fa fa-angle-right ms-2"></i></a>
-                    </div>
-                </div>
+                <div class="movie-slider" id="nowShowingSlider"></div>
             </div>
         </div>
     </section>
@@ -245,82 +66,13 @@
                 </div>
             </div>
 
-            <div class="movie-slider-wrapper">
+            <div class="movie-slider-wrapper" id="comingSoonWrapper">
                 <button class="slider-nav-btn left" onclick="scrollSlider(this, 'left')"><i class="fa fa-chevron-left"></i></button>
                 <button class="slider-nav-btn right" onclick="scrollSlider(this, 'right')"><i class="fa fa-chevron-right"></i></button>
-
-                <div class="movie-slider">
-
-                    <div class="coming-soon-slider-item">
-                        <div class="coming-soon-card mb-0">
-                            <img th:src="@{/img/16.jpg}" onerror="this.src='https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=1000'" alt="Coming Soon">
-                            <div class="coming-soon-overlay"></div>
-                            <div class="coming-soon-info">
-                                <div class="w-100">
-                                    <span class="badge bg-warning text-dark mb-2 fw-bold px-3 py-1">25 Thg 12, 2024</span>
-                                    <h3 class="text-white fw-bold mb-1">Deadpool & Wolverine</h3>
-                                    <p class="text-white-50 mb-0"><i class="fa fa-film me-2"></i> Action, Comedy</p>
-                                </div>
-                                <button class="btn-ticket-outline mt-3" data-bs-toggle="modal" data-bs-target="#templateVideoModal">
-                                    WATCH TRAILER <i class="fa fa-play-circle ms-1"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="coming-soon-slider-item">
-                        <div class="coming-soon-card mb-0">
-                            <img th:src="@{/img/17.jpg}" onerror="this.src='https://images.unsplash.com/photo-1478720568477-152d9b164e26?q=80&w=1000'" alt="Coming Soon">
-                            <div class="coming-soon-overlay"></div>
-                            <div class="coming-soon-info">
-                                <div class="w-100">
-                                    <span class="badge bg-warning text-dark mb-2 fw-bold px-3 py-1">01 Thg 01, 2025</span>
-                                    <h3 class="text-white fw-bold mb-1">Captain America: Brave New World</h3>
-                                    <p class="text-white-50 mb-0"><i class="fa fa-film me-2"></i> Action, Sci-Fi</p>
-                                </div>
-                                <button class="btn-ticket-outline mt-3" data-bs-toggle="modal" data-bs-target="#templateVideoModal">
-                                    WATCH TRAILER <i class="fa fa-play-circle ms-1"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="coming-soon-slider-item">
-                        <div class="coming-soon-card mb-0">
-                            <img src="https://images.unsplash.com/photo-1596727147705-611529ea0199?q=80&w=1000" alt="Coming Soon">
-                            <div class="coming-soon-overlay"></div>
-                            <div class="coming-soon-info">
-                                <div class="w-100">
-                                    <span class="badge bg-warning text-dark mb-2 fw-bold px-3 py-1">Dự kiến: T2/2025</span>
-                                    <h3 class="text-white fw-bold mb-1">Fantastic Four</h3>
-                                    <p class="text-white-50 mb-0"><i class="fa fa-film me-2"></i> Sci-Fi, Adventure</p>
-                                </div>
-                                <button class="btn-ticket-outline mt-3" data-bs-toggle="modal" data-bs-target="#templateVideoModal">
-                                    WATCH TRAILER <i class="fa fa-play-circle ms-1"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
+                <div class="movie-slider" id="comingSoonSlider"></div>
             </div>
-
         </div>
     </section>
-
-</div> <div class="modal fade" id="templateVideoModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content bg-dark border-0">
-            <div class="modal-header border-0 pb-0">
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body p-0">
-                <div class="ratio ratio-16x9">
-                    <iframe id="youtubeVideo" src="" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope" allowfullscreen></iframe>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
 
 <div th:replace="~{layout/footer :: footer}"></div>
@@ -328,35 +80,7 @@
 <script th:src="@{/js/common.js}"></script>
 <script th:src="@{/js/auth.js}"></script>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        // 1. Xử lý Video Trailer
-        var videoModal = document.getElementById('templateVideoModal');
-        var iframe = document.getElementById('youtubeVideo');
-
-        if (videoModal && iframe) {
-            videoModal.addEventListener('hide.bs.modal', function () {
-                iframe.src = '';
-            });
-            videoModal.addEventListener('show.bs.modal', function () {
-                iframe.src = 'https://www.youtube.com/embed/g2J6v701XgE?autoplay=1';
-            });
-        }
-    });
-
-    // 2. Hàm Xử Lý Bấm Nút Trượt Trái/Phải
-    function scrollSlider(btn, direction) {
-        const wrapper = btn.closest('.movie-slider-wrapper');
-        const slider = wrapper.querySelector('.movie-slider');
-        const scrollAmount = slider.clientWidth * 0.8;
-
-        if (direction === 'left') {
-            slider.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-        } else {
-            slider.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-        }
-    }
-</script>
+<script th:src="@{/js/home.js?v=2}"></script>
 
 </body>
 </html>
