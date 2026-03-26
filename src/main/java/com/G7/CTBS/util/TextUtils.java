@@ -9,13 +9,13 @@ public class TextUtils {
         if (input == null || input.trim().isEmpty()) {
             return input;
         }
-        
+
         // xóa khoảng trắng thừa ở 2 đầu và giữa các từ
         String normalizedInput = input.trim().replaceAll("\\s+", " ");
-        
+
         StringBuilder result = new StringBuilder();
         boolean capitalizeNext = true;
-        
+
         // duyệt qua từng ký tự để chuẩn hóa
         for (char c : normalizedInput.toCharArray()) {
             // nếu gặp khoảng trắng hoặc dấu gạch ngang, báo hiệu ký tự tiếp theo cần viết hoa
@@ -31,7 +31,7 @@ public class TextUtils {
                 result.append(Character.toLowerCase(c));
             }
         }
-        
+
         return result.toString();
     }
 }

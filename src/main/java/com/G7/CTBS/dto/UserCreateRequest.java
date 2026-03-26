@@ -42,9 +42,12 @@ public class UserCreateRequest {
     private String gender;
     private LocalDate dob;
 
+    String provider;
+
     @NotBlank(message = "Số điện thoại không được để trống")
-    @Pattern(regexp = "^\\d{10}$", message = "Số điện thoại phải có đúng 10 chữ số")
-    String phone; // THÊM TRƯỜNG NÀY ĐỂ HẾT LỖI 'getPhone' TRONG USER SERVICE
+    @Pattern(regexp = "^(03|09)\\d{8}$", message = "Số điện thoại phải có 10 chữ số và bắt đầu bằng 03 hoặc 09")
+    String phone;
+
 
     Long roleId; // Đổi từ Integer sang Long để khớp với Role Entity
 }

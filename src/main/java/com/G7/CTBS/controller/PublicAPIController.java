@@ -15,19 +15,19 @@ import java.util.List;
 public class PublicAPIController {
     private final MovieService movieService;
     private final CategoryService categoryService;
-    
+
     @Autowired
     public PublicAPIController(MovieService movieService, CategoryService categoryService) {
         this.movieService = movieService;
         this.categoryService = categoryService;
     }
-    
+
     // 1. Lấy danh sách tất cả danh mục phim
     @GetMapping("/categories")
     public ResponseEntity<List<CategoryDTO>> getAllCategories() {
         return ResponseEntity.ok(categoryService.findAll());
     }
-    
+
     // 2. Lấy danh sách phim (ĐÃ TỐI ƯU HÓA)
     @GetMapping("/movies")
     public ResponseEntity<List<MovieDTO>> getAllMovies(
@@ -35,10 +35,10 @@ public class PublicAPIController {
             @RequestParam(required = false) Long categoryId,
             @RequestParam(required = false) String language,
             @RequestParam(required = false) String status,
-            @RequestParam(defaultValue = "newest") String sortBy) {
+            @RequestParam(defaultValue = "releaseDateDesc") String sortBy) {
         return ResponseEntity.ok(movieService.getPublicMovies(title, categoryId, language, status, sortBy));
     }
-    
+
     @GetMapping("/movies/{id}")
     public ResponseEntity<MovieDTO> getMovieById(@PathVariable Long id) {
         return ResponseEntity.ok(movieService.findById(id));

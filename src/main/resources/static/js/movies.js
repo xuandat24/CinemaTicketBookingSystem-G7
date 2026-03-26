@@ -1,45 +1,43 @@
 let allMovies = [];
 let filteredMovies = [];
 let currentPage = 1;
-const itemsPerPage = 20; // Số phim trên 1 trang
-
-// Khai báo biến cho Live Search
-let typingTimer;
-const doneTypingInterval = 500;
+const itemsPerPage = 20;
 
 document.addEventListener('DOMContentLoaded', async () => {
     await loadCategories();
-    await loadMovies();
 
+    // CHỈ PHỤC HỒI 1 LẦN KHI LOAD TRANG
+    restoreSearchState();
+
+    // Tự động lọc khi gõ chữ (Title, Language)
+    let typingTimer;
     const textInputs = ['searchTitle', 'searchLanguage'];
-
-        textInputs.forEach(id => {
-            const inputEle = document.getElementById(id);
-            if (inputEle) {
-                inputEle.addEventListener('input', function () {
-                    clearTimeout(typingTimer);
-                    typingTimer = setTimeout(() => {
-                        applyFilters();
-                    }, doneTypingInterval);
-                });
-
-                inputEle.addEventListener('keypress', function (e) {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                    }
-                });
-            }
-        });
-
-    const filterElements = ['filterCategory', 'sortBy', 'filterStatus'];
-    filterElements.forEach(id => {
+    textInputs.forEach(id => {
         const element = document.getElementById(id);
         if (element) {
-            element.addEventListener('change', function() {
-                applyFilters();
+            element.addEventListener('input', () => {
+                clearTimeout(typingTimer);
+                typingTimer = setTimeout(applyFilters, 500); // Đợi 0.5s sau khi ngừng gõ mới lọc
+            });
+            element.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') e.preventDefault();
             });
         }
     });
+
+    // Tự động lọc khi đổi Dropdown (Category, Status, Sort)
+    const dropdownInputs = ['filterCategory', 'filterStatus', 'sortBy'];
+    dropdownInputs.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.addEventListener('change', applyFilters);
+        }
+    });
+
+    await loadMovies();
+
+    // CHỈ CUỘN TRANG 1 LẦN KHI LOAD
+    restoreScrollPosition();
 });
 
 async function loadCategories() {
@@ -47,38 +45,49 @@ async function loadCategories() {
         const res = await fetch('/api/public/categories');
         const categories = await res.json();
         const select = document.getElementById('filterCategory');
-        categories.forEach(cat => {
-            select.innerHTML += `<option value="${cat.categoryId}">${cat.name}</option>`;
-        });
+        if (select) {
+            categories.forEach(cat => {
+                select.innerHTML += `<option value="${cat.categoryId}">${cat.name}</option>`;
+            });
+        }
     } catch (e) { console.error("Error loading categories", e); }
 }
 
 async function loadMovies() {
     try {
-        restoreSearchState();
-        const titleInput = document.getElementById('searchTitle');
-        const title = titleInput ? titleInput.value.trim() : '';
-        const categoryId = document.getElementById('filterCategory').value;
-        const status = document.getElementById('filterStatus').value;
-        const language = document.getElementById('searchLanguage').value.trim();
-        const sortBy = document.getElementById('sortBy').value;
+        const titleEle = document.getElementById('searchTitle');
+        const catEle = document.getElementById('filterCategory');
+        const langEle = document.getElementById('searchLanguage');
+        const statusEle = document.getElementById('filterStatus');
+        const sortEle = document.getElementById('sortBy');
 
+        const title = titleEle ? titleEle.value.trim() : '';
+        const categoryId = catEle ? catEle.value : '';
+        const language = langEle ? langEle.value.trim() : '';
+        const status = statusEle ? statusEle.value : '';
+        const sortBy = sortEle ? sortEle.value : 'releaseDateDesc';
+
+        // NỐI ĐẦY ĐỦ CÁC THAM SỐ VÀO API
         let apiUrl = `/api/public/movies?sortBy=${sortBy}`;
-        if (title) apiUrl += `&title=${encodeURIComponent(title)}`;
-        if (categoryId) apiUrl += `&categoryId=${categoryId}`;
-        if (status) apiUrl += `&status=${encodeURIComponent(status)}`;
-        if (language) apiUrl += `&language=${encodeURIComponent(language)}`;
+        if(title) apiUrl += `&title=${encodeURIComponent(title)}`;
+        if(categoryId) apiUrl += `&categoryId=${categoryId}`;
+        if(language) apiUrl += `&language=${encodeURIComponent(language)}`;
+        if(status) apiUrl += `&status=${encodeURIComponent(status)}`;
+
+        // Hiển thị loading mượt mà
+        document.getElementById('movieListContainer').innerHTML = `
+            <div class="col-12 text-center py-5">
+                <div class="spinner-border text-primary" role="status"></div>
+                <p class="mt-2 text-muted">Loading movies...</p>
+            </div>`;
 
         const res = await fetch(apiUrl);
         if (!res.ok) throw new Error("Failed to fetch movies");
 
-        const data = await res.json();
-
-        filteredMovies = data;
+        filteredMovies = await res.json();
 
         renderMovies();
         renderPagination();
-        restoreScrollPosition();
 
     } catch (e) {
         console.error("Error loading movies", e);
@@ -90,7 +99,6 @@ function applyFilters() {
     currentPage = 1;
     loadMovies();
 }
-
 function renderMovies() {
     const container = document.getElementById('movieListContainer');
     container.innerHTML = '';
@@ -120,14 +128,13 @@ function renderMovies() {
 
                 <h6 class="text-white fw-bold text-truncate mb-1" style="font-size: 1.1rem;" title="${movie.title}">${movie.title}</h6>
 
-                <small class="text-light d-block text-truncate mb-1" style="font-size: 0.85rem;" title="${catNames}">${catNames}</small>
+                <small class="text-light d-block text-truncate mb-1" style="font-size: 0.85rem;" title="${catNames} | ${movie.language}">
+                    ${catNames} <span class="mx-1 text-white-50">|</span> <span class="text-warning fw-bold">${movie.language || 'N/A'}</span>
+                </small>
 
                 <small class="fw-bold" style="color: #eb7a18; font-size: 0.85rem;">
                     <i class="fa fa-clock-o me-1"></i> ${movie.duration} Mins
                 </small>
-                <div class="mt-2 text-muted" style="font-size: 0.85rem;">
-                    <i class="fa fa-solid fa-globe"></i> ${movie.language || 'Unknown'}
-                </div>
              </div>
            </div>
         </div>
@@ -140,21 +147,29 @@ function renderPagination() {
     container.innerHTML = '';
     const totalPages = Math.ceil(filteredMovies.length / itemsPerPage);
 
-    if (totalPages <= 1) return;
+    if (totalPages <= 1) return; // Nếu chỉ có 1 trang thì ẩn luôn thanh phân trang
 
-    // Nút Prev
+    // Nút Previous (Quay lại)
     if (currentPage > 1) {
-        container.innerHTML += `<li style="cursor:pointer;" onclick="changePage(${currentPage - 1})"><a><i class="fa fa-chevron-left"></i></a></li>`;
+        container.innerHTML += `<li class="page-item"><a class="page-link text-primary fw-bold" href="#" onclick="changePage(${currentPage - 1}); return false;">&laquo;</a></li>`;
+    } else {
+        container.innerHTML += `<li class="page-item disabled"><a class="page-link text-muted">&laquo;</a></li>`;
     }
 
+    // Các số trang (1, 2, 3...)
     for (let i = 1; i <= totalPages; i++) {
-        const activeClass = i === currentPage ? 'class="act"' : '';
-        container.innerHTML += `<li style="cursor:pointer;" onclick="changePage(${i})"><a ${activeClass}>${i}</a></li>`;
+        if (i === currentPage) {
+            container.innerHTML += `<li class="page-item active"><a class="page-link fw-bold">${i}</a></li>`;
+        } else {
+            container.innerHTML += `<li class="page-item"><a class="page-link text-dark" href="#" onclick="changePage(${i}); return false;">${i}</a></li>`;
+        }
     }
 
-    // Nút Next
+    // Nút Next (Tiếp theo)
     if (currentPage < totalPages) {
-        container.innerHTML += `<li style="cursor:pointer;" onclick="changePage(${currentPage + 1})"><a><i class="fa fa-chevron-right"></i></a></li>`;
+        container.innerHTML += `<li class="page-item"><a class="page-link text-primary fw-bold" href="#" onclick="changePage(${currentPage + 1}); return false;">&raquo;</a></li>`;
+    } else {
+        container.innerHTML += `<li class="page-item disabled"><a class="page-link text-muted">&raquo;</a></li>`;
     }
 }
 
@@ -169,13 +184,12 @@ function goToDetail(movieId) {
     sessionStorage.setItem('movieSearchState', JSON.stringify({
         title: document.getElementById('searchTitle').value,
         categoryId: document.getElementById('filterCategory').value,
-        status: document.getElementById('filterStatus').value,
-        language: document.getElementById('searchLanguage').value,
         sortBy: document.getElementById('sortBy').value,
         page: currentPage,
         scrollY: window.scrollY
     }));
 
+    // 2. Chuyển hướng
     window.location.href = `/detail?id=${movieId}`;
 }
 
@@ -185,11 +199,21 @@ function restoreSearchState() {
         const state = JSON.parse(stateStr);
         document.getElementById('searchTitle').value = state.title || '';
         document.getElementById('filterCategory').value = state.categoryId || '';
-        const statusInput = document.getElementById('filterStatus');
-        if (statusInput) statusInput.value = state.status || '';
+
         const langInput = document.getElementById('searchLanguage');
         if (langInput) langInput.value = state.language || '';
-        document.getElementById('sortBy').value = state.sortBy || 'newest';
+
+        const statusInput = document.getElementById('filterStatus');
+        if (statusInput) statusInput.value = state.status || '';
+
+        if (state.sortBy) {
+            if (state.sortBy === 'newest') document.getElementById('sortBy').value = 'releaseDateDesc';
+            else if (state.sortBy === 'oldest') document.getElementById('sortBy').value = 'releaseDateAsc';
+            else document.getElementById('sortBy').value = state.sortBy;
+        } else {
+            document.getElementById('sortBy').value = 'releaseDateDesc';
+        }
+
         currentPage = state.page || 1;
     }
 }

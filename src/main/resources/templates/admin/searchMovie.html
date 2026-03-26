@@ -26,19 +26,19 @@
     <div class="card shadow-sm mb-4 border-0">
         <div class="card-body bg-white rounded">
             <form id="filterForm" class="row g-3 align-items-end">
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <label class="form-label fw-bold text-secondary small mb-1">Search Title</label>
                     <input type="text" class="form-control form-control-sm" id="searchTitle" placeholder="Title...">
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
+                    <label class="form-label fw-bold text-secondary small mb-1">Language</label>
+                    <input type="text" class="form-control form-control-sm" id="searchLanguage" placeholder="e.g. English, Korean">
+                </div>
+                <div class="col-md-4">
                     <label class="form-label fw-bold text-secondary small mb-1">Category</label>
                     <select class="form-select form-select-sm" id="filterCategory">
                         <option value="">-- All Categories --</option>
                     </select>
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label fw-bold text-secondary small mb-1">Language</label>
-                    <input type="text" class="form-control form-control-sm" id="searchLanguage" placeholder="e.g. English, Korean">
                 </div>
                 <div class="col-md-3">
                     <label class="form-label fw-bold text-secondary small mb-1">Status</label>
@@ -62,14 +62,15 @@
                 <div class="col-md-3">
                     <label class="form-label fw-bold text-secondary small mb-1">Sort</label>
                     <select class="form-select form-select-sm" id="sortBy">
-                        <option value="id">Newest First</option>
-                        <option value="name">A-Z (Title)</option>
+                        <option value="idDesc" selected>Newest Added</option>
+                        <option value="idAsc">Oldest Added</option>
+                        <option value="nameAsc">Title (A-Z)</option>
+                        <option value="nameDesc">Title (Z-A)</option>
+                        <option value="releaseDateDesc">Newest Release</option>
+                        <option value="releaseDateAsc">Oldest Release</option>
+                        <option value="durationDesc">Longest Duration</option>
+                        <option value="durationAsc">Shortest Duration</option>
                     </select>
-                </div>
-                <div class="col-md-3">
-                    <button type="button" class="btn btn-primary btn-sm w-100 fw-bold" onclick="applyFilter()" title="Apply Filter">
-                        <i class="fa-solid fa-filter me-1"></i> Apply
-                    </button>
                 </div>
             </form>
         </div>
@@ -94,6 +95,13 @@
                 <tbody>
                 </tbody>
             </table>
+        </div>
+        <div class="card-footer bg-light py-3 border-top d-flex justify-content-between align-items-center">
+            <small class="text-muted fw-semibold" id="tableInfo">Showing 0 to 0 of 0 movies</small>
+            <nav aria-label="Page navigation">
+                <ul class="pagination pagination-sm mb-0 shadow-sm" id="paginationContainer">
+                </ul>
+            </nav>
         </div>
     </div>
 

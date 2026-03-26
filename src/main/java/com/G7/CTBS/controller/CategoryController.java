@@ -12,13 +12,13 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/admin/categories")
 public class CategoryController {
-    
+
     private final CategoryService categoryService;
-    
+
     public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
     }
-    
+
     @GetMapping
     public ResponseEntity<List<CategoryDTO>> getCategories(@RequestParam(required = false) String name) {
         if (name != null && !name.trim().isEmpty()) {
@@ -26,25 +26,25 @@ public class CategoryController {
         }
         return ResponseEntity.ok(categoryService.findAll());
     }
-    
+
     @GetMapping("/{id}")
     public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable Long id) {
         return ResponseEntity.ok(categoryService.findById(id));
     }
-    
+
     @PostMapping
     public ResponseEntity<Map<String, String>> createCategory(@Valid @RequestBody CategoryDTO categoryDTO) {
         categoryService.createCategory(categoryDTO);
         return ResponseEntity.ok(Map.of("message", "Category added successfully!"));
     }
-    
+
     @PutMapping("/{id}")
     public ResponseEntity<Map<String, String>> updateCategory(@PathVariable Long id, @Valid @RequestBody CategoryDTO categoryDTO) {
         categoryDTO.setCategoryId(id);
         categoryService.updateCategory(categoryDTO);
         return ResponseEntity.ok(Map.of("message", "Category updated successfully!"));
     }
-    
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Map<String, String>> deleteCategory(@PathVariable Long id) {
         categoryService.deleteCategoryById(id);

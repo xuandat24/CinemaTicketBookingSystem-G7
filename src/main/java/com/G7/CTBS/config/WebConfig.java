@@ -18,37 +18,37 @@ import java.nio.file.Paths;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
-    
+
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         // Get the absolute path to the physical upload directories
         Path bannerUploadDir = Paths.get("./uploads/banners");
         String bannerUploadPath = bannerUploadDir.toFile().getAbsolutePath();
-        
+
         Path trailerUploadDir = Paths.get("./uploads/trailers");
         String trailerUploadPath = trailerUploadDir.toFile().getAbsolutePath();
-        
+
         // Grant permission for /banners/** to access the physical uploads/banners/ directory
         registry.addResourceHandler("/banners/**")
                 .addResourceLocations("file:/" + bannerUploadPath + "/");
-        
+
         // Grant permission for /trailers/** to access the physical uploads/trailers/ directory
         registry.addResourceHandler("/trailers/**")
                 .addResourceLocations("file:/" + trailerUploadPath + "/");
     }
-    
+
     @Bean
     public WebServerFactoryCustomizer<TomcatServletWebServerFactory> tomcatCustomizer() {
         return factory -> {
             factory.addConnectorCustomizers((Connector connector) -> {
-                
+
                 // 1. Mở khóa dung lượng nuốt dữ liệu và kích thước POST
                 connector.setMaxPostSize(500 * 1024 * 1024); // 500 MB
                 connector.setProperty("maxSwallowSize", "-1");
-                
+
                 // 2. Mở khóa số lượng tham số (Parameters)
                 connector.setMaxParameterCount(10000);
-                
+
                 // 3. Mở khóa số lượng File/Part
                 // Sử dụng Reflection để vượt qua bài kiểm tra lỗi Cú pháp (Cannot find symbol) của IDE
                 try {

@@ -19,90 +19,103 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    
+
     private final AuthenticationService authenticationService;
     private final UserRepository userRepository;
-    
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        
+
         String uri = request.getRequestURI();
-        // Bỏ qua lọc với các file tĩnh để màn hình Console không bị rác
-        if (uri.startsWith("/css") || uri.startsWith("/js") || uri.startsWith("/img") || uri.startsWith("/fonts")) {
+
+        // 1. TỐI ƯU HIỆU SUẤT: Bỏ qua Filter với các file tĩnh
+        if (uri.startsWith("/css") || uri.startsWith("/js") || uri.startsWith("/img")
+                || uri.startsWith("/fonts") || uri.startsWith("/banners") || uri.startsWith("/trailers")) {
             filterChain.doFilter(request, response);
             return;
         }
-        
-        System.out.println("=========================================");
-        System.out.println(">> [JWT FILTER] Đang kiểm tra URL: " + uri);
-        
+
         String token = null;
         String authHeader = request.getHeader("Authorization");
-        
+
+        // 2. LẤY TOKEN
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             token = authHeader.substring(7);
-            System.out.println(">> [JWT FILTER] Đã tìm thấy Token trong Header (API Fetch)!");
         } else if (request.getCookies() != null) {
             for (Cookie cookie : request.getCookies()) {
                 if ("jwtToken".equals(cookie.getName())) {
                     token = cookie.getValue();
-                    System.out.println(">> [JWT FILTER] Đã tìm thấy Token trong Cookie (Chuyển trang HTML)!");
                     break;
                 }
             }
         }
-        
+
+        // 3. Nếu không có Token -> Khách Vãng Lai (Guest)
         if (token == null) {
-            System.out.println(">> [JWT FILTER] KHÔNG CÓ TOKEN. Chuyển tiếp với quyền Khách (Guest).");
-            SecurityContextHolder.clearContext();
             filterChain.doFilter(request, response);
             return;
         }
-        
+
         try {
+            // 4. Giải mã Token
             String username = authenticationService.extractUsername(token);
-            System.out.println(">> [JWT FILTER] Giải mã Token thành công. Username: " + username);
-            
-            // BẮT BỆNH SỐ 2: Nếu có Session rác từ trước, xóa ngay lập tức để ép nhận Token mới
-            if (SecurityContextHolder.getContext().getAuthentication() != null) {
-                System.out.println(">> [JWT FILTER] CẢNH BÁO: Đang có Session cũ của " + SecurityContextHolder.getContext().getAuthentication().getName() + ". Đã xóa!");
-                SecurityContextHolder.clearContext();
-            }
-            
+
             if (username != null) {
-                // Gọi hàm tìm user bằng username hoặc email từ database
-                User user = userRepository.findByUsernameOrEmailWithRole(username).orElse(null);
-                
-                if (user != null && user.getRole() != null) {
-                    String roleName = user.getRole().getRoleName(); // Nếu DB của bạn là name thì sửa thành getName()
-                    String authority = "ROLE_" + roleName;
-                    
-                    System.out.println(">> [JWT FILTER] THÀNH CÔNG: Đã cấp quyền [" + authority + "] cho tài khoản [" + username + "]");
-                    
-                    List<SimpleGrantedAuthority> authorities = Collections.singletonList(
-                            new SimpleGrantedAuthority(authority)
-                    );
-                    
-                    UsernamePasswordAuthenticationToken authentication =
-                            new UsernamePasswordAuthenticationToken(username, null, authorities);
-                    
-                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                } else {
-                    System.out.println(">> [JWT FILTER] LỖI DB: Không tìm thấy User trong Database hoặc User chưa được gắn Role!");
+
+                // BẢO MẬT: Xóa Session cũ nếu phát hiện sự không trùng khớp
+                if (SecurityContextHolder.getContext().getAuthentication() != null) {
+                    String currentSessionUser = SecurityContextHolder.getContext().getAuthentication().getName();
+                    if (!username.equals(currentSessionUser)) {
+                        SecurityContextHolder.clearContext();
+                    }
+                }
+
+                // 5. KIỂM TRA ROLE ĐỂ CẤP QUYỀN (ÁP DỤNG Ý TƯỞNG CỦA BẠN)
+                if (SecurityContextHolder.getContext().getAuthentication() == null) {
+
+                    // DÙNG JOIN FETCH ĐỂ BẮT BUỘC LẤY USER KÈM ROLE RÕ RÀNG
+                    Optional<User> userOpt = userRepository.findByUsernameOrEmailWithRole(username);
+
+                    if (userOpt.isPresent()) {
+                        User user = userOpt.get();
+
+                        // LỚP BẢO VỆ KÉP: Kiểm tra xem User này có thực sự được gán Role không
+                        if (user.getRole() != null && user.getRole().getRoleName() != null) {
+                            String roleName = user.getRole().getRoleName();
+
+                            // CHUẨN HÓA QUYỀN LỰC: Đảm bảo Security nhận diện đúng chuẩn "ROLE_ADMIN" hoặc "ROLE_USER"
+                            String authority = roleName.startsWith("ROLE_") ? roleName : "ROLE_" + roleName;
+
+                            List<SimpleGrantedAuthority> authorities = Collections.singletonList(
+                                    new SimpleGrantedAuthority(authority)
+                            );
+
+                            UsernamePasswordAuthenticationToken authentication =
+                                    new UsernamePasswordAuthenticationToken(username, null, authorities);
+
+                            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+                            // Chính thức cấp thẻ ra vào cho luồng này
+                            SecurityContextHolder.getContext().setAuthentication(authentication);
+                        } else {
+                            System.err.println(">> [CẢNH BÁO BẢO MẬT] Tài khoản " + username + " không có Role hợp lệ. Đã từ chối cấp quyền!");
+                        }
+                    }
                 }
             }
         } catch (Exception e) {
-            System.out.println(">> [JWT FILTER] LỖI TOKEN: " + e.getMessage());
+            System.err.println(">> [JWT FILTER] LỖI TOKEN: " + e.getMessage());
+            SecurityContextHolder.clearContext();
         }
-        
-        System.out.println(">> [JWT FILTER] Chuyển request đi tiếp tới Controller...");
+
+        // 6. Cho phép đi tiếp
         filterChain.doFilter(request, response);
     }
 }

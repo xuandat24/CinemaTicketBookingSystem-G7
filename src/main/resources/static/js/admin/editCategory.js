@@ -51,7 +51,7 @@ document.getElementById('editCategoryForm').addEventListener('submit', async (e)
         const data = await response.json();
         if(response.ok) {
             alert("Success: " + data.message);
-            window.location.href = '/admin/categories';
+            window.location.href = '../../css/admin/categories';
         } else {
             alert("Error: " + data.message);
         }
@@ -77,7 +77,7 @@ document.getElementById('btnDeleteCategory').addEventListener('click', async () 
 
         if(response.ok) {
             alert("Success: " + data.message);
-            window.location.href = '/admin/categories';
+            window.location.href = '../../css/admin/categories';
         } else {
             alert("Error: " + data.message);
         }

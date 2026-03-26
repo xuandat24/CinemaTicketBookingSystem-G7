@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Profile - CTBS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/admin/universal.css}">
+</head>
+<body class="bg-light">
+
+<div th:replace="~{admin/fragments/navbar :: admin-nav}"></div>
+
+<div class="container py-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-dark text-white py-3">
+                    <h5 class="mb-0 fw-bold"><i class="fa-solid fa-user-shield me-2"></i> Administrator Profile</h5>
+                </div>
+                <div class="card-body p-4">
+
+                    <div class="text-center mb-4">
+                        <img id="admin-avatar" src="https://ui-avatars.com/api/?name=Admin&background=0D8ABC&color=fff&size=100" class="rounded-circle shadow-sm mb-2" alt="Avatar">
+                        <h5 class="fw-bold mb-0" id="display-fullname">Loading...</h5>
+                        <span class="badge bg-danger mt-1">Super Admin</span>
+                    </div>
+
+                    <form id="adminProfileForm">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">First Name <span class="text-danger">*</span></label>
+                                <input class="form-control" id="prof-firstname" type="text" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Last Name <span class="text-danger">*</span></label>
+                                <input class="form-control" id="prof-lastname" type="text" required>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Gender</label>
+                                <select class="form-select" id="prof-gender">
+                                    <option value="Nam">Nam</option>
+                                    <option value="Nữ">Nữ</option>
+                                    <option value="Khác">Khác</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Date of Birth <span class="text-danger">*</span></label>
+                                <input type="date" class="form-control" id="dob" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Phone Number <span class="text-danger">*</span></label>
+                            <input class="form-control" id="prof-phone" type="text" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Email (System Locked)</label>
+                            <input class="form-control bg-light" disabled id="prof-email" type="email">
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Username (System Locked)</label>
+                            <input class="form-control bg-light" disabled id="prof-username" type="text">
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end border-top pt-3">
+                            <button class="btn btn-success px-5 fw-bold" type="submit" id="btn-save-profile">
+                                <i class="fa-solid fa-floppy-disk me-1"></i> Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", async function () {
+        const token = localStorage.getItem("jwtToken");
+
+        const setVal = (id, val) => {
+            const el = document.getElementById(id);
+            if (el) el.value = (val && val !== "null") ? val : "";
+        };
+
+        // 1. TẢI DỮ LIỆU
+        try {
+            const response = await fetch("/api/users/my-profile", {
+                headers: { "Authorization": "Bearer " + token }
+            });
+
+            if (response.ok) {
+                const user = await response.json();
+                setVal('prof-email', user.email);
+                setVal('prof-username', user.userName);
+                setVal('prof-firstname', user.firstName);
+                setVal('prof-lastname', user.lastName);
+                setVal('prof-phone', user.phone);
+                setVal('prof-gender', user.gender || "Nam");
+
+                if (user.dob && user.dob !== "null") {
+                    let dobStr = "";
+                    if (Array.isArray(user.dob)) {
+                        dobStr = `${user.dob[0]}-${String(user.dob[1]).padStart(2, '0')}-${String(user.dob[2]).padStart(2, '0')}`;
+                    } else if (typeof user.dob === 'string') {
+                        dobStr = user.dob.split('T')[0];
+                    }
+                    setVal('dob', dobStr);
+                }
+
+                document.getElementById("display-fullname").innerText = `${user.lastName || ''} ${user.firstName || ''}`.trim() || "Admin";
+            }
+        } catch (error) { console.error("Error loading admin profile"); }
+
+        // 2. CẬP NHẬT DỮ LIỆU
+        document.getElementById("adminProfileForm").addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const btnSave = document.getElementById("btn-save-profile");
+            btnSave.disabled = true;
+            btnSave.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> Saving...';
+
+            const updateData = {
+                firstName: document.getElementById("prof-firstname").value,
+                lastName: document.getElementById("prof-lastname").value,
+                phone: document.getElementById("prof-phone").value,
+                gender: document.getElementById("prof-gender").value,
+                dob: document.getElementById("dob").value,
+                email: document.getElementById("prof-email").value,
+                userName: document.getElementById("prof-username").value
+            };
+
+            try {
+                const res = await fetch("/api/users/update-profile", {
+                    method: "PUT",
+                    headers: {
+                        "Authorization": "Bearer " + token,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(updateData)
+                });
+
+                if (res.ok) {
+                    alert("Cập nhật thông tin Quản trị viên thành công!");
+                    location.reload();
+                } else {
+                    const errorData = await res.json();
+                    alert("LỖI: " + (errorData.message || "Không thể cập nhật"));
+                }
+            } catch (error) {
+                alert("Lỗi kết nối đến máy chủ!");
+            } finally {
+                btnSave.disabled = false;
+                btnSave.innerHTML = '<i class="fa-solid fa-floppy-disk me-1"></i> Save Changes';
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

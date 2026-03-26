@@ -17,7 +17,8 @@ public class Movie {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long movieId;
     private String title;
-    private String bannerPath;
+    private String posterPath; //dọc
+    private String bannerPath;  //ngang
     private String trailerPath;
     @Column(columnDefinition = "TEXT")
     private String description;
@@ -28,7 +29,7 @@ public class Movie {
     private String actors;
     private Double rating;
     private String language;
-    
+
     @ManyToMany
     @JoinTable(
             name = "movie_category",
@@ -36,15 +37,15 @@ public class Movie {
             inverseJoinColumns = @JoinColumn(name = "categoryId")
     )
     private List<Category> categories;
-    
+
     @OneToMany(mappedBy = "movie")
     private List<Showtime> showtimes;
-    
+
     @PrePersist
     public void prePersist() {
         this.title = TextUtils.formatTitleCase(this.title);
     }
-    
+
     @PreUpdate
     public void preUpdate() {
         this.title = TextUtils.formatTitleCase(this.title);

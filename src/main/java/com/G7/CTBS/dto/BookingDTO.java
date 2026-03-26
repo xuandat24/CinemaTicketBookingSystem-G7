@@ -16,7 +16,7 @@ public class BookingDTO {
     private Double finalPrice;
     private String status;
     private LocalDateTime createTime;
-    
+
     // Rất hữu ích khi API trả về chi tiết đơn đặt vé kèm các ghế đã đặt
     private List<Long> bookedSeatIds;
 }

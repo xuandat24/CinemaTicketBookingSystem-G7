@@ -1,9 +1,11 @@
 let typingTimer;
 const doneTypingInterval = 500;
+let allMovies = [];
+let currentPage = 1;
+const itemsPerPage = 10;
 
 document.addEventListener('DOMContentLoaded', async () => {
     await loadCategoriesForFilter();
-
     restoreSearchState();
 
     const urlParams = new URLSearchParams(window.location.search);
@@ -13,7 +15,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     setupLiveSearch('searchTitle');
-
     setupLiveSearch('searchLanguage');
 
     const filterElements = ['filterCategory', 'fromDate', 'toDate', 'sortBy', 'filterStatus'];
@@ -44,7 +45,12 @@ function setupLiveSearch(elementId) {
 
 async function loadCategoriesForFilter() {
     try {
-        const response = await fetch('/api/admin/categories');
+        const token = localStorage.getItem('jwtToken');
+        const response = await fetch('/api/admin/categories', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!response.ok) throw new Error("Cannot fetch categories");
+
         const categories = await response.json();
         const select = document.getElementById('filterCategory');
         categories.forEach(cat => {
@@ -56,6 +62,7 @@ async function loadCategoriesForFilter() {
 }
 
 function applyFilter() {
+    currentPage = 1;
     loadMovies();
 }
 
@@ -77,59 +84,113 @@ async function loadMovies() {
         if (fromDate) apiUrl += `&fromDate=${fromDate}`;
         if (toDate) apiUrl += `&toDate=${toDate}`;
 
-        const response = await fetch(apiUrl);
-        if (!response.ok) throw new Error("Network response was not ok");
-        const movies = await response.json();
-
-        const tbody = document.querySelector('#movieTable tbody');
-        tbody.innerHTML = '';
-
-        if (movies.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="5" class="text-center text-muted py-4">No movies found matching your criteria.</td></tr>`;
-            return;
-        }
-
-        movies.forEach(movie => {
-            let statusBadge = "bg-secondary";
-            if (movie.status === 'Now Playing') statusBadge = "bg-success";
-            else if (movie.status === 'Coming Soon') statusBadge = "bg-warning text-dark";
-            else if (movie.status === 'Pending') statusBadge = "bg-info text-dark";
-            else if (movie.status === 'Disabled') statusBadge = "bg-danger";
-
-            let categoryTags = movie.categoryNames && movie.categoryNames.length > 0
-                ? movie.categoryNames.map(name => `<span class="badge bg-light text-dark border me-1">${name}</span>`).join('')
-                : '<span class="badge bg-light text-muted border border-dashed">No category</span>';
-
-            tbody.innerHTML += `
-                <tr>
-                    <td class="align-middle fw-bold">${movie.movieId}</td>
-                    <td class="align-middle">
-                        <div class="d-flex align-items-center">
-                            ${movie.bannerPath ? `<img src="${movie.bannerPath}" alt="poster" style="width: 45px; height: 65px; object-fit: cover; border-radius: 4px; margin-right: 12px;">` : ''}
-                            <div>
-                                <div class="fw-bold text-dark mb-1">${movie.title}</div>
-                                <div class="mb-1">${categoryTags}</div>
-                                <div class="text-muted small"><i class="fa-solid fa-globe"></i> ${movie.language || 'Unknown'}</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="align-middle text-muted fw-semibold">
-                        <i class="fa-regular fa-calendar-days me-1"></i> ${movie.releaseDate || 'N/A'}
-                    </td>
-                    <td class="align-middle">
-                        <span class="badge ${statusBadge}">${movie.status}</span>
-                    </td>
-                    <td class="align-middle text-end pe-4">
-                        <a href="/admin/movies/edit?id=${movie.movieId}" class="btn btn-sm btn-primary shadow-sm" onclick="saveSearchState()">
-                            <i class="fa-solid fa-pen-to-square"></i> Edit
-                        </a>
-                    </td>
-                </tr>
-            `;
+        const token = localStorage.getItem('jwtToken');
+        const response = await fetch(apiUrl, {
+            headers: { 'Authorization': `Bearer ${token}` }
         });
+        if (!response.ok) throw new Error("Network response was not ok");
+
+        allMovies = await response.json();
+        renderMovies();
+        renderPagination();
+
     } catch (error) {
         alert("Failed to fetch movies from the server.");
     }
+}
+
+function renderMovies() {
+    const tbody = document.querySelector('#movieTable tbody');
+    tbody.innerHTML = '';
+
+    if (allMovies.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center text-muted py-4">No movies found matching your criteria.</td></tr>`;
+        document.getElementById('tableInfo').innerText = "Showing 0 movies";
+        return;
+    }
+
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const moviesToShow = allMovies.slice(startIndex, endIndex);
+
+    document.getElementById('tableInfo').innerText = `Showing ${startIndex + 1} to ${Math.min(endIndex, allMovies.length)} of ${allMovies.length} movies`;
+
+    moviesToShow.forEach(movie => {
+        let statusBadge = "bg-secondary";
+        if (movie.status === 'Now Playing') statusBadge = "bg-success";
+        else if (movie.status === 'Coming Soon') statusBadge = "bg-warning text-dark";
+        else if (movie.status === 'Pending') statusBadge = "bg-info text-dark";
+        else if (movie.status === 'Disabled') statusBadge = "bg-danger";
+
+        let categoryTags = movie.categoryNames && movie.categoryNames.length > 0
+            ? movie.categoryNames.map(name => `<span class="badge bg-light text-dark border me-1">${name}</span>`).join('')
+            : '<span class="badge bg-light text-muted border border-dashed">No category</span>';
+
+        // Lấy Poster hiển thị (nếu không có Poster thì lấy Banner chữa cháy, không có nữa thì dùng ảnh rỗng)
+        const imagePath = movie.posterPath || movie.bannerPath || 'https://placehold.co/45x65/eeeeee/999999?text=No+Img';
+
+        tbody.innerHTML += `
+            <tr>
+                <td class="align-middle fw-bold">${movie.movieId}</td>
+                <td class="align-middle">
+                    <div class="d-flex align-items-center">
+                        <img src="${imagePath}" alt="poster" style="width: 45px; height: 65px; object-fit: cover; border-radius: 4px; margin-right: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <div>
+                            <div class="fw-bold text-dark mb-1">${movie.title}</div>
+                            <div class="mb-1">${categoryTags}</div>
+                            <div class="text-muted small"><i class="fa-solid fa-globe"></i> ${movie.language || 'Unknown'}</div>
+                        </div>
+                    </div>
+                </td>
+                <td class="align-middle text-muted fw-semibold">
+                    <i class="fa-regular fa-calendar-days me-1"></i> ${movie.releaseDate || 'N/A'}
+                </td>
+                <td class="align-middle">
+                    <span class="badge ${statusBadge}">${movie.status}</span>
+                </td>
+                <td class="align-middle text-end pe-4">
+                    <a href="/admin/movies/edit?id=${movie.movieId}" class="btn btn-sm btn-primary shadow-sm" onclick="saveSearchState()">
+                        <i class="fa-solid fa-pen-to-square"></i> Edit
+                    </a>
+                </td>
+            </tr>
+        `;
+    });
+}
+
+function renderPagination() {
+    const totalPages = Math.ceil(allMovies.length / itemsPerPage);
+    const paginationContainer = document.getElementById('paginationContainer');
+    paginationContainer.innerHTML = '';
+
+    if (totalPages <= 1) return;
+
+    if (currentPage > 1) {
+        paginationContainer.innerHTML += `<li class="page-item"><a class="page-link text-primary fw-bold" href="#" onclick="changePage(${currentPage - 1}); return false;">&laquo;</a></li>`;
+    } else {
+        paginationContainer.innerHTML += `<li class="page-item disabled"><a class="page-link text-muted">&laquo;</a></li>`;
+    }
+
+    for (let i = 1; i <= totalPages; i++) {
+        if (i === currentPage) {
+            paginationContainer.innerHTML += `<li class="page-item active"><a class="page-link fw-bold">${i}</a></li>`;
+        } else {
+            paginationContainer.innerHTML += `<li class="page-item"><a class="page-link text-dark" href="#" onclick="changePage(${i}); return false;">${i}</a></li>`;
+        }
+    }
+
+    if (currentPage < totalPages) {
+        paginationContainer.innerHTML += `<li class="page-item"><a class="page-link text-primary fw-bold" href="#" onclick="changePage(${currentPage + 1}); return false;">&raquo;</a></li>`;
+    } else {
+        paginationContainer.innerHTML += `<li class="page-item disabled"><a class="page-link text-muted">&raquo;</a></li>`;
+    }
+}
+
+function changePage(page) {
+    currentPage = page;
+    renderMovies();
+    renderPagination();
+    document.querySelector('.table-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function saveSearchState() {
@@ -140,7 +201,8 @@ function saveSearchState() {
         status: document.getElementById('filterStatus').value,
         fromDate: document.getElementById('fromDate').value,
         toDate: document.getElementById('toDate').value,
-        sortBy: document.getElementById('sortBy').value
+        sortBy: document.getElementById('sortBy').value,
+        page: currentPage
     }));
 }
 
@@ -155,5 +217,6 @@ function restoreSearchState() {
         if (state.fromDate) document.getElementById('fromDate').value = state.fromDate;
         if (state.toDate) document.getElementById('toDate').value = state.toDate;
         if (state.sortBy) document.getElementById('sortBy').value = state.sortBy;
+        if (state.page) currentPage = state.page;
     }
 }
