@@ -1,0 +1,8 @@
+.tag-badge {
+    cursor: pointer;
+    font-size: 0.9rem;
+    padding: 8px 12px;
+}
+.tag-badge:hover {
+    background-color: #dc3545 !important;
+}

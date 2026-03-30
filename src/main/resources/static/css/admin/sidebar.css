@@ -1,0 +1,60 @@
+.admin-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 260px;
+    height: 100vh;
+    background-color: #212529;
+    color: #fff;
+    overflow-y: auto;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    z-index: 1000;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+}
+
+.admin-sidebar .brand-logo {
+    font-size: 1.5rem;
+    text-align: center;
+    color: #ffc107;
+    font-weight: bold;
+    margin-bottom: 25px;
+    text-decoration: none;
+    display: block;
+}
+
+.admin-sidebar .section-title {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: #6c757d;
+    font-weight: 700;
+    margin: 20px 20px 5px 20px;
+    letter-spacing: 1px;
+}
+
+.admin-sidebar a.menu-item {
+    color: #adb5bd;
+    text-decoration: none;
+    padding: 10px 20px;
+    display: block;
+    border-radius: 6px;
+    margin: 0 15px 5px 15px;
+    transition: all 0.2s;
+    font-size: 0.95rem;
+}
+
+.admin-sidebar a.menu-item:hover {
+    color: #fff;
+    background-color: #343a40;
+    transform: translateX(5px);
+}
+
+.sidebar-search {
+    margin: 0 15px 20px 15px;
+}
+
+body {
+    margin-left: 260px !important;
+    background-color: #f4f6f9;
+    padding-top: 20px;
+}

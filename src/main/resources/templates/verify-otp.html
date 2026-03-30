@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Xác nhận mã OTP</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <style>
+        .otp-container { max-width: 400px; margin: 100px auto; padding: 30px; background: #f8f9fa; border-radius: 10px; }
+    </style>
+</head>
+<body>
+<div class="otp-container text-center shadow">
+    <h3 class="mb-4">Xác nhận Email</h3>
+    <p>Mã xác nhận đã được gửi đến Email của bạn. Vui lòng kiểm tra và nhập vào bên dưới.</p>
+
+    <form id="otpForm">
+        <input type="text" id="otpCode" class="form-control form-control-lg text-center mb-3"
+               placeholder="Nhập 6 số" maxlength="6" required>
+
+        <div id="errorMsg" class="text-danger mb-3"></div>
+
+        <button type="submit" class="btn btn-primary w-100">Xác nhận đăng ký</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById("otpForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const otp = document.getElementById("otpCode").value;
+        const errorDiv = document.getElementById("errorMsg");
+
+        try {
+            // Gọi đến API xử lý OTP
+            const response = await fetch("/api/auth/verify-google-otp?otp=" + otp, {
+                method: "POST"
+            });
+
+            if(response.ok) {
+                const data = await response.json();
+
+                // LƯU CẢ TOKEN VÀ USERNAME VÀO KHO
+                localStorage.setItem("jwtToken", data.token);
+                localStorage.setItem("username", data.username); // BẠN THÊM DÒNG NÀY VÀO LÀ XONG!
+
+                alert("Đăng ký thành công!");
+                window.location.href = "/"; // Về trang chủ, auth.js sẽ tự động lấy thông tin ra và hiện tên
+            } else {
+                // ... (phần dưới báo lỗi giữ nguyên)
+                const errorData = await response.json();
+                errorDiv.innerText = errorData.message || "Mã xác nhận không đúng hoặc đã hết hạn!";
+            }
+        } catch (err) {
+            errorDiv.innerText = "Có lỗi xảy ra, vui lòng thử lại!";
+        }
+    });
+</script>
+</body>
+</html>

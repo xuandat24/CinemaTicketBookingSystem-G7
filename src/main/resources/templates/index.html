@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CTBS Cinema | Book Your Tickets</title>
+
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+
+    <link href="https://fonts.googleapis.com/css2?family=Platypi:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body class="home-light-theme">
+
+<div th:replace="~{layout/header :: header}"></div>
+
+<div class="main clearfix position-relative">
+
+    <section id="center_h" class="center_home overflow-hidden">
+        <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-indicators" id="bannerIndicators"></div>
+            <div class="carousel-inner" id="bannerInner"></div>
+
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+            </button>
+        </div>
+    </section>
+
+    <section id="now-showing" class="py-5">
+        <div class="container">
+            <div class="row mb-5 text-center">
+                <div class="col-12">
+                    <h6 class="col_oran fw-bold text-uppercase mb-2">Đang Chiếu Tại Rạp</h6>
+                    <h2 class="fw-bold">NOW SHOWING</h2>
+                    <hr class="mx-auto" style="width: 50px; border: 2px solid #d96c2c; opacity: 1;">
+                </div>
+            </div>
+
+            <div class="movie-slider-wrapper" id="nowShowingWrapper">
+                <button class="slider-nav-btn left" onclick="scrollSlider(this, 'left')"><i class="fa fa-chevron-left"></i></button>
+                <button class="slider-nav-btn right" onclick="scrollSlider(this, 'right')"><i class="fa fa-chevron-right"></i></button>
+                <div class="movie-slider" id="nowShowingSlider"></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="coming-soon" class="py-5" style="background-color: #ffffff;">
+        <div class="container">
+            <div class="row mb-5 text-center">
+                <div class="col-12">
+                    <h6 class="col_oran fw-bold text-uppercase mb-2">Đừng Bỏ Lỡ</h6>
+                    <h2 class="fw-bold text-dark">COMING SOON</h2>
+                    <hr class="mx-auto" style="width: 50px; border: 2px solid #d96c2c; opacity: 1;">
+                </div>
+            </div>
+
+            <div class="movie-slider-wrapper" id="comingSoonWrapper">
+                <button class="slider-nav-btn left" onclick="scrollSlider(this, 'left')"><i class="fa fa-chevron-left"></i></button>
+                <button class="slider-nav-btn right" onclick="scrollSlider(this, 'right')"><i class="fa fa-chevron-right"></i></button>
+                <div class="movie-slider" id="comingSoonSlider"></div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<div th:replace="~{layout/footer :: footer}"></div>
+
+<script th:src="@{/js/common.js}"></script>
+<script th:src="@{/js/auth.js}"></script>
+
+<script th:src="@{/js/home.js?v=2}"></script>
+
+</body>
+</html>

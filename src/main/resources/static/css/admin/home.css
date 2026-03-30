@@ -1,0 +1,12 @@
+.dashboard-card {
+    transition: transform 0.2s;
+    cursor: pointer;
+}
+.dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+.icon-large {
+    font-size: 3rem;
+    opacity: 0.8;
+}

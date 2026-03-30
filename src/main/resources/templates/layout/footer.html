@@ -1,0 +1,100 @@
+<div xmlns:th="http://www.thymeleaf.org" th:fragment="footer">
+
+    <!-- =======================================================
+       MAIN FOOTER (CHÂN TRANG CHÍNH)
+    ======================================================= -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="row gy-5">
+                <!-- Cột 1: Logo & Giới thiệu -->
+                <div class="col-lg-4 col-md-6">
+                    <a class="navbar-brand p-0 brand-premium footer-brand" th:href="@{/}">
+                        <i class="fa fa-ticket"></i> CTBS <span>CINEMAS</span>
+                    </a>
+                    <p class="footer-about-text mt-3">
+                        Experience the magic of cinema. We bring you the latest blockbusters, cozy seating, and a premium VIP experience.
+                    </p>
+                    <div class="footer-social-icons mt-4">
+                        <a href="#" title="Facebook"><i class="fa fa-facebook"></i></a>
+                        <a href="#" title="Instagram"><i class="fa fa-instagram"></i></a>
+                        <a href="#" title="Twitter"><i class="fa fa-twitter"></i></a>
+                        <a href="#" title="YouTube"><i class="fa fa-youtube-play"></i></a>
+                    </div>
+                </div>
+
+                <!-- Cột 2: Danh mục phim -->
+                <div class="col-lg-2 col-md-6">
+                    <h5 class="footer-title">Categories</h5>
+                    <ul class="footer-links">
+                        <li><a href="#">Action</a></li>
+                        <li><a href="#">Adventure</a></li>
+                        <li><a href="#">Animation</a></li>
+                        <li><a href="#">Comedy</a></li>
+                        <li><a href="#">Sci-Fi</a></li>
+                    </ul>
+                </div>
+
+                <!-- Cột 3: Link nhanh -->
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="footer-title">Quick Links</h5>
+                    <ul class="footer-links">
+                        <li><a th:href="@{/about}">About Us</a></li>
+                        <li><a th:href="@{/movies}">All Movies</a></li>
+                        <li><a href="#">Terms & Conditions</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a th:href="@{/contact}">Contact Us</a></li>
+                    </ul>
+                </div>
+
+                <!-- Cột 4: Địa chỉ -->
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="footer-title">Our Address</h5>
+                    <ul class="footer-contact">
+                        <li><i class="fa fa-map-marker"></i><span>FPT University, District 9, HCMC</span></li>
+                        <li><i class="fa fa-phone"></i><span>(+84) 123 456 789</span></li>
+                        <li><i class="fa fa-envelope"></i><span>support@ctbs.com</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- =======================================================
+       COMPACT CONTACT FORM (FORM LIÊN HỆ GỌN)
+    ======================================================= -->
+    <section class="compact-contact-section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="text-center mb-4">
+                        <h3 class="text-white fw-bold">Get In Touch</h3>
+                        <p class="text-white-50">Have a question or feedback? Drop us a line!</p>
+                    </div>
+                    <form action="#" class="contact-form-compact">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" placeholder="Your Name">
+                            </div>
+                            <div class="col-md-6">
+                                <input type="email" class="form-control" placeholder="Your Email Address">
+                            </div>
+                            <div class="col-12">
+                                <textarea class="form-control" rows="4" placeholder="Your Message..."></textarea>
+                            </div>
+                            <div class="col-12 text-center">
+                                <button type="submit" class="btn-submit-compact">Send Message</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =======================================================
+       BOTTOM BAR (BẢN QUYỀN)
+    ======================================================= -->
+    <div class="footer-bottom text-center">
+        <p class="mb-0">© 2024 CTBS Cinemas. All Rights Reserved. Designed by G7.</p>
+    </div>
+</div>

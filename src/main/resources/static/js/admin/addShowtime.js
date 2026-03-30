@@ -1,0 +1,116 @@
+async function loadMovies() {
+
+    const movieSelect = document.getElementById("movieId");
+
+    try {
+
+        const response = await fetch("/api/admin/movies");
+
+        const movies = await response.json();
+
+        movies.forEach(movie => {
+
+            const option = document.createElement("option");
+
+            option.value = movie.movieId;
+
+            option.textContent = movie.title;
+
+            movieSelect.appendChild(option);
+
+        });
+
+    } catch (error) {
+
+        console.error("Cannot load movies:", error);
+
+    }
+}
+
+async function loadRooms(){
+    const roomSelect = document.getElementById("roomId");
+
+    try {
+        const response = await fetch("/api/theater-rooms");
+
+        if (!response.ok) {
+            throw new Error("Cannot load theater rooms");
+        }
+
+        const rooms = await response.json();
+
+        rooms.forEach(room => {
+            const option = document.createElement("option");
+            option.value = room.roomId;
+            option.text = room.roomName;
+            roomSelect.appendChild(option);
+        });
+    } catch (error) {
+        console.error("Cannot load theater rooms:", error);
+    }
+
+}
+
+document
+    .getElementById("createShowtimeForm")
+    .addEventListener("submit", async function(e){
+
+        e.preventDefault();
+        const message = document.getElementById("message");
+
+        const data = {
+
+            movieId: document.getElementById("movieId").value,
+
+            theaterRoomId: document.getElementById("roomId").value,
+
+            startTime: document.getElementById("startTime").value,
+
+            format: document.getElementById("format").value,
+
+            price: document.getElementById("price").value,
+
+            status: document.getElementById("status").value
+
+        };
+
+        const response = await fetch("/api/showtimes", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify(data)
+
+        });
+
+        if(response.ok){
+            // save message to sessionStorage
+            sessionStorage.setItem("successMessage", "Showtime created successfully");
+
+            // redirect
+            window.location.href = "/admin/showtimes";
+
+        }else{
+            let errorMessage = "Cannot create showtime";
+            try {
+                const error = await response.json();
+                errorMessage = error.message || errorMessage;
+            } catch (ignored) {
+            }
+
+            message.innerHTML =`
+            <div class="alert alert-danger">
+                ${errorMessage}
+            </div>`;
+
+        }
+
+    });
+
+document.addEventListener("DOMContentLoaded", function(){
+    loadMovies();
+    loadRooms();
+});

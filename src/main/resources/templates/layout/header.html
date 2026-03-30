@@ -1,0 +1,150 @@
+<nav class="navbar navbar-expand-md navbar-light bg-white ticket-header px-4" id="navbar_sticky"
+     th:fragment="header" xmlns:th="http://www.thymeleaf.org">
+    <div class="container-fluid">
+
+        <a class="navbar-brand p-0 brand-premium" th:href="@{/}">
+            <i class="fa fa-ticket"></i> CTBS <span>CINEMAS</span>
+        </a>
+
+        <button class="navbar-toggler" data-bs-target="#navbarSupportedContent" data-bs-toggle="collapse" type="button">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mb-0 mx-auto gap-1">
+                <li class="nav-item">
+                    <a class="nav-link ticket-nav-link" th:href="@{/}" th:classappend="${currentPage == 'home' ? 'active' : ''}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link ticket-nav-link" th:href="@{/about}" th:classappend="${currentPage == 'about' ? 'active' : ''}">About Us</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link ticket-nav-link" th:href="@{/movies}" th:classappend="${currentPage == 'movies' ? 'active' : ''}">Movies</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link ticket-nav-link" th:href="@{/tvshows}" th:classappend="${currentPage == 'tvshows' ? 'active' : ''}">TV Shows</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link ticket-nav-link" th:href="@{/news}" th:classappend="${currentPage == 'news' ? 'active' : ''}">News</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link ticket-nav-link" th:href="@{/contact}" th:classappend="${currentPage == 'contact' ? 'active' : ''}">Contact</a>
+                </li>
+            </ul>
+
+            <ul class="navbar-nav mb-0 ms-auto">
+                <li class="nav-item d-flex gap-2" id="navLogin">
+                    <a class="btn-header-ticket" th:href="@{/login}"><i class="fa fa-user-circle"></i> Login</a>
+                    <a class="btn-header-ticket" th:href="@{/register}" style="background: #1a1a24; color: #fff;"><i class="fa fa-user-plus"></i> Register</a>
+                </li>
+
+                <li class="nav-item dropdown d-none" id="navUser">
+                    <a aria-expanded="false" class="nav-link ticket-nav-link dropdown-toggle" data-bs-toggle="dropdown"
+                       href="#" id="userDropdown" role="button">
+                        <i class="fa fa-user-circle me-1 text-orange"></i>
+                        <span id="displayUsername">User</span>
+                    </a>
+                    <ul aria-labelledby="userDropdown" class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item fw-bold" th:href="@{/profile}"><i class="fa fa-user text-muted me-2"></i> My Profile</a></li>
+                        <li><a class="dropdown-item fw-bold" href="/booking/history" id="myTicketsLink"><i class="fa fa-ticket text-muted me-2"></i> My Tickets</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger fw-bold" href="#" id="logoutBtn"><i class="fa fa-sign-out me-2"></i> Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                function formatUsername(name) {
+                    if (!name) return "User";
+                    return name.replace("@gmail.com", "");
+                }
+
+                async function performLogout() {
+                    try {
+                        await fetch('/logout', { method: 'POST', credentials: 'include' });
+                    } catch (err) {
+                        console.warn("Logout request failed:", err);
+                    }
+                    document.cookie = "jwtToken=; Max-Age=0; path=/";
+                    document.cookie = "JSESSIONID=; Max-Age=0; path=/";
+                    localStorage.removeItem("jwtToken");
+                    localStorage.removeItem("username");
+                    window.location.href = "/login";
+                }
+
+                function updateNavbar() {
+                    const token = localStorage.getItem("jwtToken");
+                    const navLogin = document.getElementById("navLogin");
+                    const navUser = document.getElementById("navUser");
+                    const displayUsername = document.getElementById("displayUsername");
+                    const myTicketsLink = document.getElementById("myTicketsLink");
+
+                    if (token) {
+                        const savedUsername = localStorage.getItem("username");
+                        if (savedUsername) {
+                            displayUsername.textContent = "Hi, " + savedUsername;
+                            if (myTicketsLink) {
+                                myTicketsLink.href = "/booking/history";
+                            }
+                        } else {
+                            fetch('/api/auth/me', {
+                                method: 'GET',
+                                headers: { 'Authorization': 'Bearer ' + token }
+                            })
+                                .then(response => {
+                                    if (!response.ok) throw new Error("Token invalid");
+                                    return response.json();
+                                })
+                                .then(data => {
+                                    const formattedName = formatUsername(data.username);
+                                    displayUsername.textContent = "Hi, " + formattedName;
+                                    localStorage.setItem("username", formattedName);
+                                    if (myTicketsLink) {
+                                        myTicketsLink.href = "/booking/history";
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error("Error fetching user info:", error);
+                                    localStorage.removeItem("jwtToken");
+                                    localStorage.removeItem("username");
+                                    updateNavbar();
+                                });
+                        }
+
+                        if (navLogin) { navLogin.classList.remove('d-flex'); navLogin.classList.add('d-none'); }
+                        if (navUser) { navUser.classList.remove('d-none'); navUser.classList.add('d-flex'); }
+
+                        const logoutBtn = document.getElementById("logoutBtn");
+                        if (logoutBtn) {
+                            logoutBtn.addEventListener("click", function (e) {
+                                e.preventDefault();
+                                performLogout();
+                            });
+                        }
+                    } else {
+                        if (navLogin) { navLogin.classList.remove('d-none'); navLogin.classList.add('d-flex'); }
+                        if (navUser) { navUser.classList.remove('d-flex'); navUser.classList.add('d-none'); }
+                        if (myTicketsLink) { myTicketsLink.href = '/login'; }
+                    }
+                }
+
+                updateNavbar();
+
+                const urlParams = new URLSearchParams(window.location.search);
+                const token = urlParams.get('token');
+                const user = urlParams.get('username');
+
+                if (token && user) {
+                    localStorage.setItem("jwtToken", token);
+                    let rawUser = decodeURIComponent(user.replace(/\+/g, ' '));
+                    localStorage.setItem("username", formatUsername(rawUser));
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                }
+
+                updateNavbar();
+            });
+        </script>
+    </div>
+</nav>
