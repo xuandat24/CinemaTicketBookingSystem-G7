@@ -277,27 +277,9 @@
             <div class="payment-method">
 
                 <label class="payment-item">
-                    <input type="radio" name="payment" value="momo">
-                    <img th:src="@{/img/momo.png}">
-                    <span>MoMo wallet</span>
-                </label>
-
-                <label class="payment-item">
-                    <input type="radio" name="payment" value="zalopay">
-                    <img th:src="@{/img/zalopay.png}">
-                    <span>ZaloPay wallet</span>
-                </label>
-
-                <label class="payment-item">
-                    <input type="radio" name="payment" value="shopee">
-                    <img th:src="@{/img/shopeepay.png}">
-                    <span>ShopeePay wallet</span>
-                </label>
-
-                <label class="payment-item">
-                    <input type="radio" name="payment" value="qr">
-                    <img th:src="@{/img/qr.png}">
-                    <span>QR Code</span>
+                    <input type="radio" name="payment" value="vnpay" checked>
+                    <img th:src="@{/img/vnpay.png}">
+                    <span>VNPay</span>
                 </label>
 
             </div>
@@ -520,7 +502,11 @@
             headers['Authorization'] = 'Bearer ' + token;
         }
 
-        fetch('/api/booking/confirm', {
+        // Store booking data in session storage for later use
+        sessionStorage.setItem('bookingData', JSON.stringify(payload));
+
+        // Create payment with VNPay
+        fetch('/api/payment/create-payment', {
             method: 'POST',
             credentials: 'include',
             headers: headers,
@@ -545,17 +531,17 @@
                 return res.json();
             })
             .then(data => {
-                if (data.success) {
-                    alert('Payment and booking completed successfully!');
-                    window.location.href = '/booking/history' + (localStorage.getItem('username') ? ('?username=' + encodeURIComponent(localStorage.getItem('username'))) : '');
+                if (data.success && data.paymentUrl) {
+                    // Redirect to VNPay payment page
+                    window.location.href = data.paymentUrl;
                 } else {
-                    alert('Booking failed: ' + (data.message || 'Unknown error'));
+                    alert('Payment creation failed: ' + (data.message || 'Unknown error'));
                     payButton.disabled = false;
                 }
             })
             .catch(err => {
                 console.error(err);
-                alert('Booking failed: ' + err.message);
+                alert('Payment creation failed: ' + err.message);
                 payButton.disabled = false;
             });
     });

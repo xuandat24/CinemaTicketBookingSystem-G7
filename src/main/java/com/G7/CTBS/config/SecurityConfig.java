@@ -49,6 +49,9 @@ public class SecurityConfig {
                         // BỔ SUNG QUAN TRỌNG: Cho phép tải giao diện User và mở khóa /error để tránh bẫy 404
                         .requestMatchers("/profile", "/profile/**", "/booking/history", "/error").permitAll()
                         
+                        // PAYMENT ENDPOINTS: Cho phép truy cập, sẽ validate JWT bên trong controller
+                        .requestMatchers("/api/payment/**").permitAll()
+                        
                         // 4. KHÓA CHẶT API BẰNG ROLE (BẢO VỆ DỮ LIỆU)
                         .requestMatchers("/api/admin/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_Admin")
                         

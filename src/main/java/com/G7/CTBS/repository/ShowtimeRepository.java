@@ -47,7 +47,7 @@ public interface ShowtimeRepository extends JpaRepository<Showtime, Long> {
             LocalDateTime end
     );
     boolean existsByTheaterRoom_RoomIdAndStartTimeAfter(Long roomId, LocalDateTime startTime);
-    
+
     @Query("SELECT s FROM Showtime s WHERE s.startTime BETWEEN :start AND :end " +
             "AND (:keyword IS NULL OR LOWER(s.movie.title) LIKE LOWER(CONCAT('%', :keyword, '%')))")
     List<Showtime> findShowtimesForOccupancy(@Param("start") java.time.LocalDateTime start,

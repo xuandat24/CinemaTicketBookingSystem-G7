@@ -80,7 +80,7 @@ public class ShowtimeServiceImpl implements ShowtimeService {
 
         // 7. Save to database
         Showtime savedShowtime = showtimeRepository.save(showtime);
-        
+
         if (movie.getStatus().equalsIgnoreCase("Coming Soon")) {
             movie.setStatus("Pending");
             movieRepository.save(movie);
