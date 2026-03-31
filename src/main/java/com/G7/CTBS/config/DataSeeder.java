@@ -59,7 +59,7 @@ public class DataSeeder implements CommandLineRunner {
                         .role(adminRole)
                         .build();
                 userRepository.save(admin1);
-                log.info("✅ Created Admin 1 (LOCAL)");
+                log.info(" Created Admin 1 (LOCAL)");
             }
 
             // TÀI KHOẢN ADMIN 2
@@ -77,7 +77,7 @@ public class DataSeeder implements CommandLineRunner {
                         .role(adminRole)
                         .build();
                 userRepository.save(admin2);
-                log.info("✅ Created Admin 2 (LOCAL)");
+                log.info(" Created Admin 2 (LOCAL)");
             }
         }
         // 3. Lấy Role User (Customer)
