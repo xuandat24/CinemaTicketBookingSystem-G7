@@ -9,6 +9,121 @@
     <link rel="stylesheet" th:href="@{/css/booking.css}">
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <style>
+        .terms-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.55);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 24px;
+        }
+
+        .terms-overlay.is-open {
+            display: flex;
+        }
+
+        .terms-modal {
+            width: min(920px, 100%);
+            max-height: 90vh;
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .terms-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .terms-title {
+            margin: 0;
+            font-size: 30px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+
+        .terms-close {
+            border: none;
+            background: transparent;
+            font-size: 28px;
+            line-height: 1;
+            color: #6b7280;
+            cursor: pointer;
+        }
+
+        .terms-body {
+            padding: 22px 22px 18px;
+            overflow-y: auto;
+            color: #374151;
+            font-size: 17px;
+            line-height: 1.5;
+        }
+
+        .terms-body > p {
+            margin: 0 0 34px;
+        }
+
+        .terms-body > p:last-of-type {
+            margin-bottom: 26px;
+        }
+
+        .terms-body ol {
+            padding-left: 24px;
+            margin: 0;
+        }
+
+        .terms-body li {
+            margin-bottom: 12px;
+        }
+
+        .terms-footer {
+            border-top: 1px solid #e5e7eb;
+            padding: 14px 22px;
+            background: #fff;
+        }
+
+        .terms-agree {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            font-size: 17px;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .terms-actions {
+            display: flex;
+            justify-content: center;
+        }
+
+        .terms-pay-btn {
+            min-width: 140px;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 24px;
+            background: #0056b3;
+            color: #fff;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .terms-pay-btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+    </style>
 </head>
 
 <body>
@@ -78,7 +193,7 @@
     <span th:text="${seat.count}">1</span> x
     <span th:text="${#numbers.formatInteger(seat.price, 0, 'POINT')}">0</span>
     =
-    <b th:text="${#numbers.formatInteger(seat.total, 0, 'POINT')}">0</b> vnđ
+    <b th:text="${#numbers.formatInteger(seat.total, 0, 'POINT')}">0</b> VND
 </span>
 
                 </div>
@@ -114,7 +229,7 @@
                         <td>
                             <div class="qty-box">
                                 <button class="qty-btn minus"
-                                        th:attr="onclick=|changeCombo(${combo.id}, -1)|">−</button>
+                                        th:attr="onclick=|changeCombo(${combo.id}, -1)|">-</button>
 
                                 <span class="qty-number" th:id="'combo' + ${combo.id}">0</span>
 
@@ -144,7 +259,7 @@
                     </div>
 
                     <div class="col-md-3">
-                        <p>= <span id="discountMoney">0</span> vnđ</p>
+                        <p>= <span id="discountMoney">0</span> VND</p>
                     </div>
 
                     <div class="col-md-2">
@@ -203,8 +318,8 @@
 
                 <p class="info-row">
                     <i class="fa fa-building me-2"></i>
-                    <span class="label">Cinema</span>
-                    <span>CTBS</span>
+                    <span class="label">Room</span>
+                    <span th:text="${roomName}">Room --</span>
                 </p>
 
                 <p class="info-row">
@@ -259,7 +374,7 @@
 
                 <div class="action-buttons">
                     <button class="btn-prev" onclick="goBack()">PREVIOUS</button>
-                    <button class="btn-next">NEXT</button>
+                    <button class="btn-next" type="button">NEXT</button>
                 </div>
 
             </div>
@@ -268,6 +383,45 @@
 
     </div>
 
+</div>
+
+<div id="termsOverlay" class="terms-overlay" aria-hidden="true">
+    <div class="terms-modal" role="dialog" aria-modal="true" aria-labelledby="termsTitle">
+        <div class="terms-header">
+            <h2 id="termsTitle" class="terms-title">TERMS OF PAYMENT</h2>
+            <button id="termsClose" class="terms-close" type="button" aria-label="Close">&times;</button>
+        </div>
+        <div class="terms-body">
+            <p>Welcome to CTBS CINEMAS's E-ticketing system!</p>
+            <p>At the moment the promotions for students, seniors and children are not applied in the E-ticketing system. If you want to take advantage of these promotions and discounts, please buy your tickets at our BOX OFFICE counters instead.</p>
+            <p>Thank you very much and we hope you have wonderful cinematic experiences at CTBS CINEMAS!</p>
+            <p><strong>Several notes to keep in mind before making online payments:</strong></p>
+            <ol>
+                <li>Your debit or credit card's online payment service must have been activated, and the card's balance must be enough to make the payment. You need to fill in the card information as it is (the account holder's name, the card number, the expiration date, the CVC and OTP numbers, etc.)</li>
+                <li>Purchased tickets are non-cancellable, non-exchangeable and non-refundable for any reasons. We only issue refunds if your card has been billed but our system has not registered your reservation, and you have not received a ticket reservation confirmation.</li>
+                <li>Within 30 minutes after you have made a successful payment, we will send you a ticket reservation confirmation via email. If you need help or have any questions and complaints, please contact Facebook Fanpage CTBS Cinemas within 60 minutes after you have made a successful payment. After this timeframe, we would not resolve any complaints.</li>
+                <li>We are not responsible for cases in which you fill in the wrong email, phone number and as a result do not receive the ticket reservation confirmation. Please check your information carefully before making a payment. We neither resolve nor take responsibility for cases in which we have emailed you the ticket reservation confirmation but for some reason you cannot go see the film (noshow).</li>
+                <li>Please check your reservation confirmation carefully and remember your reservation code. To receive your ticket from our BOX OFFICE counters, you also need to bring a form of identification (such as your national ID card, your student card, your passport, etc.)</li>
+                <li>According to the regulations of the Cinema Department, certain films are not for audience under the age of 13, or 16, or 18. When you receive your tickets at the BOX OFFICE counters, the staff might ask you for proof that you are old enough to watch an age-restricted film. Please keep this in mind when you purchase your tickets.</li>
+                <li>In some cases of force majeure, the movie session can be cancelled to ensure the best safety for customers. The transaction amount will be refunded directly to your bank account which was used to buy tickets online. We will contact you through your contact information in the Member info. description, to get your confirmation. Depending on your bank account and payment procedures, the refund process may get the different period following:
+                    <div style="margin-top: 8px; margin-left: 22px;">
+                        <p class="mb-1">ATM cards: maximum 1 working week</p>
+                        <p class="mb-1">Visa Credit Card, Master Card, JCB Card: maximum 1 working month</p>
+                        <p class="mb-0">Vietcombank's cards: maximum 48 working hours</p>
+                    </div>
+                </li>
+            </ol>
+        </div>
+        <div class="terms-footer">
+            <label class="terms-agree">
+                <input id="agreeCheckbox" type="checkbox">
+                <span>I agree to terms of use and purchase tickets for people of appropriate age.</span>
+            </label>
+            <div class="terms-actions">
+                <button id="payButton" class="terms-pay-btn" type="button" disabled>PAY</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script th:inline="javascript">
@@ -285,10 +439,26 @@
 </script>
 <script th:inline="javascript">
     /*<![CDATA[*/
-    document.querySelector('.btn-next').addEventListener('click', function() {
-        // 1. Thu thập danh sách combo
+    const nextBtn = document.querySelector('.btn-next');
+    const termsOverlay = document.getElementById('termsOverlay');
+    const termsClose = document.getElementById('termsClose');
+    const agreeCheckbox = document.getElementById('agreeCheckbox');
+    const payButton = document.getElementById('payButton');
+
+    function openTermsModal() {
+        agreeCheckbox.checked = false;
+        payButton.disabled = true;
+        termsOverlay.classList.add('is-open');
+        termsOverlay.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeTermsModal() {
+        termsOverlay.classList.remove('is-open');
+        termsOverlay.setAttribute('aria-hidden', 'true');
+    }
+
+    function collectPayload() {
         let selectedCombos = [];
-        // 'combos' là biến lấy từ model đã định nghĩa ở đoạn script phía trên
         combos.forEach(c => {
             let comboElement = document.getElementById('combo' + c.id);
             if (comboElement) {
@@ -299,7 +469,6 @@
             }
         });
 
-        // 2. Chuẩn bị dữ liệu (Sử dụng cú pháp an toàn cho Thymeleaf)
         const showtimeId = /*[[${showtimeId}]]*/ 0;
         const seatIds = /*[[${seatIdsList}]]*/ [];
         const userId = /*[[${user != null ? user.userId : null}]]*/ null;
@@ -307,40 +476,87 @@
         const finalPriceText = document.getElementById('finalPrice').innerText;
         const finalPrice = parseFloat(finalPriceText.replace(/\./g, ''));
 
-        const payload = {
+        return {
             showtimeId: showtimeId,
             seatIds: seatIds,
             userId: userId,
             finalPrice: finalPrice,
             combos: selectedCombos
         };
+    }
 
-        // 3. Kiểm tra đăng nhập
-        if (!payload.userId) {
-            alert("Bạn cần đăng nhập để tiếp tục!");
+    nextBtn.addEventListener('click', function () {
+        openTermsModal();
+    });
+
+    termsClose.addEventListener('click', function () {
+        closeTermsModal();
+    });
+
+    termsOverlay.addEventListener('click', function (event) {
+        if (event.target === termsOverlay) {
+            closeTermsModal();
+        }
+    });
+
+    agreeCheckbox.addEventListener('change', function () {
+        payButton.disabled = !agreeCheckbox.checked;
+    });
+
+    payButton.addEventListener('click', function () {
+        if (!agreeCheckbox.checked) {
             return;
         }
 
-        // 4. Gửi AJAX
+        const payload = collectPayload();
+        payButton.disabled = true;
+
+        const token = localStorage.getItem('jwtToken');
+        const headers = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        };
+        if (token) {
+            headers['Authorization'] = 'Bearer ' + token;
+        }
+
         fetch('/api/booking/confirm', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            credentials: 'include',
+            headers: headers,
             body: JSON.stringify(payload)
         })
-            .then(res => res.json())
+            .then(async res => {
+                if (res.redirected && res.url.includes('/login')) {
+                    throw new Error('Session expired. Please login again.');
+                }
+
+                if (!res.ok) {
+                    const errorText = await res.text();
+                    throw new Error('HTTP ' + res.status + ': ' + (errorText || res.statusText));
+                }
+
+                const contentType = res.headers.get('content-type') || '';
+                if (!contentType.includes('application/json')) {
+                    const raw = await res.text();
+                    throw new Error('Unexpected response: ' + raw);
+                }
+
+                return res.json();
+            })
             .then(data => {
                 if (data.success) {
-                    alert("Đã lưu thông tin đặt vé thành công!");
-                    window.location.href = "/";
+                    alert('Payment and booking completed successfully!');
+                    window.location.href = '/booking/history' + (localStorage.getItem('username') ? ('?username=' + encodeURIComponent(localStorage.getItem('username'))) : '');
                 } else {
-                    alert("Lỗi khi lưu: " + data.message);
+                    alert('Booking failed: ' + (data.message || 'Unknown error'));
+                    payButton.disabled = false;
                 }
             })
             .catch(err => {
                 console.error(err);
-                alert("Lỗi kết nối server!");
+                alert('Booking failed: ' + err.message);
+                payButton.disabled = false;
             });
     });
     /*]]>*/
@@ -359,7 +575,14 @@
 
 <script th:src="@{/js/booking.js}"></script>
 
-
-
 </body>
 </html>
+
+
+
+
+
+
+
+
+

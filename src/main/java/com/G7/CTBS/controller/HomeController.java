@@ -73,4 +73,10 @@ public class HomeController {
         return "detail";
     }
 
+    @GetMapping("/movie-seats")
+    public String movieSeatsPage(Model model) {
+        model.addAttribute("currentPage", "movies");
+        return "movie-seats";
+    }
+
 }

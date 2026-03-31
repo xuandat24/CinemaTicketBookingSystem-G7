@@ -1,8 +1,14 @@
 package com.G7.CTBS.controller;
 
-import com.G7.CTBS.entity.*;
+import com.G7.CTBS.dto.BookingRequestDTO;
+import com.G7.CTBS.entity.Booking;
+import com.G7.CTBS.entity.Movie;
+import com.G7.CTBS.entity.Seat;
+import com.G7.CTBS.entity.Showtime;
+import com.G7.CTBS.entity.User;
 import com.G7.CTBS.repository.SeatRepository;
 import com.G7.CTBS.repository.ShowtimeRepository;
+import com.G7.CTBS.service.BookingService;
 import com.G7.CTBS.service.ComboService;
 import com.G7.CTBS.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,15 +18,18 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import com.G7.CTBS.dto.BookingRequestDTO;
-import com.G7.CTBS.service.BookingService;
 
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Controller
@@ -51,11 +60,9 @@ public class BookingController {
             @RequestParam(value = "username", required = false) String username,
             Model model) {
 
-        // USER
         User user = resolveCurrentUser(username);
         model.addAttribute("user", user);
 
-        // MOVIE + SHOWTIME
         Showtime showtime = showtimeId != null
                 ? showtimeRepository.findById(showtimeId).orElse(null)
                 : null;
@@ -67,13 +74,15 @@ public class BookingController {
         String showTime = (showtime != null && showtime.getStartTime() != null)
                 ? showtime.getStartTime().format(TIME_FORMATTER)
                 : "-";
+        String roomName = (showtime != null && showtime.getTheaterRoom() != null && showtime.getTheaterRoom().getRoomName() != null)
+                ? showtime.getTheaterRoom().getRoomName()
+                : "Room --";
 
         String movieName = movie != null ? movie.getTitle() : "Selected Movie";
         String poster = (movie != null && movie.getBannerPath() != null)
                 ? movie.getBannerPath()
                 : "/img/1.jpg";
 
-        // PARSE SEAT IDS
         List<Long> seatIds = parseCsv(seatIdsParam).stream()
                 .map(this::toLongOrNull)
                 .filter(Objects::nonNull)
@@ -83,12 +92,10 @@ public class BookingController {
                 ? new ArrayList<>()
                 : seatRepository.findAllById(seatIds);
 
-        // ================== GROUP + SUMMARY ==================
         Map<String, List<Seat>> groupedSeats = selectedSeats.stream()
                 .collect(Collectors.groupingBy(Seat::getSeatType));
 
         List<Map<String, Object>> seatSummary = new ArrayList<>();
-
         double basePrice = showtime != null ? showtime.getBasePrice() : 0;
         double totalPrice = 0;
 
@@ -106,22 +113,24 @@ public class BookingController {
             item.put("count", count);
             item.put("price", pricePerSeat);
             item.put("total", total);
-
             seatSummary.add(item);
         }
 
-        // ================== SEAT DISPLAY ==================
-        Map<String, List<String>> grouped = selectedSeats.stream()
-                .collect(Collectors.groupingBy(
-                        Seat::getSeatType,
-                        Collectors.mapping(Seat::getSeatCode, Collectors.toList())
-                ));
+        String seatDisplay;
+        if (!selectedSeats.isEmpty()) {
+            Map<String, List<String>> grouped = selectedSeats.stream()
+                    .collect(Collectors.groupingBy(
+                            Seat::getSeatType,
+                            Collectors.mapping(Seat::getSeatCode, Collectors.toList())
+                    ));
 
-        String seatDisplay = grouped.entrySet().stream()
-                .map(entry -> entry.getKey() + ": " + String.join(", ", entry.getValue()))
-                .collect(Collectors.joining("\n"));
+            seatDisplay = grouped.entrySet().stream()
+                    .map(entry -> entry.getKey() + ": " + String.join(", ", entry.getValue()))
+                    .collect(Collectors.joining("\n"));
+        } else {
+            seatDisplay = seatCodesParam == null || seatCodesParam.isBlank() ? "Not selected" : seatCodesParam;
+        }
 
-        // ================== MODEL ==================
         model.addAttribute("movieName", movieName);
         model.addAttribute("poster", poster);
         model.addAttribute("seatSummary", seatSummary);
@@ -132,14 +141,16 @@ public class BookingController {
         model.addAttribute("seatIdsList", seatIds);
         model.addAttribute("showDate", showDate);
         model.addAttribute("showTime", showTime);
+        model.addAttribute("roomName", roomName);
 
         return "booking";
     }
 
-    // ================= SUPPORT =================
-
     private List<String> parseCsv(String value) {
-        if (value == null || value.isBlank()) return new ArrayList<>();
+        if (value == null || value.isBlank()) {
+            return new ArrayList<>();
+        }
+
         return Arrays.stream(value.split(","))
                 .map(String::trim)
                 .filter(s -> !s.isEmpty())
@@ -157,16 +168,22 @@ public class BookingController {
     private User resolveCurrentUser(String usernameParam) {
         if (usernameParam != null && !usernameParam.isBlank()) {
             User user = userService.findByUsernameOrEmail(usernameParam);
-            if (user != null) return user;
+            if (user != null) {
+                return user;
+            }
         }
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null || !auth.isAuthenticated()) return null;
+        if (auth == null || !auth.isAuthenticated()) {
+            return null;
+        }
 
         String name = auth.getName();
         if (name != null && !"anonymousUser".equalsIgnoreCase(name)) {
             User user = userService.findByUsernameOrEmail(name);
-            if (user != null) return user;
+            if (user != null) {
+                return user;
+            }
         }
 
         Object principal = auth.getPrincipal();
@@ -179,44 +196,38 @@ public class BookingController {
 
         return null;
     }
-    
+
     @PostMapping("/api/booking/confirm")
     @ResponseBody
     public Map<String, Object> confirmBooking(@RequestBody BookingRequestDTO request) {
         try {
-            // Tự động lấy User đang đăng nhập từ Security Context (hoặc Token)
             User user = resolveCurrentUser(null);
             if (user == null) {
                 return Map.of("success", false, "message", "User not logged in or invalid token.");
             }
-            
-            // Gán userId vào DTO trước khi đẩy xuống Service
+
             request.setUserId(user.getUserId());
-            
-            Long bId = bookingService.createBooking(request);
-            return Map.of("success", true, "bookingId", bId);
+            Long bookingId = bookingService.createBooking(request);
+            return Map.of("success", true, "bookingId", bookingId);
         } catch (Exception e) {
             e.printStackTrace();
             return Map.of("success", false, "message", e.getMessage());
         }
     }
-    
+
     @GetMapping("/booking/history")
     public String history(@RequestParam(value = "username", required = false) String username,
                           Model model) {
-        
-        // Tự động lấy user đang đăng nhập thay vì phụ thuộc vào param ?username=
         User user = resolveCurrentUser(username);
-        
         if (user == null) {
             return "redirect:/login";
         }
-        
+
+        List<Booking> history = bookingService.findByUser(user);
         model.addAttribute("user", user);
-        
-        // Truyền luôn danh sách booking vào giao diện
-        model.addAttribute("bookings", bookingService.findByUser(user));
-        
+        model.addAttribute("history", history);
+        model.addAttribute("currentPage", "my-tickets");
+
         return "user/booking_history";
     }
 }
