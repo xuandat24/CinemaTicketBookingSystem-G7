@@ -3,6 +3,8 @@ package com.G7.CTBS.repository;
 import com.G7.CTBS.entity.Showtime;
 import com.G7.CTBS.enums.ShowtimeStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -45,5 +47,11 @@ public interface ShowtimeRepository extends JpaRepository<Showtime, Long> {
             LocalDateTime end
     );
     boolean existsByTheaterRoom_RoomIdAndStartTimeAfter(Long roomId, LocalDateTime startTime);
+    
+    @Query("SELECT s FROM Showtime s WHERE s.startTime BETWEEN :start AND :end " +
+            "AND (:keyword IS NULL OR LOWER(s.movie.title) LIKE LOWER(CONCAT('%', :keyword, '%')))")
+    List<Showtime> findShowtimesForOccupancy(@Param("start") java.time.LocalDateTime start,
+                                             @Param("end") java.time.LocalDateTime end,
+                                             @Param("keyword") String keyword);
 }
 

@@ -241,16 +241,18 @@ async function fetchShowtimes(dateStr) {
 }
 
 function selectShowtime(id, roomName, timeStr, price) {
-    currentBooking.showtimeId = id;
-    currentBooking.theaterName = roomName;
-    currentBooking.startTime = timeStr;
-    currentBooking.pricePerSeat = price;
-    currentBooking.selectedSeats = [];
-    currentBooking.selectedSeatNames = [];
-    currentBooking.totalPrice = 0;
-    document.getElementById('btnNextToCombo').disabled = true;
-    document.getElementById('step2SeatCount').innerText = "0";
-    fetchSeats(id);
+    const username = (localStorage.getItem('username') || '').trim();
+    const room = (roomName || '').trim();
+
+    let url = `/movie-seats?showtimeId=${encodeURIComponent(id)}`;
+    if (room) {
+        url += `&roomName=${encodeURIComponent(room)}`;
+    }
+    if (username) {
+        url += `&username=${encodeURIComponent(username)}`;
+    }
+
+    window.location.href = url;
 }
 
 async function fetchSeats(showtimeId) {

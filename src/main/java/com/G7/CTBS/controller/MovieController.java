@@ -3,6 +3,7 @@ package com.G7.CTBS.controller;
 import com.G7.CTBS.dto.MovieDTO;
 import com.G7.CTBS.service.MovieService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,7 @@ import java.util.Map;
 @RequestMapping("/api/admin/movies")
 public class MovieController {
 
+    @Autowired
     private final MovieService movieService;
 
     public MovieController(MovieService movieService) {

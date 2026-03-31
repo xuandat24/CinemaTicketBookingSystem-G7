@@ -1,4 +1,4 @@
-﻿(function () {
+(function () {
     const seatGrid = document.getElementById("seat-grid");
     if (!seatGrid) {
         return;
@@ -18,6 +18,11 @@
     const timerEl = document.getElementById("countdown-timer");
     const continueBtn = document.getElementById("continue-btn");
     const theaterRoomLabelEl = document.getElementById("theater-room-label");
+    const movieTitleEl = document.getElementById("movie-title");
+    const moviePosterEl = document.getElementById("movie-poster");
+    const movieGenreEl = document.getElementById("movie-genre");
+    const movieDurationEl = document.getElementById("movie-duration");
+    const movieCinemaEl = document.getElementById("movie-cinema");
 
     const queryParams = new URLSearchParams(window.location.search);
     const showtimeId = queryParams.get("showtimeId");
@@ -179,6 +184,55 @@
     function formatPrice(value) {
         const safeValue = Number.isFinite(value) ? value : 0;
         return safeValue.toLocaleString("en-US") + " VND";
+    }
+
+    function resolveBannerUrl(path) {
+        const fallback = "/img/11.jpg";
+        if (!path || typeof path !== "string") return fallback;
+
+        let trimmed = path.trim();
+        if (!trimmed) return fallback;
+
+        trimmed = trimmed.replace(/\\/g, "/");
+
+        // Some records may store "/uploads/banners/..." while WebConfig serves "/banners/**".
+        if (trimmed.startsWith("/uploads/banners/")) {
+            trimmed = trimmed.replace("/uploads/banners/", "/banners/");
+        } else if (trimmed.startsWith("uploads/banners/")) {
+            trimmed = trimmed.replace("uploads/banners/", "/banners/");
+        }
+
+        if (/^https?:\/\//i.test(trimmed)) return trimmed;
+        if (trimmed.startsWith("/")) return trimmed;
+        return "/" + trimmed;
+    }
+
+    function updateMovieInfo(payload) {
+        const title = (payload && payload.movieTitle ? String(payload.movieTitle).trim() : "") || "Movie";
+        const genre = (payload && payload.genre ? String(payload.genre).trim() : "") || "--";
+        const duration = Number(payload && payload.duration);
+        const cinemaName = (roomName && roomName.trim()) ? roomName.trim() : "CTBS";
+
+        if (movieTitleEl) {
+            movieTitleEl.textContent = title;
+        }
+        if (movieGenreEl) {
+            movieGenreEl.textContent = genre;
+        }
+        if (movieDurationEl) {
+            movieDurationEl.textContent = Number.isFinite(duration) && duration > 0 ? (duration + " minutes") : "--";
+        }
+        if (movieCinemaEl) {
+            movieCinemaEl.textContent = cinemaName;
+        }
+        if (moviePosterEl) {
+            moviePosterEl.src = resolveBannerUrl(payload ? payload.bannerPath : null);
+            moviePosterEl.alt = title + " poster";
+            moviePosterEl.onerror = function () {
+                moviePosterEl.onerror = null;
+                moviePosterEl.src = "/img/11.jpg";
+            };
+        }
     }
 
     function updateTheaterRoomLabel() {
@@ -428,6 +482,7 @@
                 }
             });
 
+            updateMovieInfo(payload);
             isSeatDataLoaded = true;
             return true;
         } catch (error) {
