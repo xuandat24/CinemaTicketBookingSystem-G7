@@ -2,28 +2,38 @@ const API = "/api/showtimes";
 const MOVIE_API = "/api/admin/movies";
 const ROOM_API = "/api/theater-rooms";
 
+let debounceTimer;
+
+function debounceFilter() {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+        applyFilter();
+    }, 400); // delay 400ms
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     showSuccessMessage();
     loadAll();
-    loadMovies();
     loadRooms();
+
+    // Realtime filter
+    document.getElementById("filterId")
+        .addEventListener("input", debounceFilter);
+
+    document.getElementById("filterRoom")
+        .addEventListener("change", applyFilter);
+
+    document.getElementById("filterDate")
+        .addEventListener("change", applyFilter);
+
+    document.getElementById("filterKeyword")
+        .addEventListener("input", debounceFilter);
 });
 
 function loadAll() {
     fetch(API)
         .then(res => res.json())
         .then(renderTable);
-}
-
-function loadMovies() {
-    fetch(MOVIE_API)
-        .then(res => res.json())
-        .then(data => {
-            const select = document.getElementById("filterMovie");
-            data.forEach(m => {
-                select.innerHTML += `<option value="${m.movieId}">${m.title}</option>`;
-            });
-        });
 }
 
 function loadRooms() {
@@ -43,12 +53,17 @@ function loadRooms() {
 function applyFilter() {
 
     const id = document.getElementById("filterId").value;
-    const movieId = document.getElementById("filterMovie").value;
     const roomId = document.getElementById("filterRoom").value;
     const date = document.getElementById("filterDate").value;
+    const keyword = document.getElementById("filterKeyword").value;
 
     // ưu tiên ID (search riêng)
-    if (id) {
+    if (id && id.trim() !== "") {
+
+        document.getElementById("filterMovie").value = "";
+        document.getElementById("filterRoom").value = "";
+        document.getElementById("filterDate").value = "";
+
         fetch(`${API}/${id}`)
             .then(res => {
                 if (!res.ok) throw new Error();
@@ -62,9 +77,9 @@ function applyFilter() {
     // build query
     let query = [];
 
-    if (movieId) query.push(`movieId=${movieId}`);
     if (roomId) query.push(`roomId=${roomId}`);
     if (date) query.push(`date=${date}`);
+    if (keyword) query.push(`keyword=${encodeURIComponent(keyword)}`);
 
     const url = `${API}/search?${query.join("&")}`;
 
@@ -75,7 +90,7 @@ function applyFilter() {
 
 function resetFilter() {
     document.getElementById("filterId").value = "";
-    document.getElementById("filterMovie").value = "";
+    document.getElementById("filterKeyword").value = "";
     document.getElementById("filterRoom").value = "";
     document.getElementById("filterDate").value = "";
     loadAll();
@@ -106,7 +121,7 @@ function renderTable(data) {
                 <td>${s.theaterRoomName || "-"}</td>
                 <td>${formatDate(s.startTime)}</td>
                 <td>${formatDate(s.endTime)}</td>
-                <td>${s.price}</td>
+                <td>${formatPrice(s.price)}</td>
                 <td>${format}</td>
                 <td>${s.status}</td>
                 <td class="text-end">
@@ -124,6 +139,10 @@ function edit(id) {
 
 function formatDate(dt) {
     return dt ? dt.replace("T", " ") : "";
+}
+
+function formatPrice(price) {
+    return new Intl.NumberFormat("vi-VN").format(price);
 }
 
 function showSuccessMessage() {
