@@ -9,121 +9,6 @@
     <link rel="stylesheet" th:href="@{/css/booking.css}">
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-    <style>
-        .terms-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.55);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-            padding: 24px;
-        }
-
-        .terms-overlay.is-open {
-            display: flex;
-        }
-
-        .terms-modal {
-            width: min(920px, 100%);
-            max-height: 90vh;
-            background: #fff;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.3);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .terms-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px 20px;
-            border-bottom: 1px solid #e5e7eb;
-        }
-
-        .terms-title {
-            margin: 0;
-            font-size: 30px;
-            font-weight: 700;
-            letter-spacing: 0.3px;
-        }
-
-        .terms-close {
-            border: none;
-            background: transparent;
-            font-size: 28px;
-            line-height: 1;
-            color: #6b7280;
-            cursor: pointer;
-        }
-
-        .terms-body {
-            padding: 22px 22px 18px;
-            overflow-y: auto;
-            color: #374151;
-            font-size: 17px;
-            line-height: 1.5;
-        }
-
-        .terms-body > p {
-            margin: 0 0 34px;
-        }
-
-        .terms-body > p:last-of-type {
-            margin-bottom: 26px;
-        }
-
-        .terms-body ol {
-            padding-left: 24px;
-            margin: 0;
-        }
-
-        .terms-body li {
-            margin-bottom: 12px;
-        }
-
-        .terms-footer {
-            border-top: 1px solid #e5e7eb;
-            padding: 14px 22px;
-            background: #fff;
-        }
-
-        .terms-agree {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 12px;
-            font-size: 17px;
-            font-weight: 600;
-            color: #111827;
-        }
-
-        .terms-actions {
-            display: flex;
-            justify-content: center;
-        }
-
-        .terms-pay-btn {
-            min-width: 140px;
-            border: none;
-            border-radius: 10px;
-            padding: 10px 24px;
-            background: #0056b3;
-            color: #fff;
-            font-size: 18px;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        .terms-pay-btn:disabled {
-            background: #9ca3af;
-            cursor: not-allowed;
-        }
-    </style>
 </head>
 
 <body>
@@ -211,6 +96,7 @@
                         <th></th>
                         <th>Combo name</th>
                         <th>Description</th>
+                        <th>Price</th>
                         <th>Quantity</th>
                     </tr>
                     </thead>
@@ -219,12 +105,15 @@
                     <tr th:each="combo : ${combos}">
                         <td>
                             <div class="combo-img">
-                                <img th:src="@{/img/{img}(img=${combo.image})}">
+                                <img th:src="${combo.image != null and !#strings.isEmpty(combo.image) ? ((#strings.startsWith(combo.image, 'http://') or #strings.startsWith(combo.image, 'https://') or #strings.startsWith(combo.image, '/')) ? combo.image : '/img/' + combo.image) : '/img/popcorn.png'}">
                             </div>
                         </td>
 
                         <td th:text="${combo.name}"></td>
                         <td th:text="${combo.description}"></td>
+                        <td>
+                            <b th:text="${#numbers.formatInteger(combo.price, 0, 'POINT')}">0</b> VND
+                        </td>
 
                         <td>
                             <div class="qty-box">
@@ -386,7 +275,7 @@
                 <li>Please check your reservation confirmation carefully and remember your reservation code. To receive your ticket from our BOX OFFICE counters, you also need to bring a form of identification (such as your national ID card, your student card, your passport, etc.)</li>
                 <li>According to the regulations of the Cinema Department, certain films are not for audience under the age of 13, or 16, or 18. When you receive your tickets at the BOX OFFICE counters, the staff might ask you for proof that you are old enough to watch an age-restricted film. Please keep this in mind when you purchase your tickets.</li>
                 <li>In some cases of force majeure, the movie session can be cancelled to ensure the best safety for customers. The transaction amount will be refunded directly to your bank account which was used to buy tickets online. We will contact you through your contact information in the Member info. description, to get your confirmation. Depending on your bank account and payment procedures, the refund process may get the different period following:
-                    <div style="margin-top: 8px; margin-left: 22px;">
+                    <div class="terms-refund-lines">
                         <p class="mb-1">ATM cards: maximum 1 working week</p>
                         <p class="mb-1">Visa Credit Card, Master Card, JCB Card: maximum 1 working month</p>
                         <p class="mb-0">Vietcombank's cards: maximum 48 working hours</p>
@@ -407,162 +296,27 @@
 </div>
 
 <script th:inline="javascript">
-    let comboPrice = {}
-    let comboQty = {}
-
     /*<![CDATA[*/
-    let combos = /*[[${combos}]]*/ [];
-    /*]]>*/
-
-    combos.forEach(c => {
-        comboPrice[c.id] = c.price
-        comboQty[c.id] = 0
-    })
-</script>
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    const nextBtn = document.querySelector('.btn-next');
-    const termsOverlay = document.getElementById('termsOverlay');
-    const termsClose = document.getElementById('termsClose');
-    const agreeCheckbox = document.getElementById('agreeCheckbox');
-    const payButton = document.getElementById('payButton');
-
-    function openTermsModal() {
-        agreeCheckbox.checked = false;
-        payButton.disabled = true;
-        termsOverlay.classList.add('is-open');
-        termsOverlay.setAttribute('aria-hidden', 'false');
-    }
-
-    function closeTermsModal() {
-        termsOverlay.classList.remove('is-open');
-        termsOverlay.setAttribute('aria-hidden', 'true');
-    }
-
-    function collectPayload() {
-        let selectedCombos = [];
-        combos.forEach(c => {
-            let comboElement = document.getElementById('combo' + c.id);
-            if (comboElement) {
-                let qty = parseInt(comboElement.innerText);
-                if (qty > 0) {
-                    selectedCombos.push({ comboId: c.id, quantity: qty });
-                }
-            }
-        });
-
-        const showtimeId = /*[[${showtimeId}]]*/ 0;
-        const seatIds = /*[[${seatIdsList}]]*/ [];
-        const userId = /*[[${user != null ? user.userId : null}]]*/ null;
-
-        const finalPriceText = document.getElementById('finalPrice').innerText;
-        const finalPrice = parseFloat(finalPriceText.replace(/\./g, ''));
-
-        return {
-            showtimeId: showtimeId,
-            seatIds: seatIds,
-            userId: userId,
-            finalPrice: finalPrice,
-            combos: selectedCombos
-        };
-    }
-
-    nextBtn.addEventListener('click', function () {
-        openTermsModal();
-    });
-
-    termsClose.addEventListener('click', function () {
-        closeTermsModal();
-    });
-
-    termsOverlay.addEventListener('click', function (event) {
-        if (event.target === termsOverlay) {
-            closeTermsModal();
-        }
-    });
-
-    agreeCheckbox.addEventListener('change', function () {
-        payButton.disabled = !agreeCheckbox.checked;
-    });
-
-    payButton.addEventListener('click', function () {
-        if (!agreeCheckbox.checked) {
-            return;
-        }
-
-        const payload = collectPayload();
-        payButton.disabled = true;
-
-        const token = localStorage.getItem('jwtToken');
-        const headers = {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-        };
-        if (token) {
-            headers['Authorization'] = 'Bearer ' + token;
-        }
-
-        // Store booking data in session storage for later use
-        sessionStorage.setItem('bookingData', JSON.stringify(payload));
-
-        // Create payment with VNPay
-        fetch('/api/payment/create-payment', {
-            method: 'POST',
-            credentials: 'include',
-            headers: headers,
-            body: JSON.stringify(payload)
-        })
-            .then(async res => {
-                if (res.redirected && res.url.includes('/login')) {
-                    throw new Error('Session expired. Please login again.');
-                }
-
-                if (!res.ok) {
-                    const errorText = await res.text();
-                    throw new Error('HTTP ' + res.status + ': ' + (errorText || res.statusText));
-                }
-
-                const contentType = res.headers.get('content-type') || '';
-                if (!contentType.includes('application/json')) {
-                    const raw = await res.text();
-                    throw new Error('Unexpected response: ' + raw);
-                }
-
-                return res.json();
-            })
-            .then(data => {
-                if (data.success && data.paymentUrl) {
-                    // Redirect to VNPay payment page
-                    window.location.href = data.paymentUrl;
-                } else {
-                    alert('Payment creation failed: ' + (data.message || 'Unknown error'));
-                    payButton.disabled = false;
-                }
-            })
-            .catch(err => {
-                console.error(err);
-                alert('Payment creation failed: ' + err.message);
-                payButton.disabled = false;
-            });
-    });
+    window.bookingPageData = {
+        combos: /*[[${combos}]]*/ [],
+        showtimeId: /*[[${showtimeId}]]*/ 0,
+        seatIds: /*[[${seatIdsList}]]*/ [],
+        userId: /*[[${user != null ? user.userId : null}]]*/ null
+    };
     /*]]>*/
 </script>
-<script>
-    function goBack() {
-        if (document.referrer) {
-            history.back();
-        } else {
-            window.location.href = "/";
-        }
-    }
-</script>
-
 <div th:replace="layout/footer :: footer"></div>
 
 <script th:src="@{/js/booking.js}"></script>
 
 </body>
 </html>
+
+
+
+
+
+
 
 
 

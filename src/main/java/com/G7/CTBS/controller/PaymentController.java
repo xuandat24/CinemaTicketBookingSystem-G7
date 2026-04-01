@@ -21,7 +21,6 @@ public class PaymentController {
     @Autowired private BookingService bookingService;
     @Autowired private VNPayService vnPayService;
 
-    // Frontend gọi endpoint này
     @PostMapping("/create-payment")
     public ResponseEntity<?> createPayment(
             @RequestBody BookingRequestDTO request,
@@ -29,10 +28,8 @@ public class PaymentController {
 
         Map<String, Object> response = new HashMap<>();
         try {
-            // 1. Tạo Booking → lấy bookingId
             Long bookingId = bookingService.createBooking(request);
 
-            // 2. Tạo Payment PENDING + build URL VNPay
             String ip = getClientIp(httpRequest);
             String paymentUrl = vnPayService.createPaymentUrl(bookingId, ip);
 
@@ -47,23 +44,26 @@ public class PaymentController {
         }
     }
 
-    // VNPay redirect về sau khi thanh toán
     @GetMapping("/vnpay-return")
     public void vnpayReturn(
             @RequestParam Map<String, String> params,
             HttpServletResponse response) throws IOException {
 
         try {
-            vnPayService.handleReturn(params); // Cập nhật DB
+            vnPayService.handleReturn(params);
         } catch (Exception e) {
             System.err.println("VNPay return error: " + e.getMessage());
         }
 
-        // Redirect thẳng sang booking history
+        String responseCode = params.getOrDefault("vnp_ResponseCode", "");
+        if ("24".equals(responseCode)) {
+            response.sendRedirect("/?payment=cancelled");
+            return;
+        }
+
         response.sendRedirect("/booking/history");
     }
 
-    // Kiểm tra trạng thái
     @GetMapping("/status/{bookingId}")
     public ResponseEntity<?> checkStatus(@PathVariable Long bookingId) {
         try {

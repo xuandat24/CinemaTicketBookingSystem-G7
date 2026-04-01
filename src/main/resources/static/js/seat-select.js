@@ -211,7 +211,7 @@
         const title = (payload && payload.movieTitle ? String(payload.movieTitle).trim() : "") || "Movie";
         const genre = (payload && payload.genre ? String(payload.genre).trim() : "") || "--";
         const duration = Number(payload && payload.duration);
-        const cinemaName = (roomName && roomName.trim()) ? roomName.trim() : "CTBS";
+        const cinemaName = (roomName && roomName.trim()) ? roomName.trim() : "Room --";
 
         if (movieTitleEl) {
             movieTitleEl.textContent = title;
@@ -574,3 +574,4 @@
 
     initSeatPage();
 })();
+

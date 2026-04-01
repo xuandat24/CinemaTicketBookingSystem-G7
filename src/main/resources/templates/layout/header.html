@@ -61,6 +61,14 @@
                     return name.replace("@gmail.com", "");
                 }
 
+                function clearClientAuth() {
+                    localStorage.removeItem("jwtToken");
+                    localStorage.removeItem("username");
+
+                    document.cookie = "jwtToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+                    document.cookie = "JSESSIONID=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+                }
+
                 function updateNavbar() {
                     const token = localStorage.getItem("jwtToken");
                     const navLogin = document.getElementById("navLogin");
@@ -68,13 +76,14 @@
                     const displayUsername = document.getElementById("displayUsername");
                     const myTicketsLink = document.getElementById("myTicketsLink");
 
+                    if (myTicketsLink) {
+                        myTicketsLink.href = "/booking/history";
+                    }
+
                     if (token) {
                         const savedUsername = localStorage.getItem("username");
-                        if (savedUsername) {
+                        if (savedUsername && displayUsername) {
                             displayUsername.textContent = "Hi, " + savedUsername;
-                            if (myTicketsLink) {
-                                myTicketsLink.href = "/booking/history?username=" + encodeURIComponent(savedUsername);
-                            }
                         } else {
                             fetch('/api/auth/me', {
                                 method: 'GET',
@@ -86,16 +95,13 @@
                                 })
                                 .then(data => {
                                     const formattedName = formatUsername(data.username);
-                                    displayUsername.textContent = "Hi, " + formattedName;
-                                    localStorage.setItem("username", formattedName);
-                                    if (myTicketsLink) {
-                                        myTicketsLink.href = "/booking/history?username=" + encodeURIComponent(formattedName);
+                                    if (displayUsername) {
+                                        displayUsername.textContent = "Hi, " + formattedName;
                                     }
+                                    localStorage.setItem("username", formattedName);
                                 })
-                                .catch(error => {
-                                    console.error("Error fetching user info:", error);
-                                    localStorage.removeItem("jwtToken");
-                                    localStorage.removeItem("username");
+                                .catch(() => {
+                                    clearClientAuth();
                                     updateNavbar();
                                 });
                         }
@@ -105,11 +111,20 @@
 
                         const logoutBtn = document.getElementById("logoutBtn");
                         if (logoutBtn) {
-                            logoutBtn.addEventListener("click", function (e) {
+                            logoutBtn.addEventListener("click", async function (e) {
                                 e.preventDefault();
-                                localStorage.removeItem("jwtToken");
-                                localStorage.removeItem("username");
-                                window.location.reload();
+
+                                try {
+                                    await fetch('/logout', {
+                                        method: 'POST',
+                                        credentials: 'include'
+                                    });
+                                } catch (err) {
+                                    console.error('Logout request failed:', err);
+                                } finally {
+                                    clearClientAuth();
+                                    window.location.href = '/login';
+                                }
                             });
                         }
                     } else {

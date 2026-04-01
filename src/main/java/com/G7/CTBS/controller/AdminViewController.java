@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/admin")
 public class AdminViewController {
 
-    // Thêm đoạn này vào trong class AdminViewController
     @GetMapping("/profile")
     public String adminProfilePage() {
         return "admin/profile-admin";
@@ -54,13 +53,28 @@ public class AdminViewController {
         return "admin/create-showtime";
     }
 
-    @GetMapping("showtimes")
+    @GetMapping("/showtimes")
     public String searchShowtimesPage() {
         return "admin/search-showtime";
     }
 
-    @GetMapping("showtimes/update")
+    @GetMapping("/showtimes/update")
     public String updateShowtimesPage() {
         return "admin/update-showtime";
+    }
+
+    @GetMapping("/combos/add")
+    public String addComboPage() {
+        return "admin/addCombo";
+    }
+
+    @GetMapping("/combos")
+    public String searchComboPage() {
+        return "admin/searchCombo";
+    }
+
+    @GetMapping("/combos/edit")
+    public String editComboPage() {
+        return "admin/editCombo";
     }
 }

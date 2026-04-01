@@ -14,7 +14,11 @@ import javax.crypto.spec.SecretKeySpec;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.TimeZone;
+import java.util.TreeMap;
 
 @Service
 public class VNPayService {
@@ -23,39 +27,36 @@ public class VNPayService {
     @Autowired private BookingRepository bookingRepository;
     @Autowired private PaymentRepository paymentRepository;
 
-    //   Tạo Payment PENDING + URL VNPay từ bookingId có sẵn
     public String createPaymentUrl(Long bookingId, String ipAddress) throws Exception {
         Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new RuntimeException("Booking không tồn tại: " + bookingId));
+                .orElseThrow(() -> new RuntimeException("Booking does not exist: " + bookingId));
 
         long amount = booking.getFinalPrice().longValue();
         String transactionRef = bookingId + "_" + System.currentTimeMillis();
 
-        // Lưu Payment PENDING
         Payment payment = new Payment();
         payment.setBooking(booking);
         payment.setTransactionRef(transactionRef);
         payment.setAmount((double) amount);
         paymentRepository.save(payment);
 
-        // Build params — TreeMap bắt buộc để HMAC đúng thứ tự
         Map<String, String> params = new TreeMap<>();
-        params.put("vnp_Version",    VNPayConfig.VERSION);
-        params.put("vnp_Command",    VNPayConfig.COMMAND);
-        params.put("vnp_TmnCode",    vnPayConfig.tmnCode);
-        params.put("vnp_Amount",     String.valueOf(amount * 100));
-        params.put("vnp_CurrCode",   "VND");
-        params.put("vnp_TxnRef",     transactionRef);
-        params.put("vnp_OrderInfo",  "Thanh toan booking #" + bookingId);
-        params.put("vnp_OrderType",  VNPayConfig.ORDER_TYPE);
-        params.put("vnp_Locale",     VNPayConfig.LOCALE);
-        params.put("vnp_ReturnUrl",  vnPayConfig.returnUrl);
-        params.put("vnp_IpAddr",     ipAddress);
+        params.put("vnp_Version", VNPayConfig.VERSION);
+        params.put("vnp_Command", VNPayConfig.COMMAND);
+        params.put("vnp_TmnCode", vnPayConfig.tmnCode);
+        params.put("vnp_Amount", String.valueOf(amount * 100));
+        params.put("vnp_CurrCode", "VND");
+        params.put("vnp_TxnRef", transactionRef);
+        params.put("vnp_OrderInfo", "Ticket booking payment #" + bookingId);
+        params.put("vnp_OrderType", VNPayConfig.ORDER_TYPE);
+        params.put("vnp_Locale", VNPayConfig.LOCALE);
+        params.put("vnp_ReturnUrl", vnPayConfig.returnUrl);
+        params.put("vnp_IpAddr", ipAddress);
         params.put("vnp_CreateDate", new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
         params.put("vnp_ExpireDate", getExpireDate(15));
 
         String queryString = buildQueryString(params);
-        String secureHash  = hmacSHA512(vnPayConfig.hashSecret, queryString);
+        String secureHash = hmacSHA512(vnPayConfig.hashSecret, queryString);
 
         return vnPayConfig.paymentUrl + "?" + queryString + "&vnp_SecureHash=" + secureHash;
     }
@@ -63,18 +64,17 @@ public class VNPayService {
     @Transactional
     public Payment handleReturn(Map<String, String> params) throws Exception {
         if (!validateSignature(params)) {
-            throw new RuntimeException("Chữ ký VNPay không hợp lệ");
+            throw new RuntimeException("Invalid VNPay signature");
         }
 
         String transactionRef = params.get("vnp_TxnRef");
-        String responseCode   = params.get("vnp_ResponseCode");
-        String transactionId  = params.get("vnp_TransactionNo");
-        String payDateStr     = params.get("vnp_PayDate");
+        String responseCode = params.get("vnp_ResponseCode");
+        String transactionId = params.get("vnp_TransactionNo");
+        String payDateStr = params.get("vnp_PayDate");
 
         Payment payment = paymentRepository.findByTransactionRef(transactionRef)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy payment: " + transactionRef));
+                .orElseThrow(() -> new RuntimeException("Payment not found: " + transactionRef));
 
-        // Tránh xử lý lại nếu đã SUCCESS rồi (VNPay đôi khi gọi 2 lần)
         if ("SUCCESS".equals(payment.getPaymentStatus())) {
             return payment;
         }
@@ -86,39 +86,57 @@ public class VNPayService {
         if ("00".equals(responseCode)) {
             payment.setPaymentStatus("SUCCESS");
 
-            // Cập nhật Booking → CONFIRMED
             Booking booking = payment.getBooking();
             booking.setStatus("CONFIRMED");
-            bookingRepository.save(booking);   // ← đảm bảo save booking
-        } else {
-            payment.setPaymentStatus("FAILED");
+            bookingRepository.save(booking);
+            return paymentRepository.save(payment);
         }
 
-        return paymentRepository.save(payment); // ← đảm bảo save payment
+        payment.setPaymentStatus("FAILED");
+        paymentRepository.save(payment);
+
+        // VNPay responseCode 24 = user canceled payment.
+        // Remove unfinished booking so My Tickets only keeps successful bills.
+        if ("24".equals(responseCode)) {
+            deleteBookingWithPayments(payment.getBooking());
+        }
+
+        return payment;
     }
 
-    // Kiểm tra trạng thái theo bookingId
     public Payment getPaymentByBookingId(Long bookingId) {
         return paymentRepository.findByBooking_BookingId(bookingId)
-                .orElseThrow(() -> new RuntimeException("Chưa có payment cho booking: " + bookingId));
+                .orElseThrow(() -> new RuntimeException("No payment found for booking: " + bookingId));
     }
 
-    // Validate chữ ký
     public boolean validateSignature(Map<String, String> params) throws Exception {
         String receivedHash = params.get("vnp_SecureHash");
         Map<String, String> filtered = new TreeMap<>(params);
         filtered.remove("vnp_SecureHash");
         filtered.remove("vnp_SecureHashType");
-        String queryString    = buildQueryString(filtered);
+        String queryString = buildQueryString(filtered);
         String calculatedHash = hmacSHA512(vnPayConfig.hashSecret, queryString);
         return calculatedHash.equalsIgnoreCase(receivedHash);
+    }
+
+    private void deleteBookingWithPayments(Booking booking) {
+        if (booking == null || booking.getBookingId() == null) {
+            return;
+        }
+
+        Long bookingId = booking.getBookingId();
+        List<Payment> payments = paymentRepository.findAllByBooking_BookingIdOrderByCreatedAtDesc(bookingId);
+        if (!payments.isEmpty()) {
+            paymentRepository.deleteAll(payments);
+        }
+        bookingRepository.deleteById(bookingId);
     }
 
     private String buildQueryString(Map<String, String> params) throws Exception {
         StringBuilder sb = new StringBuilder();
         for (Map.Entry<String, String> entry : params.entrySet()) {
             if (sb.length() > 0) sb.append("&");
-            sb.append(URLEncoder.encode(entry.getKey(),   StandardCharsets.UTF_8));
+            sb.append(URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8));
             sb.append("=");
             sb.append(URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8));
         }
@@ -135,8 +153,8 @@ public class VNPayService {
     }
 
     private String getExpireDate(int minutes) {
-        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
-        cal.add(Calendar.MINUTE, minutes);
+        java.util.Calendar cal = java.util.Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
+        cal.add(java.util.Calendar.MINUTE, minutes);
         return new SimpleDateFormat("yyyyMMddHHmmss").format(cal.getTime());
     }
 
