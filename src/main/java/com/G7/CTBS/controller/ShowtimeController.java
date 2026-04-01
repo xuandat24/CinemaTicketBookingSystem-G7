@@ -102,10 +102,11 @@ public class ShowtimeController {
             @RequestParam(required = false) Long roomId,
             @RequestParam(required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
-            @RequestParam(required = false) ShowtimeStatus status
+            @RequestParam(required = false) ShowtimeStatus status,
+            @RequestParam(required = false) String keyword
     ) {
         return ResponseEntity.ok(
-                showtimeService.searchShowtime(movieId, roomId, date, status)
+                showtimeService.searchShowtime(movieId, roomId, date, status, keyword)
         );
     }
 

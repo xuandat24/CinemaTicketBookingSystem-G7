@@ -36,9 +36,7 @@
 
                 <div class="col-md-3">
                     <label>Movie</label>
-                    <select id="filterMovie" class="form-select">
-                        <option value="">All Movies</option>
-                    </select>
+                    <input type="text" id="filterKeyword" class="form-control" placeholder="Search movie...">
                 </div>
 
                 <div class="col-md-3">
@@ -48,14 +46,13 @@
                     </select>
                 </div>
 
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <label>Date</label>
                     <input type="date" id="filterDate" class="form-control">
                 </div>
 
-                <div class="col-md-2 d-flex align-items-end gap-2">
-                    <button class="btn btn-primary flex-fill" onclick="applyFilter()">Filter</button>
-                    <button class="btn btn-secondary flex-fill" onclick="resetFilter()">Reset</button>
+                <div class="col-md-1 d-flex align-items-end">
+                    <button class="btn btn-secondary w-100" onclick="resetFilter()">Reset</button>
                 </div>
 
             </div>

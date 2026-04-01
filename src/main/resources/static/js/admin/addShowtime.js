@@ -51,66 +51,105 @@ async function loadRooms(){
 
 }
 
+document.addEventListener("DOMContentLoaded", function(){
+
+    document.getElementById("price")
+        .addEventListener("input", formatPriceInput);
+
+    loadMovies();
+    loadRooms();
+});
+
+function formatPriceInput(e) {
+    let value = e.target.value;
+
+    // chỉ giữ số
+    value = value.replace(/\D/g, "");
+
+    // format dấu chấm
+    value = new Intl.NumberFormat("vi-VN").format(value);
+
+    e.target.value = value;
+}
+
 document
     .getElementById("createShowtimeForm")
     .addEventListener("submit", async function(e){
 
-        e.preventDefault();
-        const message = document.getElementById("message");
+    e.preventDefault();
+    const message = document.getElementById("message");
 
-        const data = {
+    const rawPrice = document.getElementById("price").value;
 
-            movieId: document.getElementById("movieId").value,
+    const priceNumber = Number(rawPrice.replace(/\./g, ""));
 
-            theaterRoomId: document.getElementById("roomId").value,
-
-            startTime: document.getElementById("startTime").value,
-
-            format: document.getElementById("format").value,
-
-            price: document.getElementById("price").value,
-
-            status: document.getElementById("status").value
-
-        };
-
-        const response = await fetch("/api/showtimes", {
-
-            method: "POST",
-
-            headers: {
-                "Content-Type": "application/json"
-            },
-
-            body: JSON.stringify(data)
-
-        });
-
-        if(response.ok){
-            // save message to sessionStorage
-            sessionStorage.setItem("successMessage", "Showtime created successfully");
-
-            // redirect
-            window.location.href = "/admin/showtimes";
-
-        }else{
-            let errorMessage = "Cannot create showtime";
-            try {
-                const error = await response.json();
-                errorMessage = error.message || errorMessage;
-            } catch (ignored) {
-            }
-
-            message.innerHTML =`
+    if (!priceNumber || priceNumber < 10000) {
+        message.innerHTML = `
             <div class="alert alert-danger">
-                ${errorMessage}
-            </div>`;
+                Price must be greater than 10,000
+            </div>
+        `;
+        return;
+    }
 
-        }
+    const data = {
+
+        movieId: document.getElementById("movieId").value,
+
+        theaterRoomId: document.getElementById("roomId").value,
+
+        startTime: document.getElementById("startTime").value,
+
+        format: document.getElementById("format").value,
+
+        price: priceNumber,
+
+        status: document.getElementById("status").value
+
+    };
+
+    const response = await fetch("/api/showtimes", {
+
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify(data)
 
     });
 
-document.addEventListener("DOMContentLoaded", function(){
-    loadMovies();
-    loadRooms();
+    if(response.ok){
+        // save message to sessionStorage
+        sessionStorage.setItem("successMessage", "Showtime created successfully");
+
+        // redirect
+        window.location.href = "/admin/showtimes";
+
+    }else{
+        let errorMessage = "Cannot create showtime";
+        try {
+            const error = await response.json();
+            errorMessage = error.message || errorMessage;
+        } catch (ignored) {
+        }
+
+        message.innerHTML =`
+        <div class="alert alert-danger">
+            ${errorMessage}
+        </div>`;
+
+    }
+
+});
+
+document.getElementById("price").addEventListener("input", function (e) {
+    let value = e.target.value.replace(/\D/g, ""); // bỏ hết ký tự không phải số
+
+    if (value) {
+        value = Number(value).toLocaleString("vi-VN"); // format 100.000
+    }
+
+    e.target.value = value;
 });
