@@ -75,7 +75,7 @@ public class DashboardService {
         }
         
         // 4. Dữ liệu Biểu đồ Đường (Peak Hours - Nhóm theo từng giờ trong 24h)
-        List<Booking> bookings = bookingRepository.findByStatusAndCreateTimeBetween("SUCCESS", start, end);
+        List<Booking> bookings = bookingRepository.findByStatusInAndCreateTimeBetween(List.of("SUCCESS", "CONFIRMED"), start, end);
         Map<Integer, Integer> hourMap = new HashMap<>();
         
         for (int i = 0; i <= 23; i++) {
