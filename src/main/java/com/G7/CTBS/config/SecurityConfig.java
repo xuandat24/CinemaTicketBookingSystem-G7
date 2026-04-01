@@ -30,7 +30,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         
                         // 1. CÁC TÀI NGUYÊN TĨNH (Ai cũng được tải)
-                        .requestMatchers("/css/**", "/js/**", "/img/**", "/fonts/**", "/banners/**", "/trailers/**").permitAll()
+                        .requestMatchers("/css/**", "/js/**", "/img/**", "/fonts/**", "/banners/**", "/trailers/**", "/combos/**").permitAll()
                         
                         // 2. CÁC ĐƯỜNG DẪN PUBLIC BẮT BUỘC
                         .requestMatchers("/login", "/register", "/verify-otp", "/api/auth/**").permitAll()
@@ -107,3 +107,4 @@ public class SecurityConfig {
         return http.build();
     }
 }
+
