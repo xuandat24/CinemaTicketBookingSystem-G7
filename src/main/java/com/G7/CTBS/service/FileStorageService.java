@@ -30,7 +30,7 @@ public class FileStorageService {
         String contentType = file.getContentType();
         
         // Đã bổ sung kiểm tra cho cả thư mục "posters"
-        if ((folder.equals("banners") || folder.equals("posters")) && (contentType == null || !contentType.startsWith("image/"))) {
+        if ((folder.equals("banners") || folder.equals("posters") || folder.equals("combos")) && (contentType == null || !contentType.startsWith("image/"))) {
             throw new RuntimeException("Error: Only image files are allowed for " + folder + "!");
         }
         if (folder.equals("trailers") && (contentType == null || !contentType.equals("video/mp4"))) {

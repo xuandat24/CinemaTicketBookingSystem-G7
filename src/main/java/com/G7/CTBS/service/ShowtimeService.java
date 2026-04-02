@@ -22,6 +22,7 @@ public interface ShowtimeService {
             Long movieId,
             Long roomId,
             LocalDate date,
-            ShowtimeStatus status
+            ShowtimeStatus status,
+            String keyword
     );
 }

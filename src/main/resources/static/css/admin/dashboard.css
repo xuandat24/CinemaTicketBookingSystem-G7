@@ -1,0 +1,11 @@
+.occupancy-high {
+    background-color: #198754 !important;
+}
+
+.occupancy-medium {
+    background-color: #ffc107 !important;
+}
+
+.occupancy-low {
+    background-color: #dc3545 !important;
+}

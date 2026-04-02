@@ -81,6 +81,11 @@ public class ShowtimeServiceImpl implements ShowtimeService {
         // 7. Save to database
         Showtime savedShowtime = showtimeRepository.save(showtime);
 
+        if (movie.getStatus().equalsIgnoreCase("Coming Soon")) {
+            movie.setStatus("Pending");
+            movieRepository.save(movie);
+        }
+
         // 8. Response DTO
         return responseDTO(savedShowtime, movie, room);
     }
@@ -230,7 +235,8 @@ public class ShowtimeServiceImpl implements ShowtimeService {
             Long movieId,
             Long roomId,
             LocalDate date,
-            ShowtimeStatus status
+            ShowtimeStatus status,
+            String keyword
     ) {
 
         List<Showtime> showtimes = showtimeRepository.findAll();
@@ -256,6 +262,13 @@ public class ShowtimeServiceImpl implements ShowtimeService {
         if (status != null) {
             showtimes = showtimes.stream()
                     .filter(s -> s.getStatus() == status)
+                    .toList();
+        }
+
+        if (keyword != null && !keyword.isEmpty()) {
+            showtimes = showtimes.stream()
+                    .filter(s -> s.getMovie().getTitle().toLowerCase()
+                            .contains(keyword.toLowerCase()))
                     .toList();
         }
 

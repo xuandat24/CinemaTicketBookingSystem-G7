@@ -28,40 +28,21 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        
-                        // 1. CÁC TÀI NGUYÊN TĨNH (Ai cũng được tải)
-                        .requestMatchers("/css/**", "/js/**", "/img/**", "/fonts/**", "/banners/**", "/trailers/**").permitAll()
-                        
-                        // 2. CÁC ĐƯỜNG DẪN PUBLIC BẮT BUỘC
+                        .requestMatchers("/css/**", "/js/**", "/img/**", "/fonts/**", "/banners/**", "/trailers/**", "/combos/**").permitAll()
                         .requestMatchers("/login", "/register", "/verify-otp", "/api/auth/**").permitAll()
                         .requestMatchers("/", "/index", "/index.html", "/about").permitAll()
-                        
-                        // Đã mở rộng để bắt các lỗi gõ sai đuôi .html
                         .requestMatchers("/movies", "/movies/**", "/detail", "/detail.html", "/detail/**").permitAll()
-                        
                         .requestMatchers("/showtimes", "/api/showtimes/**", "/showtimes/**").permitAll()
                         .requestMatchers("/api/public/**").permitAll()
                         .requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
-                        
-                        // 3. KHÓA TRANG HTML (Giao việc chặn cho auth.js)
                         .requestMatchers("/admin/**").permitAll()
-                        
-                        // BỔ SUNG QUAN TRỌNG: Cho phép tải giao diện User và mở khóa /error để tránh bẫy 404
-                        .requestMatchers("/profile", "/profile/**", "/booking/history", "/error").permitAll()
-                        
-                        // 4. KHÓA CHẶT API BẰNG ROLE (BẢO VỆ DỮ LIỆU)
+                        .requestMatchers("/profile", "/profile/**", "/error").permitAll()
+                        .requestMatchers("/api/payment/**").permitAll()
+                        .requestMatchers("/booking/history", "/booking/history/**").authenticated()
                         .requestMatchers("/api/admin/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_Admin")
-                        
-                        // Các yêu cầu API khác (như /api/users/my-profile, /api/booking/confirm) phải có Token
                         .anyRequest().authenticated()
                 )
-
-                // Gắn Jwt Filter
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-
-                // ==========================================================
-                // BỘ XỬ LÝ NGOẠI LỆ THÔNG MINH (Kế thừa từ bản cập nhật mới)
-                // ==========================================================
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint((request, response, authException) -> {
                             String requestURI = request.getRequestURI();
@@ -73,9 +54,7 @@ public class SecurityConfig {
                         })
                         .accessDeniedHandler((request, response, accessDeniedException) -> {
                             String requestURI = request.getRequestURI();
-                            System.out.println(">> [SECURITY BLOCK] Truy cập bị từ chối tại: " + requestURI);
-
-                            // "Tàng hình" hệ thống Admin: Nếu không có quyền, báo Not Found (404) thay vì Forbidden (403)
+                            System.out.println(">> [SECURITY BLOCK] Access denied at: " + requestURI);
                             if (requestURI.startsWith("/admin") || requestURI.startsWith("/api/admin")) {
                                 response.sendError(HttpServletResponse.SC_NOT_FOUND, "Not Found");
                             } else {
@@ -83,16 +62,10 @@ public class SecurityConfig {
                             }
                         })
                 )
-
-                // Cấu hình OAuth2
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/login")
                         .successHandler(oAuth2SuccessHandler)
                 )
-
-                // ==========================================================
-                // CẤU HÌNH LOGOUT TỐI ƯU (Kế thừa từ bản cập nhật mới)
-                // ==========================================================
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout")

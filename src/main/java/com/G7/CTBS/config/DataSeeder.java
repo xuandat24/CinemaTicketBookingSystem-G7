@@ -59,7 +59,7 @@ public class DataSeeder implements CommandLineRunner {
                         .role(adminRole)
                         .build();
                 userRepository.save(admin1);
-                log.info("✅ Created Admin 1 (LOCAL)");
+                log.info(" Created Admin 1 (LOCAL)");
             }
 
             // TÀI KHOẢN ADMIN 2
@@ -77,7 +77,32 @@ public class DataSeeder implements CommandLineRunner {
                         .role(adminRole)
                         .build();
                 userRepository.save(admin2);
-                log.info("✅ Created Admin 2 (LOCAL)");
+                log.info(" Created Admin 2 (LOCAL)");
+            }
+        }
+        // 3. Lấy Role User (Customer)
+        Role userRole = roleRepository.findAll().stream()
+                .filter(r -> r.getRoleName().equals("ROLE_USER"))
+                .findFirst()
+                .orElse(null);
+
+        if (userRole != null) {
+            // TÀI KHOẢN CUSTOMER
+            if (!userRepository.existsByuserName("customer1")) {
+                User customer = User.builder()
+                        .userName("customer1")
+                        .email("customer1@ctbs.com")
+                        .password(passwordEncoder.encode("User@123"))
+                        .firstName("Nguyen")
+                        .lastName("Van A")
+                        .phone("0888888888")
+                        .gender("Nam")
+                        .dob(LocalDate.of(2002, 5, 10))
+                        .provider("LOCAL") // tài khoản thường
+                        .role(userRole)
+                        .build();
+                userRepository.save(customer);
+                log.info(" Created Customer 1 (LOCAL)");
             }
         }
     }

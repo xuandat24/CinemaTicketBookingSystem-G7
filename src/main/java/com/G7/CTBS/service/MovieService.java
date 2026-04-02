@@ -40,13 +40,15 @@ public class MovieService {
     }
     
     public List<MovieDTO> getPublicMovies(String title, Long categoryId, String language, String status, String sortBy) {
-        if (status != null && !status.equals("Now Playing") && !status.equals("Coming Soon")) {
+        if (status != null && !status.equalsIgnoreCase("Now Playing") && !status.equalsIgnoreCase("Coming Soon") && !status.equalsIgnoreCase("Pending")) {
             status = null;
         }
         List<MovieDTO> movies = this.searchAndFilterMovies(title, categoryId, language, status, null, null, sortBy);
         if (status == null) {
             return movies.stream()
-                    .filter(m -> "Now Playing".equals(m.getStatus()) || "Coming Soon".equals(m.getStatus()))
+                    .filter(m -> m.getStatus().equalsIgnoreCase("Now Playing") ||
+                            m.getStatus().equalsIgnoreCase("Coming Soon") ||
+                            m.getStatus().equalsIgnoreCase("Pending"))
                     .toList();
         }
         

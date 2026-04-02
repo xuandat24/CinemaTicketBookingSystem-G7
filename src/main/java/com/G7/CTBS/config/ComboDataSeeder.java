@@ -1,7 +1,6 @@
 package com.G7.CTBS.config;
 
 import com.G7.CTBS.entity.Combo;
-import com.G7.CTBS.repository.BookingComboRepository;
 import com.G7.CTBS.repository.ComboRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,21 +13,18 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class ComboDataSeeder implements CommandLineRunner {
+public class    ComboDataSeeder implements CommandLineRunner {
 
     private final ComboRepository comboRepository;
-    private final BookingComboRepository bookingComboRepository;
 
     @Override
     @Transactional
     public void run(String... args) {
-        long bookingComboCount = bookingComboRepository.count();
-        if (bookingComboCount > 0) {
-            log.warn("Skip combo reset because booking_combos has {} rows.", bookingComboCount);
+        long comboCount = comboRepository.count();
+        if (comboCount > 0) {
+            log.info("Skip combo seed because combos table already has {} rows.", comboCount);
             return;
         }
-
-        comboRepository.deleteAllInBatch();
 
         List<Combo> combos = List.of(
                 combo("Ice Cream", "1 Ice Cream (Various flavors)", 30000, "icecream.png"),
@@ -43,7 +39,7 @@ public class ComboDataSeeder implements CommandLineRunner {
         );
 
         comboRepository.saveAll(combos);
-        log.info("Reset and seeded {} combos.", combos.size());
+        log.info("Seeded {} default combos.", combos.size());
     }
 
     private Combo combo(String name, String description, int price, String image) {

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Theater Management - Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/admin/universal.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/theaterManagement.css}">
+</head>
+<body>
+
+<div th:replace="~{admin/fragments/navbar :: admin-nav}"></div>
+
+<div class="container-fluid px-4 py-4 theater-management-page">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold text-dark m-0">Theater Management</h2>
+            <p class="text-muted mb-0 mt-1">Choose a theater room, view available showtimes, and inspect seat occupancy.</p>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body bg-white rounded">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-6 col-lg-5">
+                    <label class="form-label fw-bold text-secondary small mb-1">View Theater Room</label>
+                    <select id="roomSelect" class="form-select">
+                        <option value="">-- Choose Theater Room --</option>
+                    </select>
+                </div>
+                <div class="col-md-6 col-lg-7">
+                    <p id="roomHelpText" class="form-text m-0">Select a room to load available showtimes.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body bg-white rounded">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+                <h5 class="fw-bold m-0">Available Showtimes</h5>
+                <span id="selectedRoomBadge" class="badge text-bg-light border">Room --</span>
+            </div>
+            <div id="showtimeList" class="showtime-list">
+                <div class="placeholder-note">Please choose a theater room to continue.</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="seatLayoutSection" class="row g-4 d-none">
+        <div class="col-xl-8">
+            <div class="card shadow-sm border-0 h-100 seat-layout-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+                        <h5 class="fw-bold m-0">Seat Layout</h5>
+                        <span id="selectedShowtimeMeta" class="text-muted small">Showtime --</span>
+                    </div>
+
+                    <div id="theater-room-label" class="theater-room-label">Theater Room --</div>
+
+                    <div class="screen-wrap">
+                        <img class="screen-img" th:src="@{/img/cinema-screen.png}" alt="Cinema screen">
+                    </div>
+
+                    <div class="seat-legend-row">
+                        <div class="legend-item"><span class="legend-seat available"></span>Available</div>
+                        <div class="legend-item"><span class="legend-seat sold"></span>Booked</div>
+                        <div class="legend-item"><span class="legend-seat type-normal"></span>Normal</div>
+                        <div class="legend-item"><span class="legend-seat type-vip"></span>VIP</div>
+                        <div class="legend-item"><span class="legend-seat type-pair"></span>Pair</div>
+                    </div>
+
+                    <div id="seat-grid" class="seat-grid" aria-label="Theater room seat layout"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3">Seat Occupancy</h5>
+
+                    <div class="stat-row">
+                        <span class="stat-label">booked_seat_number / total-seat</span>
+                        <span id="bookedOverTotal" class="stat-value">0 / 0</span>
+                    </div>
+
+                    <div class="occupancy-grid mt-3">
+                        <div class="occupancy-card">
+                            <p class="occupancy-label mb-1">normal_booked / normal_seats</p>
+                            <p id="normalOverTotal" class="occupancy-value mb-0">0 / 0</p>
+                        </div>
+                        <div class="occupancy-card">
+                            <p class="occupancy-label mb-1">vip_booked / vip_seats</p>
+                            <p id="vipOverTotal" class="occupancy-value mb-0">0 / 0</p>
+                        </div>
+                        <div class="occupancy-card">
+                            <p class="occupancy-label mb-1">pair_booked / pair_seats</p>
+                            <p id="pairOverTotal" class="occupancy-value mb-0">0 / 0</p>
+                        </div>
+                    </div>
+
+                    <div id="selectedMovieInfo" class="selected-movie-info mt-4">
+                        Choose a showtime to view movie and seat details.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/admin/admin-auth.js}"></script>
+<script th:src="@{/js/admin/theaterManagement.js}"></script>
+</body>
+</html>

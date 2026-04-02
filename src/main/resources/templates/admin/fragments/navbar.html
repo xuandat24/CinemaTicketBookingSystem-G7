@@ -36,8 +36,14 @@
         <a th:href="@{/admin/showtimes/create}" class="menu-item"><i class="fa-solid fa-folder-plus me-2"></i> Add Showtime</a>
         <a th:href="@{/admin/showtimes}" class="menu-item"><i class="fa-solid fa-tags me-2"></i> View Showtimes</a>
 
-        <div class="section-title">System</div>
+        <div class="section-title">Combo Management</div>
+        <a th:href="@{/admin/combos/add}" class="menu-item"><i class="fa-solid fa-utensils me-2"></i> Add Combo</a>
+        <a th:href="@{/admin/combos}" class="menu-item"><i class="fa-solid fa-list me-2"></i> View Combo</a>
 
+        <div class="section-title">Theater Management</div>
+        <a th:href="@{/admin/theaters}" class="menu-item"><i class="fa-solid fa-door-open me-2"></i> View Theater Room</a>
+
+        <div class="section-title">System</div>
         <a th:href="@{/admin/profile}" class="menu-item"><i class="fa-solid fa-user-shield me-2"></i> My Profile</a>
 
         <form th:action="@{/logout}" method="post" class="px-3 mt-3">
