@@ -77,4 +77,9 @@ public class AdminViewController {
     public String editComboPage() {
         return "admin/editCombo";
     }
+
+    @GetMapping("/theaters")
+    public String theaterManagementPage() {
+        return "admin/theater-management";
+    }
 }
