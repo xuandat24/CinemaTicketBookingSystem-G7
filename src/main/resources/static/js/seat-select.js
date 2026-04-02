@@ -38,6 +38,7 @@
     let seatPriceFactorByCode = new Map();
     let isSeatDataLoaded = false;
 
+    const MAX_SELECTED_SEATS = 9;
     const selected = new Set();
 
     if (showtimeBar) {
@@ -262,6 +263,14 @@
         continueBtn.tabIndex = disabled ? -1 : 0;
     }
 
+    function canAddSeats(additionalCount) {
+        return (selected.size + additionalCount) <= MAX_SELECTED_SEATS;
+    }
+
+    function showSeatLimitNotice() {
+        window.alert("You can select up to " + MAX_SELECTED_SEATS + " seats per booking.");
+    }
+
     function updateContinueLink() {
         if (!continueBtn) return;
         if (!isSeatDataLoaded || !showtimeId) {
@@ -359,6 +368,10 @@
             selected.delete(code);
             el.classList.remove("selected");
         } else {
+            if (!canAddSeats(1)) {
+                showSeatLimitNotice();
+                return;
+            }
             selected.add(code);
             el.classList.add("selected");
         }
@@ -376,6 +389,14 @@
 
         const codes = [code, pairCode];
         const allSelected = codes.every((c) => selected.has(c));
+        if (!allSelected) {
+            const additionalNeeded = codes.filter((c) => !selected.has(c)).length;
+            if (!canAddSeats(additionalNeeded)) {
+                showSeatLimitNotice();
+                return;
+            }
+        }
+
         codes.forEach((c) => {
             const el = seatGrid.querySelector("[data-seat='" + c + "']");
             if (!el) return;
