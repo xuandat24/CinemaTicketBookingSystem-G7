@@ -1,0 +1,278 @@
+.theater-management-page .placeholder-note {
+    color: #6c757d;
+    font-weight: 500;
+    padding: 10px 0;
+}
+
+.showtime-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    min-height: 40px;
+}
+
+.showtime-item {
+    border: 1px solid #dde2e7;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 10px 12px;
+    min-width: 220px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.showtime-item:hover {
+    border-color: #0d6efd;
+    box-shadow: 0 4px 14px rgba(13, 110, 253, 0.12);
+    transform: translateY(-1px);
+}
+
+.showtime-item.active {
+    border-color: #0d6efd;
+    background: #f2f7ff;
+}
+
+.showtime-item .showtime-time {
+    color: #0d6efd;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.showtime-item .showtime-movie {
+    font-weight: 600;
+    color: #1f1f1f;
+}
+
+.showtime-item .showtime-meta {
+    color: #6c757d;
+    font-size: 12px;
+}
+
+.seat-layout-card {
+    overflow-x: auto;
+}
+
+.theater-room-label {
+    text-align: center;
+    font-weight: 800;
+    color: #1f1f1f;
+    margin-bottom: 10px;
+}
+
+.screen-wrap {
+    text-align: center;
+    margin-bottom: 18px;
+}
+
+.screen-img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 0 auto 12px;
+}
+
+.seat-legend-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    color: #444;
+}
+
+.legend-seat {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    display: inline-block;
+    border: 1px solid #ddd;
+    background: #f3f3f3;
+}
+
+.legend-seat.available {
+    background: #f3f3f3;
+    border-color: #ddd;
+}
+
+.legend-seat.sold {
+    background: #f44336;
+    border-color: #f44336;
+}
+
+.legend-seat.type-normal {
+    background: #f3f3f3;
+    border-color: #ddd;
+}
+
+.legend-seat.type-vip {
+    background: #ffb255;
+    border-color: #ffb255;
+}
+
+.legend-seat.type-pair {
+    background: #ff6fa5;
+    border-color: #ff6fa5;
+}
+
+.seat-grid {
+    --layout-scale: 1;
+    --layout-global-shift-x: 0px;
+    display: grid;
+    grid-template-columns: repeat(12, 36px);
+    column-gap: 12px;
+    row-gap: 4px;
+    justify-content: start;
+    justify-items: center;
+    width: max-content;
+    margin: 0 auto;
+}
+
+.seat-grid.layout-room-1 {
+    --layout-global-shift-x: 0px;
+}
+
+.seat-grid.layout-room-2 {
+    --layout-global-shift-x: 0px;
+}
+
+.seat-grid.layout-room-3 {
+    --layout-global-shift-x: 0px;
+}
+
+.seat {
+    width: 32px;
+    height: 26px;
+    border-radius: 6px;
+    background: #f3f3f3;
+    border: 1px solid #ddd;
+    color: #333;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    cursor: default;
+    transform: translateX(calc((var(--layout-global-shift-x) + var(--seat-shift-x, 0px)) * var(--layout-scale)));
+}
+
+.seat.vip {
+    background: #ffb255;
+    border-color: #ffb255;
+    color: #222;
+}
+
+.seat.pair {
+    background: #ff6fa5;
+    border-color: #ff6fa5;
+    color: #fff;
+}
+
+.seat.booked {
+    background: #f44336;
+    border-color: #f44336;
+    color: #fff;
+}
+
+.seat-grid-error {
+    grid-column: 1 / -1;
+    min-height: 120px;
+    padding: 16px;
+    border: 1px dashed #c7c7c7;
+    border-radius: 8px;
+    background: #fafafa;
+    color: #7a7a7a;
+    font-weight: 600;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid #e4e9ef;
+    border-radius: 10px;
+    padding: 12px 14px;
+    background: #fbfcfe;
+}
+
+.stat-label {
+    color: #4f5b66;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.stat-value {
+    color: #0d6efd;
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.occupancy-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+}
+
+.occupancy-card {
+    border: 1px solid #e4e9ef;
+    border-radius: 10px;
+    padding: 10px 12px;
+    background: #ffffff;
+}
+
+.occupancy-label {
+    font-size: 12px;
+    color: #6c757d;
+    font-weight: 600;
+}
+
+.occupancy-value {
+    font-size: 18px;
+    font-weight: 800;
+    color: #1f1f1f;
+}
+
+.selected-movie-info {
+    border: 1px dashed #d7dde5;
+    border-radius: 10px;
+    padding: 12px;
+    background: #fafbfd;
+    color: #4a4a4a;
+    font-weight: 500;
+    min-height: 72px;
+}
+
+@media (max-width: 992px) {
+    .seat-grid {
+        --layout-scale: 0.82;
+    }
+}
+
+@media (max-width: 576px) {
+    .showtime-item {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .seat-grid {
+        --layout-scale: 0.65;
+    }
+
+    .seat {
+        width: 30px;
+        height: 24px;
+        font-size: 10px;
+    }
+}

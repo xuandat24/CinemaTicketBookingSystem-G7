@@ -216,14 +216,15 @@ public class BookingController {
     }
 
     @GetMapping("/booking/history")
-    public String history(@RequestParam(value = "username", required = false) String username,
-                          Model model) {
-        User user = resolveCurrentUser(username);
+    public String history(Model model) {
+        User user = resolveCurrentUser(null);
         if (user == null) {
             return "redirect:/login";
         }
 
-        List<Booking> history = bookingService.findByUser(user);
+        List<Booking> history = bookingService.findByUser(user).stream()
+                .filter(b -> b.getStatus() != null && ("CONFIRMED".equalsIgnoreCase(b.getStatus()) || "SUCCESS".equalsIgnoreCase(b.getStatus())))
+                .toList();
         model.addAttribute("user", user);
         model.addAttribute("history", history);
         model.addAttribute("currentPage", "my-tickets");
@@ -231,3 +232,5 @@ public class BookingController {
         return "user/booking_history";
     }
 }
+
+

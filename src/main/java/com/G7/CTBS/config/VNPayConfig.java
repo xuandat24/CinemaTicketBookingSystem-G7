@@ -25,6 +25,6 @@ public class VNPayConfig {
     public static final String VERSION = "2.1.0";
     public static final String COMMAND = "pay";
     public static final String ORDER_TYPE = "other";
-    public static final String LOCALE = "vn";
+    public static final String LOCALE = "en";
     public static final String CURRENCY_CODE = "VND";
 }

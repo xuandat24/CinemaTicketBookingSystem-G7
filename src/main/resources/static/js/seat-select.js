@@ -38,6 +38,7 @@
     let seatPriceFactorByCode = new Map();
     let isSeatDataLoaded = false;
 
+    const MAX_SELECTED_SEATS = 9;
     const selected = new Set();
 
     if (showtimeBar) {
@@ -211,7 +212,7 @@
         const title = (payload && payload.movieTitle ? String(payload.movieTitle).trim() : "") || "Movie";
         const genre = (payload && payload.genre ? String(payload.genre).trim() : "") || "--";
         const duration = Number(payload && payload.duration);
-        const cinemaName = (roomName && roomName.trim()) ? roomName.trim() : "CTBS";
+        const cinemaName = (roomName && roomName.trim()) ? roomName.trim() : "Room --";
 
         if (movieTitleEl) {
             movieTitleEl.textContent = title;
@@ -260,6 +261,14 @@
         continueBtn.classList.toggle("disabled", disabled);
         continueBtn.setAttribute("aria-disabled", disabled ? "true" : "false");
         continueBtn.tabIndex = disabled ? -1 : 0;
+    }
+
+    function canAddSeats(additionalCount) {
+        return (selected.size + additionalCount) <= MAX_SELECTED_SEATS;
+    }
+
+    function showSeatLimitNotice() {
+        window.alert("You can select up to " + MAX_SELECTED_SEATS + " seats per booking.");
     }
 
     function updateContinueLink() {
@@ -359,6 +368,10 @@
             selected.delete(code);
             el.classList.remove("selected");
         } else {
+            if (!canAddSeats(1)) {
+                showSeatLimitNotice();
+                return;
+            }
             selected.add(code);
             el.classList.add("selected");
         }
@@ -376,6 +389,14 @@
 
         const codes = [code, pairCode];
         const allSelected = codes.every((c) => selected.has(c));
+        if (!allSelected) {
+            const additionalNeeded = codes.filter((c) => !selected.has(c)).length;
+            if (!canAddSeats(additionalNeeded)) {
+                showSeatLimitNotice();
+                return;
+            }
+        }
+
         codes.forEach((c) => {
             const el = seatGrid.querySelector("[data-seat='" + c + "']");
             if (!el) return;
@@ -574,3 +595,4 @@
 
     initSeatPage();
 })();
+

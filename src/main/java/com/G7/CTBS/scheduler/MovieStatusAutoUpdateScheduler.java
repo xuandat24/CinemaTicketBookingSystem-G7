@@ -13,20 +13,20 @@ import java.util.List;
 @Component
 public class MovieStatusAutoUpdateScheduler {
     private final MovieRepository movieRepository;
-    
+
     @Autowired
     public MovieStatusAutoUpdateScheduler(MovieRepository movieRepository) {
         this.movieRepository = movieRepository;
     }
-    
+
     // auto update for each 60s
     @Scheduled(fixedRate = 60000)
     @Transactional
     public void autoUpdate() {
         LocalDateTime now = LocalDateTime.now();
         boolean changeStatus = false;
-        
-        // 1. Pending -> Now Playing (Đến giờ chiếu)
+
+        // 1. Pending -> Now Playing
         List<Movie> moviesToPlay = movieRepository.findMoviesToPlay(now);
         if (!moviesToPlay.isEmpty()) {
             for (Movie movie : moviesToPlay) {
@@ -35,8 +35,8 @@ public class MovieStatusAutoUpdateScheduler {
             }
             changeStatus = true;
         }
-        
-        // 2. Now Playing -> Pending (Đã chiếu xong, không có suất nào đang diễn ra)
+
+        // 2. Now Playing -> Pending
         List<Movie> moviesToPending = movieRepository.findMoviesToPending(now);
         if (!moviesToPending.isEmpty()) {
             for (Movie movie : moviesToPending) {
@@ -45,8 +45,8 @@ public class MovieStatusAutoUpdateScheduler {
             }
             changeStatus = true;
         }
-        
-        // 3. Chỉ lưu xuống DB nếu có sự thay đổi
+
+        // 3. Save only when there is a change
         if (changeStatus) {
             movieRepository.saveAll(moviesToPlay);
             movieRepository.saveAll(moviesToPending);
