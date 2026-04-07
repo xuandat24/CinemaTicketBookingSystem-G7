@@ -14,7 +14,7 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
     List<Movie> findByStatus(String status);
 
     boolean existsByTitleIgnoreCase(String title);
-    
+
     @Query("SELECT m FROM Movie m " +
             "WHERE m.status = 'Now Playing' " +
             "AND NOT EXISTS (" +
@@ -23,7 +23,7 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
             "    AND s.startTime <= :now AND s.endTime >= :now" +
             ")")
     List<Movie> findMoviesToPending(@Param("now") LocalDateTime now);
-    
+
     @Query("SELECT m FROM Movie m " +
             "WHERE m.status = 'Pending' " +
             "AND EXISTS (" +

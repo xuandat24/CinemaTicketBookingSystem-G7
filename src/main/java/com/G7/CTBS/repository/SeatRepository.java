@@ -13,7 +13,7 @@ public interface SeatRepository  extends JpaRepository<Seat, Long> {
     long countByRoom_RoomId(Long roomId);
     boolean existsByRoom_RoomIdAndSeatCode(Long roomId, String seatCode);
     List<Seat> findByRoom_RoomId(Long roomId);
-    
+
     @Query("SELECT COUNT(s) FROM Seat s WHERE s.room.roomId = :roomId")
     Long countSeatsByRoom(@Param("roomId") Long roomId);
 }
