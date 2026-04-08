@@ -34,7 +34,7 @@ public class DataSeeder implements CommandLineRunner {
             userRole.setRoleName("ROLE_USER");
 
             roleRepository.saveAll(List.of(adminRole, userRole));
-            log.info("✅ Created Roles: ROLE_ADMIN, ROLE_USER");
+            log.info("Created Roles: ROLE_ADMIN, ROLE_USER");
         }
 
         // 2. Lấy Role Admin từ DB (Dùng findByName để an toàn hơn dùng ID cứng)

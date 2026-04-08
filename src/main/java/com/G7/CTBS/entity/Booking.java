@@ -38,4 +38,9 @@ public class Booking {
 
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
     private List<BookingCombo> bookingCombos;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "couponId")
+    private Coupon coupon;
+
+    private Double discountAmount;
 }

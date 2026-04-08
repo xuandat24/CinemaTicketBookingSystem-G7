@@ -1,13 +1,7 @@
 package com.G7.CTBS.service;
 
 import com.G7.CTBS.dto.BookingRequestDTO;
-import com.G7.CTBS.entity.Booking;
-import com.G7.CTBS.entity.BookingCombo;
-import com.G7.CTBS.entity.BookingSeat;
-import com.G7.CTBS.entity.Combo;
-import com.G7.CTBS.entity.Seat;
-import com.G7.CTBS.entity.Showtime;
-import com.G7.CTBS.entity.User;
+import com.G7.CTBS.entity.*;
 import com.G7.CTBS.repository.BookingComboRepository;
 import com.G7.CTBS.repository.BookingRepository;
 import com.G7.CTBS.repository.BookingSeatRepository;
@@ -116,5 +110,25 @@ public class BookingService {
         }
 
         return booking.getBookingId();
+    }
+    private Double calculateDiscount(Coupon coupon, Double totalAmount) {
+        if (coupon == null || !coupon.getActive() ||
+                coupon.getExpiryDate().isBefore(LocalDateTime.now()) ||
+                (coupon.getMinOrderValue() != null && totalAmount < coupon.getMinOrderValue())) {
+            return 0D;
+        }
+
+        if ("PERCENTAGE".equalsIgnoreCase(coupon.getType())) {
+            double discount = totalAmount * (coupon.getDiscountValue() / 100);
+            // Nếu có quy định mức giảm tối đa (Max Discount)
+            if (coupon.getMaxDiscount() != null && discount > coupon.getMaxDiscount()) {
+                discount = coupon.getMaxDiscount();
+            }
+            return discount;
+        } else if ("FIXED".equalsIgnoreCase(coupon.getType())) {
+            return Math.min(coupon.getDiscountValue(), totalAmount);
+        }
+
+        return 0D;
     }
 }
