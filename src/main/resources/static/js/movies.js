@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Tự động lọc khi gõ chữ (Title, Language)
     let typingTimer;
-    const textInputs = ['searchTitle', 'searchLanguage'];
+    const textInputs = ['searchTitle'];
     textInputs.forEach(id => {
         const element = document.getElementById(id);
         if (element) {
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     // Tự động lọc khi đổi Dropdown (Category, Status, Sort)
-    const dropdownInputs = ['filterCategory', 'filterStatus', 'sortBy'];
+    const dropdownInputs = ['filterCategory', 'filterStatus', 'sortBy', 'searchLanguage'];
     dropdownInputs.forEach(id => {
         const element = document.getElementById(id);
         if (element) {
