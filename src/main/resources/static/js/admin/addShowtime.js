@@ -4,7 +4,9 @@ async function loadMovies() {
 
     try {
 
-        const response = await fetch("/api/admin/movies");
+        const response = await fetch("/api/admin/movies", {
+            credentials: "include"
+        });
 
         const movies = await response.json();
 
@@ -31,7 +33,9 @@ async function loadRooms(){
     const roomSelect = document.getElementById("roomId");
 
     try {
-        const response = await fetch("/api/theater-rooms");
+        const response = await fetch("/api/theater-rooms", {
+            credentials: "include"
+        });
 
         if (!response.ok) {
             throw new Error("Cannot load theater rooms");
@@ -83,15 +87,6 @@ document
 
     const priceNumber = Number(rawPrice.replace(/\./g, ""));
 
-    if (!priceNumber || priceNumber < 10000) {
-        message.innerHTML = `
-            <div class="alert alert-danger">
-                Price must be greater than 10,000
-            </div>
-        `;
-        return;
-    }
-
     const data = {
 
         movieId: document.getElementById("movieId").value,
@@ -128,17 +123,27 @@ document
         window.location.href = "/admin/showtimes";
 
     }else{
-        let errorMessage = "Cannot create showtime";
-        try {
-            const error = await response.json();
-            errorMessage = error.message || errorMessage;
-        } catch (ignored) {
+        const error = await response.json();
+
+        let html = "";
+
+        // If there are multiple validation errors
+        if (error.errors && error.errors.length > 0) {
+            html = error.errors.map(e => `
+                <div class="alert alert-danger">
+                    ${e.message || e.defaultMessage}
+                </div>
+            `).join("");
+        } else {
+            // fallback if no error list
+            html = `
+                <div class="alert alert-danger">
+                    ${error.message || "Cannot create showtime"}
+                </div>
+            `;
         }
 
-        message.innerHTML =`
-        <div class="alert alert-danger">
-            ${errorMessage}
-        </div>`;
+        message.innerHTML = html;
 
     }
 

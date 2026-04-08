@@ -43,15 +43,6 @@ document
 
         const message = document.getElementById("message");
 
-        if (!priceNumber || priceNumber < 10000) {
-            message.innerHTML = `
-                <div class="alert alert-danger">
-                    Price must be greater than 10,000
-                </div>
-            `;
-            return;
-        }
-
         const data = {
             movieId: document.getElementById("movieId").value,
             theaterRoomId: document.getElementById("roomId").value,
@@ -77,18 +68,27 @@ document
 
             } else {
 
-                let errorMessage = "Update failed";
+                const error = await response.json();
 
-                try {
-                    const error = await response.json();
-                    errorMessage = error.message || errorMessage;
-                } catch (e) {}
+                let html = "";
 
-                message.innerHTML = `
-                <div class="alert alert-danger">
-                    ${errorMessage}
-                </div>
-            `;
+                // if there are multiple validation errors
+                if (error.errors && error.errors.length > 0) {
+                    html = error.errors.map(e => `
+                        <div class="alert alert-danger">
+                            ${e.message || e.defaultMessage}
+                        </div>
+                    `).join("");
+                } else {
+                    // fallback if no error list
+                    html = `
+                        <div class="alert alert-danger">
+                            ${error.message || "Update failed"}
+                        </div>
+                    `;
+                }
+
+                message.innerHTML = html;
             }
 
         } catch (err) {
