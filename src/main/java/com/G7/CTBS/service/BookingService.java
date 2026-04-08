@@ -2,17 +2,12 @@ package com.G7.CTBS.service;
 
 import com.G7.CTBS.dto.BookingRequestDTO;
 import com.G7.CTBS.entity.*;
-import com.G7.CTBS.repository.BookingComboRepository;
-import com.G7.CTBS.repository.BookingRepository;
-import com.G7.CTBS.repository.BookingSeatRepository;
-import com.G7.CTBS.repository.ComboRepository;
-import com.G7.CTBS.repository.SeatRepository;
-import com.G7.CTBS.repository.ShowtimeRepository;
-import com.G7.CTBS.repository.UserRepository;
+import com.G7.CTBS.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -40,6 +35,9 @@ public class BookingService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private CouponRepository couponRepository;
+
     public List<Booking> findByUser(User user) {
         return bookingRepository.findByUserOrderByCreateTimeDesc(user);
     }
@@ -63,6 +61,54 @@ public class BookingService {
         booking.setCreateTime(LocalDateTime.now());
         booking.setStatus("PENDING");
         booking.setBookingCode("BC-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
+
+
+        // ==================== XỬ LÝ COUPON ====================
+                // Lấy giá gốc từ DTO (FE gửi lên tổng tiền chưa giảm)
+                Double originalPrice = dto.getFinalPrice() != null ? dto.getFinalPrice() : 0D;
+        Double discountAmount = 0.0;
+        Coupon usedCoupon = null;
+
+        if (dto.getCouponCode() != null && !dto.getCouponCode().isEmpty()) {
+            usedCoupon = couponRepository.findByCode(dto.getCouponCode())
+                    .orElseThrow(() -> new IllegalArgumentException("Coupon không tồn tại."));
+
+            // Kiểm tra Active và ExpiryDate (Entity của Huy đang dùng LocalDate)
+            if (!Boolean.TRUE.equals(usedCoupon.getActive()) ||
+                    (usedCoupon.getExpiryDate() != null && usedCoupon.getExpiryDate().isBefore(LocalDate.now()))) {
+                throw new IllegalArgumentException("Coupon đã hết hạn hoặc không khả dụng.");
+            }
+
+            // Kiểm tra số lượt dùng
+            if (usedCoupon.getUsedCount() != null && usedCoupon.getMaxUsage() != null &&
+                    usedCoupon.getUsedCount() >= usedCoupon.getMaxUsage()) {
+                throw new IllegalArgumentException("Coupon đã hết lượt sử dụng.");
+            }
+
+            // Kiểm tra giá tối thiểu
+            if (usedCoupon.getMinOrderAmount() != null && originalPrice < usedCoupon.getMinOrderAmount()) {
+                throw new IllegalArgumentException("Đơn hàng không đủ giá trị tối thiểu để dùng mã này.");
+            }
+
+            // Tính số tiền giảm (Khớp với các giá trị PERCENTAGE/FIXED ở Admin)
+            if ("PERCENTAGE".equals(usedCoupon.getDiscountType())) {
+                discountAmount = originalPrice * (usedCoupon.getDiscountValue() / 100);
+            } else if ("FIXED".equals(usedCoupon.getDiscountType())) {
+                discountAmount = usedCoupon.getDiscountValue();
+            }
+
+            discountAmount = Math.min(discountAmount, originalPrice);
+
+            // Cập nhật lượt dùng
+            usedCoupon.setUsedCount((usedCoupon.getUsedCount() == null ? 0 : usedCoupon.getUsedCount()) + 1);
+            couponRepository.save(usedCoupon);
+        }
+
+        booking.setOriginalPrice(originalPrice);
+        booking.setDiscountAmount(discountAmount);
+        booking.setFinalPrice(originalPrice - discountAmount);
+
+        // ======================================================
 
         booking = bookingRepository.save(booking);
 
@@ -110,25 +156,5 @@ public class BookingService {
         }
 
         return booking.getBookingId();
-    }
-    private Double calculateDiscount(Coupon coupon, Double totalAmount) {
-        if (coupon == null || !coupon.getActive() ||
-                coupon.getExpiryDate().isBefore(LocalDateTime.now()) ||
-                (coupon.getMinOrderValue() != null && totalAmount < coupon.getMinOrderValue())) {
-            return 0D;
-        }
-
-        if ("PERCENTAGE".equalsIgnoreCase(coupon.getType())) {
-            double discount = totalAmount * (coupon.getDiscountValue() / 100);
-            // Nếu có quy định mức giảm tối đa (Max Discount)
-            if (coupon.getMaxDiscount() != null && discount > coupon.getMaxDiscount()) {
-                discount = coupon.getMaxDiscount();
-            }
-            return discount;
-        } else if ("FIXED".equalsIgnoreCase(coupon.getType())) {
-            return Math.min(coupon.getDiscountValue(), totalAmount);
-        }
-
-        return 0D;
     }
 }

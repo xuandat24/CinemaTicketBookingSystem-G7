@@ -1,15 +1,12 @@
 package com.G7.CTBS.controller;
 
 import com.G7.CTBS.dto.BookingRequestDTO;
-import com.G7.CTBS.entity.Booking;
-import com.G7.CTBS.entity.Movie;
-import com.G7.CTBS.entity.Seat;
-import com.G7.CTBS.entity.Showtime;
-import com.G7.CTBS.entity.User;
+import com.G7.CTBS.entity.*;
 import com.G7.CTBS.repository.SeatRepository;
 import com.G7.CTBS.repository.ShowtimeRepository;
 import com.G7.CTBS.service.BookingService;
 import com.G7.CTBS.service.ComboService;
+import com.G7.CTBS.service.CouponService;
 import com.G7.CTBS.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -23,13 +20,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -51,6 +44,9 @@ public class BookingController {
 
     @Autowired
     private BookingService bookingService;
+
+    @Autowired
+    private CouponService couponService;
 
     @GetMapping("/booking")
     public String bookingFromSeatPage(
@@ -229,5 +225,26 @@ public class BookingController {
         model.addAttribute("currentPage", "my-tickets");
 
         return "user/booking_history";
+    }
+
+    @GetMapping("/api/booking/check-coupon")
+    @ResponseBody
+    public Map<String, Object> checkCoupon(@RequestParam String code, @RequestParam Double amount) {
+        try {
+            // Validate và lấy thông tin Coupon
+            Coupon coupon = couponService.validateCoupon(code, amount);
+
+            // Tính số tiền giảm
+            double discountAmount = couponService.calculateDiscount(coupon, amount);
+
+            return Map.of(
+                    "success", true,
+                    "discountAmount", discountAmount,
+                    "message", "Apply coupon successfully!"
+            );
+        } catch (RuntimeException e) {
+            // Trả về message lỗi từ Service cho Client (Ví dụ: "Mã đã hết hạn")
+            return Map.of("success", false, "message", e.getMessage());
+        }
     }
 }

@@ -78,31 +78,6 @@ document.addEventListener("DOMContentLoaded", function () {
         })
     }
 
-    function applyPoint() {
-
-        let point = parseInt(pointInput.value) || 0
-        let currentPoint = parseInt(document.getElementById("currentPoint").innerText) || 0
-
-        if (point < 0) {
-            alert("Invalid point!")
-            pointInput.value = 0
-            return
-        }
-
-        if (point > currentPoint) {
-            alert("Not enough points!")
-            return
-        }
-
-        let discount = point * 1000
-
-        document.getElementById("discountMoney").innerText = formatVN(discount)
-        document.getElementById("discount").innerText = formatVN(discount)
-
-        updateTotal()
-    }
-
-    window.applyPoint = applyPoint
 
     // ====== TIMER ======
     let time = 600

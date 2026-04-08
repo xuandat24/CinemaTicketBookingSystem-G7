@@ -1,5 +1,5 @@
 package com.G7.CTBS.enums;
 
-public enum CouponType {
+public enum DiscountType {
     PERCENTAGE, FIXED
 }

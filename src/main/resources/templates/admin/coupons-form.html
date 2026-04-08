@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${coupon.couponId} ? 'Edit Coupon' : 'Add Coupon'">Coupon Form</title>
+    <link rel="stylesheet" th:href="@{/css/admin/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/coupon-form.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+</head>
+<body>
+<div class="admin-wrapper">
+
+    <div th:replace="~{admin/fragments/navbar :: admin-nav}"></div>
+
+    <main class="admin-content">
+        <div class="page-header">
+            <h2 th:text="${isEdit} ? 'Edit Coupon' : 'Add New Coupon'">Coupon Form</h2>
+            <a th:href="@{/admin/coupons}" class="btn btn-outline-secondary btn-sm">
+                <i class="fa-solid fa-arrow-left me-1"></i> Back
+            </a>
+        </div>
+
+        <div class="card" style="max-width: 640px;">
+            <div class="card-body">
+                <form th:action="${isEdit} ? @{/admin/coupons/edit/{id}(id=${couponId})} : @{/admin/coupons/add}"
+                      th:object="${coupon}" method="POST">
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Coupon Code</label>
+                        <input type="text" class="form-control" th:field="*{code}" placeholder="e.g. SUMMER25" required>
+                        <div class="text-danger small" th:if="${#fields.hasErrors('code')}" th:errors="*{code}"></div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label class="form-label fw-semibold">Discount Type</label>
+                            <select class="form-select" th:field="*{discountType}">
+                                <option value="PERCENTAGE">Percent (%)</option>
+                                <option value="FIXED">Fixed amount (đ)</option>
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label class="form-label fw-semibold">Discount Value</label>
+                            <input type="number" class="form-control" th:field="*{discountValue}" min="0" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label class="form-label fw-semibold">Min Order (đ)</label>
+                            <input type="number" class="form-control" th:field="*{minOrderAmount}" min="0">
+                        </div>
+                        <div class="col">
+                            <label class="form-label fw-semibold">Max Usage</label>
+                            <input type="number" class="form-control" th:field="*{maxUsage}" min="1">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Expiry Date</label>
+                        <input type="date" class="form-control" th:field="*{expiryDate}" required>
+                        <div class="text-danger small" th:if="${#fields.hasErrors('expiryDate')}"
+                             th:errors="*{expiryDate}"></div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fa-solid fa-floppy-disk me-1"></i>
+                        <span th:text="${isEdit} ? 'Update Coupon' : 'Create Coupon'">Save</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
+<script>
+    document.getElementById('discountType').addEventListener('change', function () {
+    const type = this.value;
+    const valueInput = document.getElementById('discountValue');
+
+    if (type === 'PERCENTAGE') {
+        valueInput.max = 100;
+        valueInput.placeholder = "Nhập % (1-100)";
+    } else {
+        valueInput.removeAttribute('max');
+        valueInput.placeholder = "Nhập số tiền giảm (đ)";
+    }
+});</script>
+</body>
+</html>
