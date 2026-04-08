@@ -9,7 +9,6 @@ public class DashboardResponseDTO {
     private Integer totalTickets;
     private String topMovieName;
     private Integer totalCombos;
-    
     private ChartData topMovies;
     private ChartData combos;
     private ChartData peakHours;

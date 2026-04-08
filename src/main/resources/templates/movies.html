@@ -23,7 +23,7 @@
     <div class="container-xl">
         <div class="row text-center">
             <div class="col-md-12">
-                <h2 class="fw-bold text-dark">Tất Cả Phim</h2>
+                <h2 class="fw-bold text-dark">Movies</h2>
                 <h6 class="mb-0 mt-2 fw-normal">
                     <a class="text-primary text-decoration-none fw-bold" th:href="@{/}">Home</a>
                     <span class="mx-2 text-muted">/</span> <span class="text-muted">Movies</span>
@@ -43,20 +43,25 @@
                     <input type="text" id="searchTitle" class="form-control border-start-0 filter-element" placeholder="Search title...">
                 </div>
             </div>
-            <div class="col-md-3 col-sm-6 mb-3 mb-md-0">
-                <div class="input-group">
-                    <span class="input-group-text bg-white border-end-0"><i class="fa fa-globe text-muted"></i></span>
-                    <input type="text" id="searchLanguage" class="form-control border-start-0 filter-element" placeholder="Language...">
-                </div>
+            <div class="col-md-2 col-sm-4 mb-2 mb-md-0">
+                <select id="searchLanguage" class="form-select filter-element">
+                    <option value="">All Languages</option>
+                    <option value="Vietnamese">Vietnamese</option>
+                    <option value="English">English</option>
+                    <option value="Korean">Korean</option>
+                    <option value="Japanese">Japanese</option>
+                    <option value="Chinese">Chinese</option>
+                    <option value="Thai">Thai</option>
+                    <option value="Other">Other</option> </select>
             </div>
             <div class="col-md-2 col-sm-4 mb-2 mb-md-0">
                 <select id="filterCategory" class="form-select filter-element">
-                    <option value="">-- All Categories --</option>
+                    <option value="">All Categories</option>
                 </select>
             </div>
             <div class="col-md-2 col-sm-4 mb-2 mb-md-0">
                 <select id="filterStatus" class="form-select filter-element">
-                    <option value="">-- All Status --</option>
+                    <option value="">All Status</option>
                     <option value="Coming Soon">Coming Soon</option>
                     <option value="Now Playing">Now Playing</option>
                     <option value="Pending">Pending</option>
