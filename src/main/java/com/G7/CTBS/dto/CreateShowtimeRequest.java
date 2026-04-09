@@ -2,8 +2,8 @@ package com.G7.CTBS.dto;
 
 import com.G7.CTBS.enums.ShowtimeFormat;
 import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,7 +27,7 @@ public class CreateShowtimeRequest {
     private LocalDateTime startTime;
 
     @NotNull(message = "Price is required")
-    @Positive(message = "Price must be greater than 0")
+    @Min(value = 10000, message = "Price must be greater than 10,000")
     private Double price;
 
     @NotNull(message = "Format is required")

@@ -49,15 +49,10 @@ public class ShowtimeServiceImpl implements ShowtimeService {
         TheaterRoom room = theaterRoomRepository.findById(request.getTheaterRoomId())
                 .orElseThrow(() -> new ResourceNotFoundException("Theater room not found"));
 
-        // 3. Validate start time
-        if (request.getStartTime().isBefore(LocalDateTime.now())) {
-            throw new InvalidShowtimeException("Showtime must be in the future");
-        }
-
-        // 4. Calculate end time (startTime + movie duration)
+        // 3. Calculate end time (startTime + movie duration)
         LocalDateTime endTime = request.getStartTime().plusMinutes(movie.getDuration());
 
-        // 5. Check schedule conflict in the same room
+        // 4. Check schedule conflict in the same room
         boolean conflict = showtimeRepository
                 .existsByTheaterRoomRoomIdAndStatusAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
                         room.getRoomId(),
@@ -69,7 +64,7 @@ public class ShowtimeServiceImpl implements ShowtimeService {
             throw new ShowtimeConflictException(
                     "Showtime overlaps with another show in this room");
 
-        // 6. Create Showtime entity
+        // 5. Create Showtime entity
         Showtime showtime = new Showtime();
         showtime.setMovie(movie);
         showtime.setTheaterRoom(room);
@@ -78,7 +73,7 @@ public class ShowtimeServiceImpl implements ShowtimeService {
         showtime.setFormat(request.getFormat());
         showtime.setBasePrice(request.getPrice());
 
-        // 7. Save to database
+        // 6. Save to database
         Showtime savedShowtime = showtimeRepository.save(showtime);
 
         if (movie.getStatus().equalsIgnoreCase("Coming Soon")) {
@@ -86,7 +81,7 @@ public class ShowtimeServiceImpl implements ShowtimeService {
             movieRepository.save(movie);
         }
 
-        // 8. Response DTO
+        // 7. Response DTO
         return responseDTO(savedShowtime, movie, room);
     }
 
@@ -106,10 +101,6 @@ public class ShowtimeServiceImpl implements ShowtimeService {
 
         Movie movie = showtime.getMovie();
         TheaterRoom room = showtime.getTheaterRoom();
-
-        if (request.getStartTime().isBefore(LocalDateTime.now())) {
-            throw new InvalidShowtimeException("Updated showtime must be in the future");
-        }
 
         LocalDateTime newEndTime =
                 request.getStartTime().plusMinutes(movie.getDuration());
@@ -235,7 +226,8 @@ public class ShowtimeServiceImpl implements ShowtimeService {
             Long movieId,
             Long roomId,
             LocalDate date,
-            ShowtimeStatus status
+            ShowtimeStatus status,
+            String keyword
     ) {
 
         List<Showtime> showtimes = showtimeRepository.findAll();
@@ -261,6 +253,13 @@ public class ShowtimeServiceImpl implements ShowtimeService {
         if (status != null) {
             showtimes = showtimes.stream()
                     .filter(s -> s.getStatus() == status)
+                    .toList();
+        }
+
+        if (keyword != null && !keyword.isEmpty()) {
+            showtimes = showtimes.stream()
+                    .filter(s -> s.getMovie().getTitle().toLowerCase()
+                            .contains(keyword.toLowerCase()))
                     .toList();
         }
 
