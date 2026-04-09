@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Coupon Management</title>
+    <link rel="stylesheet" th:href="@{/css/admin/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/coupon.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+</head>
+<body>
+<div class="admin-wrapper">
+
+    <div th:replace="~{admin/fragments/navbar :: admin-nav}"></div>
+
+    <main class="admin-content">
+
+        <div class="page-header">
+            <h2>Coupon Management</h2>
+            <a th:href="@{/admin/coupons/add}" class="btn btn-primary btn-sm">
+                <i class="fa-solid fa-plus me-1"></i> Add New Coupon
+            </a>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-label">Total Coupons</div>
+                <div class="stat-value" th:text="${totalCoupons}">0</div>
+            </div>
+            <div class="stat-card text-success">
+                <div class="stat-label">Active</div>
+                <div class="stat-value" th:text="${activeCoupons}">0</div>
+            </div>
+            <div class="stat-card text-danger">
+                <div class="stat-label">Expired</div>
+                <div class="stat-value" th:text="${expiredCoupons}">0</div>
+            </div>
+        </div>
+
+        <div id="message">
+            <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fa-solid fa-circle-check me-2"></i>
+                <span th:text="${success}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+            <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fa-solid fa-triangle-exclamation me-2"></i>
+                <span th:text="${errorMessage}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+        <!-- Search & Filter -->
+        <div class="card mb-3">
+            <div class="card-body py-2">
+                <form th:action="@{/admin/coupons}" method="GET" class="d-flex gap-2">
+                    <input type="search" class="form-control form-control-sm"
+                           placeholder="Search coupon code..." name="keyword"
+                           th:value="${keyword}">
+                    <select class="form-select form-select-sm w-auto" name="active">
+                        <option value="">All status</option>
+                        <option value="true" th:selected="${active == true}">Active</option>
+                        <option value="false" th:selected="${active == false}">Expired</option>
+                    </select>
+                    <button class="btn btn-outline-info btn-sm" type="submit">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="card">
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Code</th>
+                        <th>Discount</th>
+                        <th>Type</th>
+                        <th>Min Order</th>
+                        <th>Usage</th>
+                        <th>Expiry Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="coupon, stat : ${coupons}">
+                        <td th:text="${stat.count}"></td>
+                        <td><code th:text="${coupon.code}"></code></td>
+                        <td th:text="${coupon.discountType == 'PERCENTAGE' ? coupon.discountValue + '%' : coupon.discountValue + 'đ'}"></td>
+                        <td th:text="${coupon.discountType}"></td>
+
+                        <td th:text="${coupon.minOrderAmount != null} ? ${#numbers.formatDecimal(coupon.minOrderAmount, 1, 'COMMA', 0, 'POINT')} + 'đ' : '0đ'"></td>
+
+                        <td th:text="${(coupon.usedCount != null ? coupon.usedCount : 0) + ' / ' + (coupon.maxUsage != null ? coupon.maxUsage : 0)}"></td>
+                        <td th:text="${coupon.expiryDate != null ? #temporals.format(coupon.expiryDate, 'dd/MM/yyyy') : ''}"></td>
+                        <td>
+        <span th:switch="${coupon.status}">
+            <span th:case="'ACTIVE'" class="badge bg-success">Active</span>
+            <span th:case="'EXPIRED'" class="badge bg-danger">Expired</span>
+        </span>
+                        </td>
+                        <td>
+                            <a th:href="@{/admin/coupons/edit/{id}(id=${coupon.couponId})}"
+                               class="btn btn-outline-info btn-sm">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </a>
+                            <a th:href="@{/admin/coupons/delete/{id}(id=${coupon.couponId})}"
+                               class="btn btn-outline-danger btn-sm"
+                               onclick="return confirm('Delete this coupon?')">
+                                <i class="fa-solid fa-trash"></i>
+                            </a>
+                        </td>
+                    <tr th:if="${#lists.isEmpty(coupons)}">
+                        <td colspan="9" class="text-center text-muted py-4">No coupons found.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+</div>
+</body>
+</html>

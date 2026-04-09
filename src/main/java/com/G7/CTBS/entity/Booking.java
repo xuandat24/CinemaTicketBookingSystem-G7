@@ -8,33 +8,42 @@ import java.util.List;
 
 @Entity
 @Table(name = "bookings")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long bookingId;
-    
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")
     private User user;
-    
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "showtimeId")
     private Showtime showtime;
-    
+
     private String bookingCode;
-    private Double finalPrice;
     private String status; // VD: PENDING, CONFIRMED, CANCELLED
     private LocalDateTime createTime;
-    
+
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
     private List<BookingSeat> bookingSeats;
-    
+
     @OneToMany(mappedBy = "booking")
     private List<Payment> payments;
 
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
     private List<BookingCombo> bookingCombos;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "couponId")
+    private Coupon coupon;
+
+    private Double originalPrice;   // Tổng tiền gốc (Ghế + Combo)
+    private Double discountAmount;
+    private Double finalPrice;
+    private String couponCode; // Lưu thêm Code dạng String để dự phòng nếu Coupon bị xóa
+
 }

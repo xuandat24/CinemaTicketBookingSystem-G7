@@ -8,7 +8,7 @@
 
     <div class="admin-sidebar">
 
-        <a th:href="@{/admin/home}" class="brand-logo">System Management</a>
+        <a th:href="@{/admin/home}" class="brand-logo">Admin Dashboard</a>
 
         <div class="sidebar-search">
             <form th:action="@{/admin/movies/search}" method="GET">
@@ -32,7 +32,23 @@
         <a th:href="@{/admin/categories/add}" class="menu-item"><i class="fa-solid fa-folder-plus me-2"></i> Add Category</a>
         <a th:href="@{/admin/categories}" class="menu-item"><i class="fa-solid fa-tags me-2"></i> View Categories</a>
 
+        <div class="section-title">Showtimes Management</div>
+        <a th:href="@{/admin/showtimes/create}" class="menu-item"><i class="fa-solid fa-folder-plus me-2"></i> Add Showtime</a>
+        <a th:href="@{/admin/showtimes}" class="menu-item"><i class="fa-solid fa-tags me-2"></i> View Showtimes</a>
+
+        <div class="section-title">Coupon Management</div>
+        <a th:href="@{/admin/coupons/add}" class="menu-item"><i class="fa-solid fa-plus-circle me-2"></i> Add Coupon</a>
+        <a th:href="@{/admin/coupons}" class="menu-item"><i class="fa-solid fa-ticket me-2"></i> View Coupons</a>
+        <div class="section-title">Combo Management</div>
+        <a th:href="@{/admin/combos/add}" class="menu-item"><i class="fa-solid fa-utensils me-2"></i> Add Combo</a>
+        <a th:href="@{/admin/combos}" class="menu-item"><i class="fa-solid fa-list me-2"></i> View Combo</a>
+
+        <div class="section-title">Theater Management</div>
+        <a th:href="@{/admin/theaters}" class="menu-item"><i class="fa-solid fa-door-open me-2"></i> View Theater Room</a>
+
         <div class="section-title">System</div>
+        <a th:href="@{/admin/profile}" class="menu-item"><i class="fa-solid fa-user-shield me-2"></i> My Profile</a>
+
         <form th:action="@{/logout}" method="post" class="px-3 mt-3">
             <button class="btn btn-danger btn-sm w-100 fw-bold" type="submit">
                 <i class="fa-solid fa-right-from-bracket me-2"></i> Logout
@@ -41,6 +57,11 @@
 
     </div>
 </nav>
-
+<script>
+    function clearLocalData() {
+        localStorage.removeItem("jwtToken");
+        localStorage.removeItem("username");
+    }
+</script>
 </body>
 </html>

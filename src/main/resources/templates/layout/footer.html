@@ -1,131 +1,100 @@
 <div xmlns:th="http://www.thymeleaf.org" th:fragment="footer">
-<section  id="footer_t" >
-    <div class="container-fluid">
-        <div class="footer_t1 row">
-            <div class="col-md-4 p-0">
-                <div class="footer_ti position-relative">
-                    <div class="footer_ti1">
-                        <div class="grid clearfix">
-                            <figure class="effect-jazz mb-0">
-                                <a href="#"><img th:src="@{/img/12.jpg}" class="w-100" alt="img25"></a>
-                            </figure>
-                        </div>
-                    </div>
-                    <div class="footer_ti2 bg_back pt-5 text-center px-4 position-absolute w-100 h-100 top-0">
-                        <span class="d-inline-block bg-white rounded-circle col_oran fs-1"><i class="fa fa-youtube-play"></i></span>
-                        <h2 class="mb-0 text-white mt-3">Top 5 Movies in Theaters</h2>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 p-0">
-                <div class="footer_ti position-relative">
-                    <div class="footer_ti1">
-                        <div class="grid clearfix">
-                            <figure class="effect-jazz mb-0">
-                                <a href="#"><img th:src="@{/img/13.jpg}" class="w-100" alt="img25"></a>
-                            </figure>
-                        </div>
-                    </div>
-                    <div class="footer_ti2 bg_backn1 pt-5 text-center px-4 position-absolute w-100 h-100 top-0">
-                        <span class="d-inline-block bg-white rounded-circle col_oran fs-2"><i class="fa fa-film"></i></span>
-                        <h2 class="mb-0 text-white mt-3">Watch Coming Soon Movies</h2>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 p-0">
-                <div class="footer_ti position-relative">
-                    <div class="footer_ti1">
-                        <div class="grid clearfix">
-                            <figure class="effect-jazz mb-0">
-                                <a href="#"><img th:src="@{/img/14.jpg}" class="w-100" alt="img25"></a>
-                            </figure>
-                        </div>
-                    </div>
-                    <div class="footer_ti2 bg_back pt-5 text-center px-4 position-absolute w-100 h-100 top-0">
-                        <span class="d-inline-block bg-white rounded-circle col_oran fs-1"><i class="fa fa-video-camera"></i></span>
-                        <h2 class="mb-0 text-white mt-3"> Hot Movies Trailers Live Now</h2>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
 
-<section id="footer" class="p_3 bg-black">
-    <div class="container-xl">
-        <div class="footer_1 row pb-4">
-            <div class="col-md-3">
-                <div class="footer_1l">
-                    <h4 class="mb-0"><a class="fw-bold text-white" href="index.html"><i class="fa fa-modx col_oran"></i> Movie Theme </a></h4>
+    <!-- =======================================================
+       MAIN FOOTER (CHÂN TRANG CHÍNH)
+    ======================================================= -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="row gy-5">
+                <!-- Cột 1: Logo & Giới thiệu -->
+                <div class="col-lg-4 col-md-6">
+                    <a class="navbar-brand p-0 brand-premium footer-brand" th:href="@{/}">
+                        <i class="fa fa-ticket"></i> CTBS <span>CINEMAS</span>
+                    </a>
+                    <p class="footer-about-text mt-3">
+                        Experience the magic of cinema. We bring you the latest blockbusters, cozy seating, and a premium VIP experience.
+                    </p>
+                    <div class="footer-social-icons mt-4">
+                        <a href="#" title="Facebook"><i class="fa fa-facebook"></i></a>
+                        <a href="#" title="Instagram"><i class="fa fa-instagram"></i></a>
+                        <a href="#" title="Twitter"><i class="fa fa-twitter"></i></a>
+                        <a href="#" title="YouTube"><i class="fa fa-youtube-play"></i></a>
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-9">
-                <div class="footer_1r text-end">
-                    <ul class="mb-0">
-                        <li class="d-inline-block"><a class="text-white-50 a_tag" href="#">Help</a></li>
-                        <li class="d-inline-block text-white-50">/</li>
-                        <li class="d-inline-block me-2"><a class="text-white-50 a_tag" href="#"> Privacy Policy</a></li>
-                        <li class="d-inline-block"><a class="social_icon" href="#"> <i class="fa fa-twitter"></i></a></li>
-                        <li class="d-inline-block"><a class="social_icon" href="#"> <i class="fa fa-facebook"></i></a></li>
-                        <li class="d-inline-block"><a class="social_icon" href="#"> <i class="fa fa-instagram"></i></a></li>
-                        <li class="d-inline-block"><a class="social_icon" href="#"> <i class="fa fa-pinterest"></i></a></li>
+
+                <!-- Cột 2: Danh mục phim -->
+                <div class="col-lg-2 col-md-6">
+                    <h5 class="footer-title">Categories</h5>
+                    <ul class="footer-links">
+                        <li><a href="#">Action</a></li>
+                        <li><a href="#">Adventure</a></li>
+                        <li><a href="#">Animation</a></li>
+                        <li><a href="#">Comedy</a></li>
+                        <li><a href="#">Sci-Fi</a></li>
+                    </ul>
+                </div>
+
+                <!-- Cột 3: Link nhanh -->
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="footer-title">Quick Links</h5>
+                    <ul class="footer-links">
+                        <li><a th:href="@{/about}">About Us</a></li>
+                        <li><a th:href="@{/movies}">All Movies</a></li>
+                        <li><a href="#">Terms & Conditions</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a th:href="@{/contact}">Contact Us</a></li>
+                    </ul>
+                </div>
+
+                <!-- Cột 4: Địa chỉ -->
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="footer-title">Our Address</h5>
+                    <ul class="footer-contact">
+                        <li><i class="fa fa-map-marker"></i><span>FPT University, District 9, HCMC</span></li>
+                        <li><i class="fa fa-phone"></i><span>(+84) 123 456 789</span></li>
+                        <li><i class="fa fa-envelope"></i><span>support@ctbs.com</span></li>
                     </ul>
                 </div>
             </div>
         </div>
-        <div class="footer_2 row mt-4">
-            <div class="col-md-3">
-                <div class="footer_2i">
-                    <p class="text-white fw-bold fs-5">Buy movie tickets easily with Aovis system nationwide</p>
-                    <h6 class="mb-0 mt-4"><a class="button" href="#">Get Your Ticket</a></h6>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="footer_2i">
-                    <h5 class="col_oran mb-4">Movies</h5>
-                    <div class="row footer_1ism">
-                        <h6 class="fw-normal col-md-12 col-6"><a class="text-white-50 a_tag" href="#"> Action</a></h6>
-                        <h6 class="fw-normal mt-2 col-md-12 col-6"><a class="text-white-50 a_tag" href="#"> Adventure</a></h6>
-                        <h6 class="fw-normal mt-2 col-md-12 col-6"><a class="text-white-50 a_tag" href="#"> Animation</a></h6>
-                        <h6 class="fw-normal mt-2 col-md-12 col-6"><a class="text-white-50 a_tag" href="#"> Thriller</a></h6>
-                        <h6 class="fw-normal mt-2 col-md-12 col-6"><a class="text-white-50 a_tag" href="#"> Crime</a></h6>
-                        <h6 class="fw-normal mt-2 col-md-12 col-6 mb-0"><a class="text-white-50 a_tag" href="#"> Comedy</a></h6>
+    </footer>
+
+    <!-- =======================================================
+       COMPACT CONTACT FORM (FORM LIÊN HỆ GỌN)
+    ======================================================= -->
+    <section class="compact-contact-section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="text-center mb-4">
+                        <h3 class="text-white fw-bold">Get In Touch</h3>
+                        <p class="text-white-50">Have a question or feedback? Drop us a line!</p>
                     </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="footer_2i">
-                    <h5 class="col_oran mb-4">Links</h5>
-                    <div class="row footer_1ism">
-                        <h6 class="fw-normal col-md-12 col-6"><a class="text-white-50 a_tag" href="#"> About Us</a></h6>
-                        <h6 class="fw-normal mt-2 col-md-12 col-6"><a class="text-white-50 a_tag" href="#"> My account</a></h6>
-                        <h6 class="fw-normal mt-2 col-md-12 col-6"><a class="text-white-50 a_tag" href="#"> News</a></h6>
-                        <h6 class="fw-normal mt-2 col-md-12 col-6"><a class="text-white-50 a_tag" href="#"> Latest Events</a></h6>
-                        <h6 class="fw-normal mt-2 col-md-12 col-6"><a class="text-white-50 a_tag" href="#"> Privacy</a></h6>
-                        <h6 class="fw-normal mt-2 col-md-12 col-6 mb-0"><a class="text-white-50 a_tag" href="#"> Contact Us</a></h6>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="footer_2i">
-                    <h5 class="col_oran mb-4">Newsletter</h5>
-                    <p class="text-white-50">Subscribe to Leitmotif newsletter this very day.</p>
-                    <div class="input-group bg-white">
-                        <input type="text" class="form-control bg-transparent rounded-0 border-0" placeholder="Enter Your Email">
-                        <span class="input-group-btn">
-					<button class="btn btn-primary bg-transparent rounded-0 border-0 col_oran p-3" type="button">
-						<i class="fa fa-location-arrow"></i></button>
-				</span>
-                    </div>
-                    <div class="form-check mt-3 text-white-50">
-                        <input class="form-check-input" type="checkbox" value="" id ="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">
-                            I agree to all terms and policies of the company
-                        </label>
-                    </div>
+                    <form action="#" class="contact-form-compact">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" placeholder="Your Name">
+                            </div>
+                            <div class="col-md-6">
+                                <input type="email" class="form-control" placeholder="Your Email Address">
+                            </div>
+                            <div class="col-12">
+                                <textarea class="form-control" rows="4" placeholder="Your Message..."></textarea>
+                            </div>
+                            <div class="col-12 text-center">
+                                <button type="submit" class="btn-submit-compact">Send Message</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
+    </section>
+
+    <!-- =======================================================
+       BOTTOM BAR (BẢN QUYỀN)
+    ======================================================= -->
+    <div class="footer-bottom text-center">
+        <p class="mb-0">© 2024 CTBS Cinemas. All Rights Reserved. Designed by G7.</p>
     </div>
-</section>
 </div>

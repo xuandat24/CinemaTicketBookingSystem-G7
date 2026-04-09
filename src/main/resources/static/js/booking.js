@@ -1,9 +1,14 @@
 document.addEventListener("DOMContentLoaded", function () {
 
     // ====== DATA ======
-    let seatPrice = 100000
+    let seatPrice = 0
 
-    // đảm bảo tồn tại
+    const totalEl = document.getElementById("totalPrice")
+
+    if (totalEl) {
+        seatPrice = parseInt(totalEl.dataset.seatPrice) || 0
+    }
+
     if (typeof comboPrice === "undefined") comboPrice = {}
     if (typeof comboQty === "undefined") comboQty = {}
 
@@ -13,7 +18,6 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!comboQty[id]) comboQty[id] = 0
 
         comboQty[id] += change
-
         if (comboQty[id] < 0) comboQty[id] = 0
 
         let el = document.getElementById("combo" + id)
@@ -22,8 +26,17 @@ document.addEventListener("DOMContentLoaded", function () {
         updateTotal()
     }
 
-    // ⚠️ QUAN TRỌNG: expose ra global cho HTML gọi
     window.changeCombo = changeCombo
+
+    // ====== FORMAT VN ======
+    function formatVN(number) {
+        return number.toLocaleString("vi-VN")
+    }
+
+    // ====== PARSE NUMBER ======
+    function parseNumber(str) {
+        return parseInt(str.replace(/\D/g, "")) || 0
+    }
 
     // ====== UPDATE TOTAL ======
     function updateTotal() {
@@ -34,30 +47,37 @@ document.addEventListener("DOMContentLoaded", function () {
             comboTotal += comboQty[id] * (comboPrice[id] || 0)
         }
 
-        let discount = parseInt(document.getElementById("discount")?.innerText) || 0
+        let discountEl = document.getElementById("discount")
+        let discount = discountEl ? parseNumber(discountEl.innerText) : 0
 
         let total = seatPrice + comboTotal
         let final = total - discount
+        if (final < 0) final = 0
 
-        document.getElementById("totalPrice").innerText = total
-        document.getElementById("finalPrice").innerText = final
+        document.getElementById("totalPrice").innerText = formatVN(total)
+        document.getElementById("finalPrice").innerText = formatVN(final)
     }
 
-    // ====== POINT ======
+    // ====== POINT INPUT VALIDATION ======
     let pointInput = document.getElementById("pointInput")
 
     if (pointInput) {
+
+        pointInput.addEventListener("keydown", function (e) {
+            if (["e", "E", "+", "-", "."].includes(e.key)) {
+                e.preventDefault()
+            }
+        })
+
         pointInput.addEventListener("input", function () {
+            let value = this.value
 
-            let point = parseInt(this.value) || 0
-            let discount = point * 1000
+            value = value.replace(/[^0-9]/g, "")
 
-            document.getElementById("discountMoney").innerText = discount
-            document.getElementById("discount").innerText = discount
-
-            updateTotal()
+            this.value = value
         })
     }
+
 
     // ====== TIMER ======
     let time = 600

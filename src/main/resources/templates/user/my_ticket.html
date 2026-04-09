@@ -1,0 +1,27 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Ticket</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+</head>
+<body>
+<div th:replace="~{layout/header :: header}"></div>
+
+<div class="container py-5">
+    <div class="card shadow-sm border-0" style="border-radius:16px;">
+        <div class="card-body p-4 p-md-5 text-center">
+            <h3 class="fw-bold mb-3">My Tickets</h3>
+            <p class="text-muted mb-0">This section is reserved for discount tickets and vouchers. No data yet.</p>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{layout/footer :: footer}"></footer>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/auth.js}"></script>
+</body>
+</html>

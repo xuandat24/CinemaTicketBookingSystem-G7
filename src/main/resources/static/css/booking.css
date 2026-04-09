@@ -1,6 +1,6 @@
 .payment-method{
     display:grid;
-    grid-template-columns: repeat(3, 1fr); /* 👈 3 nút 1 hàng */
+    grid-template-columns: repeat(3, 1fr); /* ???? 3 n??t 1 h??ng */
     gap:15px;
 }
 
@@ -55,7 +55,7 @@
 
 .payment-note {
     margin-top: 15px;
-    margin-bottom: 30px; /* cách footer */
+    margin-bottom: 30px; /* c??ch footer */
     font-size: 14px;
     color: #666;
     line-height: 1.6;
@@ -126,7 +126,8 @@ html, body {
 body{
     display:flex;
     flex-direction:column;
-    background: #f5f6f8;
+    background: #f5f6f8 !important;
+    color: #1f2937;
 }
 
 .container{
@@ -138,7 +139,6 @@ body{
     position: sticky;
     top: 120px;
     height: fit-content;
-
     background: #fff;
     border-radius: 12px;
     padding: 15px;
@@ -198,7 +198,7 @@ body{
     overflow: hidden;
 }
 
-/* nút chung */
+/* n??t chung */
 .qty-btn{
     width: 32px;
     height: 32px;
@@ -208,7 +208,7 @@ body{
     transition: 0.2s;
 }
 
-/* nút + */
+/* n??t + */
 .qty-btn.plus{
     background-color: #0d47a1;
     color: white;
@@ -218,7 +218,7 @@ body{
     background-color: #1565c0;
 }
 
-/* nút - */
+/* n??t - */
 .qty-btn.minus{
     background-color: #e0e0e0;
     color: #333;
@@ -228,7 +228,7 @@ body{
     background-color: #c7c7c7;
 }
 
-/* số ở giữa */
+/* s??? ??? gi???a */
 .qty-number{
     width: 40px;
     text-align: center;
@@ -244,7 +244,7 @@ body{
     margin-top: 15px;
 }
 
-/* Cả 2 nút bằng nhau */
+/* C??? 2 n??t b???ng nhau */
 .btn-prev,
 .btn-next{
     flex: 1;
@@ -274,4 +274,208 @@ body{
 .btn-next:hover{
     background: #1557b0;
     transform: scale(1.02);
+}
+
+
+
+
+.info-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.info-row .label {
+    width: 120px; /* ch???nh t??y ?? */
+    font-weight: 500;
+}
+#seatShow {
+    white-space: pre-line;
+}
+
+
+
+
+.terms-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    padding: 24px;
+}
+
+.terms-overlay.is-open {
+    display: flex;
+}
+
+.terms-modal {
+    width: min(920px, 100%);
+    max-height: 90vh;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+}
+
+.terms-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.terms-title {
+    margin: 0;
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+
+.terms-close {
+    border: none;
+    background: transparent;
+    font-size: 28px;
+    line-height: 1;
+    color: #6b7280;
+    cursor: pointer;
+}
+
+.terms-body {
+    padding: 22px 22px 18px;
+    overflow-y: auto;
+    color: #374151;
+    font-size: 17px;
+    line-height: 1.5;
+}
+
+.terms-body > p {
+    margin: 0 0 34px;
+}
+
+.terms-body > p:last-of-type {
+    margin-bottom: 26px;
+}
+
+.terms-body ol {
+    padding-left: 24px;
+    margin: 0;
+}
+
+.terms-body li {
+    margin-bottom: 12px;
+}
+
+.terms-footer {
+    border-top: 1px solid #e5e7eb;
+    padding: 14px 22px;
+    background: #fff;
+}
+
+.terms-agree {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    font-size: 17px;
+    font-weight: 600;
+    color: #111827;
+}
+
+.terms-actions {
+    display: flex;
+    justify-content: center;
+}
+
+.terms-pay-btn {
+    min-width: 140px;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 24px;
+    background: #0056b3;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.terms-pay-btn:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+}
+
+.terms-refund-lines {
+    margin-top: 8px;
+    margin-left: 22px;
+}
+
+.combo-table {
+    table-layout: fixed;
+    width: 100%;
+}
+
+.combo-table thead th,
+.combo-table tbody td {
+    vertical-align: middle;
+}
+
+.combo-table thead th:first-child,
+.combo-table tbody td:first-child {
+    width: 116px;
+}
+
+.combo-table thead th:nth-child(2),
+.combo-table tbody td:nth-child(2) {
+    width: 17%;
+}
+
+.combo-table thead th:nth-child(3),
+.combo-table tbody td:nth-child(3) {
+    width: 43%;
+}
+
+.combo-table thead th:nth-child(4),
+.combo-table tbody td:nth-child(4) {
+    width: 16%;
+    text-align: center;
+    white-space: nowrap;
+    font-weight: 700;
+}
+
+.combo-table thead th:nth-child(5),
+.combo-table tbody td:nth-child(5) {
+    width: 160px;
+    text-align: center;
+}
+
+.combo-table .qty-box {
+    justify-content: center;
+}
+
+.combo-table .combo-img {
+    width: 92px;
+    height: 92px;
+    margin: 0 auto;
+}
+
+@media (max-width: 992px) {
+    .combo-table thead th:nth-child(3),
+    .combo-table tbody td:nth-child(3) {
+        width: auto;
+    }
+
+    .combo-table thead th:nth-child(4),
+    .combo-table tbody td:nth-child(4) {
+        width: 130px;
+    }
+
+    .combo-table thead th:nth-child(5),
+    .combo-table tbody td:nth-child(5) {
+        width: 130px;
+    }
 }

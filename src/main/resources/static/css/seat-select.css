@@ -25,6 +25,7 @@
     gap: 8px;
     font-weight: 600;
     color: #2b5e96;
+    margin-top: 24px;
     margin-bottom: 12px;
 }
 
@@ -134,6 +135,14 @@
     border-radius: 10px;
     padding: 18px;
     border: 1px solid #e5e5e5;
+    overflow-x: auto;
+}
+
+.theater-room-label {
+    text-align: center;
+    font-weight: 800;
+    color: #1f1f1f;
+    margin-bottom: 10px;
 }
 
 .screen-wrap {
@@ -164,13 +173,21 @@
 }
 
 .seat-grid {
+    --layout-scale: 1;
+    --layout-global-shift-x: 0px;
     display: grid;
     grid-template-columns: repeat(12, 36px);
     column-gap: 12px;
     row-gap: 4px;
-    justify-content: center;
+    justify-content: start;
     justify-items: center;
+    width: max-content;
+    margin: 0 auto;
 }
+
+.seat-grid.layout-room-1 { --layout-global-shift-x: 0px; }
+.seat-grid.layout-room-2 { --layout-global-shift-x: 0px; }
+.seat-grid.layout-room-3 { --layout-global-shift-x: 0px; }
 
 .seat {
     width: 32px;
@@ -186,6 +203,7 @@
     justify-content: center;
     cursor: pointer;
     user-select: none;
+    transform: translateX(calc((var(--layout-global-shift-x) + var(--seat-shift-x, 0px)) * var(--layout-scale)));
 }
 
 .seat.vip { background: #ffb255; border-color: #ffb255; color: #222; }
@@ -231,6 +249,7 @@
 .info-title {
     margin: 12px 0 4px;
     font-weight: 800;
+    color: #1f1f1f;
 }
 
 .info-format {
@@ -278,6 +297,12 @@
     background: #1d5fa7;
     color: #fff;
     font-weight: 700;
+}
+
+.info-btn.disabled {
+    opacity: 0.55;
+    pointer-events: none;
+    cursor: not-allowed;
 }
 
 .seat-bottom-bar {
@@ -346,11 +371,11 @@
     .seat-main {
         grid-template-columns: 1fr;
     }
+    .seat-grid {
+        --layout-scale: 0.82;
+    }
     .seat-info {
         position: static;
-    }
-    .seat-grid {
-        grid-template-columns: repeat(12, minmax(0, 1fr));
     }
     .seat-bottom-bar {
         grid-template-columns: 1fr;
@@ -362,10 +387,30 @@
     }
 }
 
+.seat-grid-error {
+    grid-column: 1 / -1;
+    min-height: 120px;
+    padding: 16px;
+    border: 1px dashed #c7c7c7;
+    border-radius: 8px;
+    background: #fafafa;
+    color: #7a7a7a;
+    font-weight: 600;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 @media screen and (max-width: 576px) {
-    .seat-grid {
-        grid-template-columns: repeat(9, minmax(0, 1fr));
+    .seat-breadcrumb {
+        margin-top: 16px;
     }
+
+    .seat-grid {
+        --layout-scale: 0.65;
+    }
+
     .seat {
         width: 30px;
         height: 24px;

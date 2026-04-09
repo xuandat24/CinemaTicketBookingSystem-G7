@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Movie Details - CTBS Cinema</title>
+
+	<link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" >
+	<link th:href="@{/css/font-awesome.min.css}" rel="stylesheet" >
+	<link th:href="@{/css/global.css}" rel="stylesheet">
+	<link th:href="@{/css/index.css}" rel="stylesheet">
+	<link th:href="@{/css/user/detail.css}" rel="stylesheet">
+
+	<link href="https://fonts.googleapis.com/css2?family=Platypi:wght@300;800&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+	<script th:src="@{/js/jquery-3.7.1.min.js}"></script>
+	<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+
+	<style>
+		.custom-play-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            background: rgba(217, 108, 44, 0.8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+        .custom-play-btn:hover {
+            background: #d96c2c;
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+        .movie-main-info {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+        }
+	</style>
+</head>
+<body class="home-light-theme">
+
+<div th:replace="~{layout/header :: header}"></div>
+
+<section id="center" class="centre_o pt-5 pb-5 bg-light">
+	<div class="container-xl">
+		<div class="row centre_o1 text-center">
+			<div class="col-md-12">
+				<h1 class="fw-bold text-dark">Movie Details</h1>
+				<h5 class="mb-0 mt-2">
+					<a th:href="@{/}" class="text-decoration-none" style="color: #d96c2c;">Home</a>
+					<span class="mx-2 text-muted">/</span>
+					<span class="text-secondary">Details</span>
+				</h5>
+			</div>
+		</div>
+	</div>
+</section>
+
+<section id="detail" class="p_3 mt-4 mb-5">
+	<div class="container-xl">
+		<div class="row mb-4">
+			<div class="col-12">
+				<button onclick="goBack()" class="btn btn-outline-secondary rounded-pill px-4">
+					<i class="fa fa-arrow-left me-2"></i> Back to Movies
+				</button>
+			</div>
+		</div>
+
+		<div class="row align-items-end mb-4">
+			<div class="col-md-8">
+				<h2 id="movieTitle" class="fw-bold display-5 mb-1">Loading...</h2>
+				<h6 class="text-muted fs-5" id="movieMeta">Categories / 00 Mins</h6>
+			</div>
+			<div class="col-md-4 text-md-end">
+				<button class="btn btn-danger btn-lg px-5 py-3 fw-bold shadow" onclick="openBookingModal()" id="btnGetTicket">
+					<i class="fa fa-ticket me-2"></i> GET TICKET
+				</button>
+			</div>
+		</div>
+
+		<div class="row g-4">
+			<div class="col-md-4">
+				<div class="rounded shadow overflow-hidden position-relative">
+					<img id="moviePoster" th:src="@{/img/placeholder.jpg}" class="w-100" style="height: 550px; object-fit: cover;" alt="Poster">
+				</div>
+			</div>
+
+			<div class="col-md-8">
+				<div id="mediaWrapper" class="position-relative rounded shadow overflow-hidden mb-4" style="height: 380px; background-color: #000;">
+
+					<div id="videoContainer" class="w-100 h-100 d-none">
+
+						<video id="inlineVideo" playsinline class="w-100 h-100 d-none" style="object-fit: contain;">
+							<source src="" type="video/mp4">
+						</video>
+
+						<div id="youtubePlayer" class="w-100 h-100 d-none"></div>
+
+						<div id="customPlayBtn" class="custom-play-btn d-none">
+							<i class="fa fa-play"></i>
+						</div>
+					</div>
+
+					<div id="bannerContainer" class="w-100 h-100">
+						<img id="movieBanner" th:src="@{/img/placeholder.jpg}" class="w-100 h-100" style="object-fit: cover;" alt="Banner">
+					</div>
+				</div>
+
+				<div class="movie-main-info shadow-sm">
+					<div class="row">
+						<div class="col-sm-6">
+							<p class="mb-2 text-muted"><strong class="text-dark">Director:</strong> <span id="movieDirector">Unknown</span></p>
+							<p class="mb-2 text-muted"><strong class="text-dark">Release Date:</strong> <span id="movieRelease">N/A</span></p>
+							<p class="mb-2 text-muted"><strong class="text-dark">Language:</strong> <span id="detailLanguage" class="badge bg-primary">N/A</span></p>
+						</div>
+						<div class="col-sm-6">
+							<p class="mb-2 text-muted"><strong class="text-dark">Rating:</strong> <span id="movieRating" class="fw-bold text-danger">N/A</span> <small>/ 10</small></p>
+							<p class="mb-2 text-muted"><strong class="text-dark">Cast:</strong> <span id="movieActors">Unknown</span></p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row mt-5">
+			<div class="col-12">
+				<h3 class="fw-bold border-bottom pb-3 mb-4"><i class="fa fa-align-left text-danger me-2"></i> Storyline</h3>
+				<p id="movieDesc" class="fs-5 text-secondary lh-lg">No description available.</p>
+			</div>
+		</div>
+	</div>
+</section>
+
+<div th:replace="~{user/fragments/booking_modal :: booking-modal}"></div>
+
+<div th:replace="~{layout/footer :: footer}"></div>
+
+<script th:src="@{/js/common.js}"></script>
+<script th:src="@{/js/detail.js}"></script>
+
+<script>
+	// Logic bổ sung để xử lý Youtube Iframe nếu trailerPath là link Youtube
+    // (Bổ sung vào detail.js hoặc để ở đây nếu muốn xử lý nhanh giao diện)
+    function injectYoutubeIfneeded(path) {
+        if (path.includes('youtube.com') || path.includes('youtu.be')) {
+            const videoId = path.split('v=')[1] || path.split('/').pop();
+            const container = document.getElementById('youtubePlayer');
+            container.classList.remove('d-none');
+            document.getElementById('inlineVideo').classList.add('d-none');
+            document.getElementById('customPlayBtn').classList.add('d-none');
+            container.innerHTML = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>`;
+        }
+    }
+</script>
+
+</body>
+</html>

@@ -1,7 +1,6 @@
 package com.G7.CTBS.scheduler;
 
 import com.G7.CTBS.entity.Movie;
-import com.G7.CTBS.entity.Showtime;
 import com.G7.CTBS.repository.MovieRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,61 +13,43 @@ import java.util.List;
 @Component
 public class MovieStatusAutoUpdateScheduler {
     private final MovieRepository movieRepository;
-    
+
     @Autowired
     public MovieStatusAutoUpdateScheduler(MovieRepository movieRepository) {
         this.movieRepository = movieRepository;
     }
-    
-    //auto update for each 60s
+
+    // auto update for each 60s
     @Scheduled(fixedRate = 60000)
     @Transactional
     public void autoUpdate() {
         LocalDateTime now = LocalDateTime.now();
-        List<Movie> moviesToUpdateStatus = movieRepository.findMoviesToUpdateStatus(now);
         boolean changeStatus = false;
-        
-        //if there is some movie meet the requirements, then check to update it
-        if(!moviesToUpdateStatus.isEmpty()) {
-            for(Movie movie : moviesToUpdateStatus) {
+
+        // 1. Pending -> Now Playing
+        List<Movie> moviesToPlay = movieRepository.findMoviesToPlay(now);
+        if (!moviesToPlay.isEmpty()) {
+            for (Movie movie : moviesToPlay) {
                 movie.setStatus("Now Playing");
                 System.out.println("Movie " + movie.getTitle() + " changed to new status: Now Playing");
-                changeStatus = true;
             }
+            changeStatus = true;
         }
-        
-        // 1. Lấy TẤT CẢ các phim đang chiếu lên
-        List<Movie> nowPlayingMovies = movieRepository.findByStatus("Now Playing");
-        
-        for (Movie movie : nowPlayingMovies) {
-            boolean hasFutureOrOngoingShowtime = false;
-            
-            // 2. Duyệt qua từng suất chiếu của bộ phim này
-            for (Showtime showtime : movie.getShowtimes()) {
-                // Tính thời gian kết thúc chính xác = Thời gian bắt đầu + thời lượng phim (phút)
-                LocalDateTime exactEndTime = showtime.getStartTime().plusMinutes(movie.getDuration());
-                
-                // Nếu thời gian kết thúc của suất chiếu này vẫn lớn hơn hoặc bằng hiện tại
-                // Nghĩa là suất chiếu này vẫn đang diễn ra, hoặc chưa diễn ra
-                if (exactEndTime.isAfter(now) || exactEndTime.isEqual(now)) {
-                    hasFutureOrOngoingShowtime = true;
-                    break; // Chỉ cần 1 suất chiếu hợp lệ là đủ, thoát vòng lặp ngay
-                }
-            }
-            
-            // 3. Nếu không có bất kỳ suất chiếu nào đang/sắp diễn ra -> Đưa về Pending
-            if (!hasFutureOrOngoingShowtime) {
+
+        // 2. Now Playing -> Pending
+        List<Movie> moviesToPending = movieRepository.findMoviesToPending(now);
+        if (!moviesToPending.isEmpty()) {
+            for (Movie movie : moviesToPending) {
                 movie.setStatus("Pending");
-                System.out.println("Movie "  + movie.getTitle() + " changed to new status: Pending");
-                changeStatus = true;
+                System.out.println("Movie " + movie.getTitle() + " changed to new status: Pending");
             }
+            changeStatus = true;
         }
-        
-        if(changeStatus) {
-            movieRepository.saveAll(moviesToUpdateStatus);
-            movieRepository.saveAll(nowPlayingMovies);
+
+        // 3. Save only when there is a change
+        if (changeStatus) {
+            movieRepository.saveAll(moviesToPlay);
+            movieRepository.saveAll(moviesToPending);
         }
     }
-    
-    
 }

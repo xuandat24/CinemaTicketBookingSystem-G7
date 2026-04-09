@@ -25,39 +25,59 @@
 
     <div class="card shadow-sm mb-4 border-0">
         <div class="card-body bg-white rounded">
-            <form id="filterForm" class="row g-2 align-items-end">
-                <div class="col-md-3">
+            <form id="filterForm" class="row g-3 align-items-end">
+                <div class="col-md-4">
                     <label class="form-label fw-bold text-secondary small mb-1">Search Title</label>
-                    <input type="text" class="form-control form-control-sm" id="searchTitle" placeholder="Enter movie title...">
+                    <input type="text" class="form-control form-control-sm" id="searchTitle" placeholder="Title...">
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-4">
+                    <label class="form-label fw-bold text-secondary small mb-1">Language</label>
+                    <select class="form-select form-select-sm" id="filterLanguage">
+                        <option value="">-- All Languages --</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
                     <label class="form-label fw-bold text-secondary small mb-1">Category</label>
                     <select class="form-select form-select-sm" id="filterCategory">
-                        <option value="">-- All --</option>
+                        <option value="">All Categories</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold text-secondary small mb-1">Status</label>
+                    <select class="form-select form-select-sm" id="filterStatus">
+                        <option value="">All Status</option>
+                        <option value="Now Playing">Now Playing</option>
+                        <option value="Coming Soon">Coming Soon</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Disabled">Disabled</option>
                     </select>
                 </div>
 
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <label class="form-label fw-bold text-secondary small mb-1">From Date</label>
                     <input type="date" class="form-control form-control-sm" id="fromDate">
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <label class="form-label fw-bold text-secondary small mb-1">To Date</label>
                     <input type="date" class="form-control form-control-sm" id="toDate">
                 </div>
-
-                <div class="col-md-2">
-                    <label class="form-label fw-bold text-secondary small mb-1">Sort By</label>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold text-secondary small mb-1">Sort</label>
                     <select class="form-select form-select-sm" id="sortBy">
-                        <option value="id">Latest Added</option>
-                        <option value="name">Name (A-Z)</option>
-                        <option value="releaseDateAsc">Newest Release</option>
-                        <option value="releaseDateDesc">Oldest Release</option>
+                        <option value="idDesc" selected>Newest Added</option>
+                        <option value="idAsc">Oldest Added</option>
+                        <option value="nameAsc">Title (A-Z)</option>
+                        <option value="nameDesc">Title (Z-A)</option>
+                        <option value="releaseDateDesc">Newest Release</option>
+                        <option value="releaseDateAsc">Oldest Release</option>
+                        <option value="durationDesc">Longest Duration</option>
+                        <option value="durationAsc">Shortest Duration</option>
                     </select>
                 </div>
-                <div class="col-md-1">
-                    <button type="button" class="btn btn-primary btn-sm w-100 fw-bold" onclick="applyFilter()" title="Apply Filter">
-                        <i class="fa-solid fa-filter"></i>
+
+                <div class="col-12 d-flex justify-content-end">
+                    <button type="button" id="resetFiltersBtn" class="btn btn-outline-secondary btn-sm px-3">
+                        <i class="fa fa-rotate-left me-1"></i> Reset
                     </button>
                 </div>
             </form>
@@ -83,6 +103,13 @@
                 <tbody>
                 </tbody>
             </table>
+        </div>
+        <div class="card-footer bg-light py-3 border-top d-flex justify-content-between align-items-center">
+            <small class="text-muted fw-semibold" id="tableInfo">Showing 0 to 0 of 0 movies</small>
+            <nav aria-label="Page navigation">
+                <ul class="pagination pagination-sm mb-0 shadow-sm" id="paginationContainer">
+                </ul>
+            </nav>
         </div>
     </div>
 
