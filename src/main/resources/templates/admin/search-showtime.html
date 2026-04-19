@@ -3,80 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <title>Showtime Management - Admin</title>
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-
+    <link rel="stylesheet" th:href="@{/css/admin/universal.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/searchShowtime.css}">
 </head>
-<body>
+<body class="bg-light">
 
 <div th:replace="~{admin/fragments/navbar :: admin-nav}"></div>
 
-<div class="container-fluid px-4 py-4">
+<div class="container-fluid px-4 py-4 mb-5">
 
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h2 class="fw-bold">Showtime Management</h2>
-            <p class="text-muted">Manage all showtimes</p>
+        <div class="page-header-tech">
+            <h2 class="fw-bold text-dark m-0">Showtime Management</h2>
+            <p class="text-muted mb-0 mt-1">Schedule and monitor all movie screenings across theaters.</p>
         </div>
-        <a th:href="@{/admin/showtimes/create}" class="btn btn-primary">
-            + Add Showtime
+        <a th:href="@{/admin/showtimes/create}" class="btn tech-btn tech-btn-primary">
+            <i class="fa-solid fa-plus me-2"></i> Add Showtime
         </a>
     </div>
-    <div id="message"></div>
-    <!-- Filter -->
-    <div class="card mb-4">
-        <div class="card-body">
-            <div class="row g-2">
 
-                <div class="col-md-2">
-                    <label>Showtime ID</label>
-                    <input type="number" id="filterId" class="form-control" placeholder="Enter ID">
+    <div class="tech-card mb-4" style="background: linear-gradient(to right, #ffffff, #f5f3ff);">
+        <div class="d-flex align-items-center mb-3 pb-2 border-bottom">
+            <h6 class="fw-bold m-0" style="color: #8b5cf6;"><i class="fa-solid fa-filter me-2"></i> Quick Filters</h6>
+        </div>
+        <div class="row g-3 align-items-end">
+            <div class="col-md-2">
+                <label class="form-label-tech">Movie ID</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0" style="border-radius: 8px 0 0 8px; border-color: #cbd5e1;"><i class="fa-solid fa-hashtag text-muted"></i></span>
+                    <input type="number" id="filterId" class="form-control input-tech border-start-0 ps-0" placeholder="Enter Movie ID...">
                 </div>
-
-                <div class="col-md-3">
-                    <label>Movie</label>
-                    <select id="filterMovie" class="form-select">
-                        <option value="">All Movies</option>
-                    </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label-tech">Movie Title</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0" style="border-radius: 8px 0 0 8px; border-color: #cbd5e1;"><i class="fa-solid fa-film text-muted"></i></span>
+                    <input type="text" id="filterKeyword" class="form-control input-tech border-start-0 ps-0" placeholder="Search by name...">
                 </div>
-
-                <div class="col-md-3">
-                    <label>Room</label>
-                    <select id="filterRoom" class="form-select">
-                        <option value="">All Rooms</option>
-                    </select>
-                </div>
-
-                <div class="col-md-2">
-                    <label>Date</label>
-                    <input type="date" id="filterDate" class="form-control">
-                </div>
-
-                <div class="col-md-2 d-flex align-items-end gap-2">
-                    <button class="btn btn-primary flex-fill" onclick="applyFilter()">Filter</button>
-                    <button class="btn btn-secondary flex-fill" onclick="resetFilter()">Reset</button>
-                </div>
-
+            </div>
+            <div class="col-md-3">
+                <label class="form-label-tech">Theater Room</label>
+                <select id="filterRoom" class="form-select input-tech">
+                    <option value="">-- All Rooms --</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label-tech">Date</label>
+                <input type="date" id="filterDate" class="form-control input-tech">
+            </div>
+            <div class="col-md-1 d-flex align-items-end">
+                <button class="btn tech-btn tech-btn-outline w-100" onclick="resetFilter()" title="Reset Filters"><i class="fa-solid fa-rotate-left"></i></button>
             </div>
         </div>
     </div>
 
-    <!-- Table -->
-    <div class="card">
-        <div class="card-body table-responsive">
-            <table class="table table-hover">
+    <div class="tech-card p-4">
+        <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+            <h5 class="m-0 text-dark fw-bold"><i class="fa-solid fa-calendar-days me-2" style="color: #8b5cf6;"></i> Current Showtimes</h5>
+        </div>
+
+        <div class="table-responsive" style="overflow-y: hidden;">
+            <table class="table-tech">
                 <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Movie</th>
+                    <th>Showtime</th>
+                    <th>Movie Info</th>
                     <th>Room</th>
-                    <th>Start</th>
-                    <th>End</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
                     <th>Price</th>
                     <th>Format</th>
                     <th>Status</th>
-                    <th class="text-end">Actions</th>
+                    <th class="text-end pe-4">Action</th>
                 </tr>
                 </thead>
                 <tbody id="showtimeTable"></tbody>
@@ -86,6 +86,8 @@
 
 </div>
 
-<script th:src="@{/js/admin/searchShowtime.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/admin/admin-auth.js}"></script>
+<script th:src="@{/js/admin/searchShowtime.js?v=6}"></script>
 </body>
 </html>

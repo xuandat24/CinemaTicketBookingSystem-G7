@@ -39,7 +39,7 @@ public class AuthController {
     public ResponseEntity<?> register(@RequestBody @Valid UserCreateRequest request) {
         try {
             userService.create(request);
-            return ResponseEntity.ok(Map.of("message", "Đăng ký thành công!"));
+            return ResponseEntity.ok(Map.of("message", "Registration successful!"));
         } catch (RuntimeException e) {
             String errorMsg = e.getMessage();
             String fieldName = errorMsg.toLowerCase().contains("email") ? "email" : "userName";
@@ -68,14 +68,14 @@ public class AuthController {
             Cookie jwtCookie = new Cookie("jwtToken", token);
             jwtCookie.setHttpOnly(true);
             jwtCookie.setPath("/");
-            jwtCookie.setMaxAge(24 * 60 * 60);
+            jwtCookie.setMaxAge(0);
             response.addCookie(jwtCookie);
 
             return ResponseEntity.ok(authResponse);
 
         } catch (Exception e) {
-            System.err.println(">> Lỗi đăng nhập: " + e.getMessage());
-            return ResponseEntity.status(401).body(Map.of("message", "Tài khoản hoặc mật khẩu không đúng!"));
+            System.err.println(">> Login error: " + e.getMessage());
+            return ResponseEntity.status(401).body(Map.of("message", "Incorrect username or password!"));
         }
     }
 
@@ -88,23 +88,39 @@ public class AuthController {
         Long createTime = (Long) session.getAttribute("OTP_TIME");
 
         if (serverOtp == null || createTime == null) {
-            return ResponseEntity.badRequest().body(Map.of("message", "Mã xác thực không tồn tại!"));
+            return ResponseEntity.badRequest().body(Map.of("message", "Verification code does not exist!"));
         }
 
         if (System.currentTimeMillis() - createTime > 300000) {
             session.removeAttribute("OTP_CODE");
             session.removeAttribute("PENDING_USER_DATA");
-            return ResponseEntity.badRequest().body(Map.of("message", "Mã OTP đã hết hạn!"));
+            return ResponseEntity.badRequest().body(Map.of("message", "OTP code has expired!"));
         }
 
         if (serverOtp.equals(userOtp)) {
             UserCreateRequest userData = (UserCreateRequest) session.getAttribute("PENDING_USER_DATA");
 
             if (userData != null) {
-                userService.create(userData);
+                User authenticatedUser = userRepository.findByEmail(userData.getEmail()).orElse(null);
 
-                String rawName = userData.getUserName();
-                if (rawName == null || rawName.isEmpty()) rawName = "Google User";
+                if (authenticatedUser == null) {
+                    try {
+                        authenticatedUser = userService.create(userData);
+                    } catch (RuntimeException ex) {
+                        authenticatedUser = userRepository.findByEmail(userData.getEmail()).orElse(null);
+                        if (authenticatedUser == null) {
+                            return ResponseEntity.badRequest().body(Map.of(
+                                    "message", ex.getMessage() != null ? ex.getMessage() : "Unable to create account!"
+                            ));
+                        }
+                    }
+                }
+
+                String rawName = authenticatedUser.getUserName();
+                if (rawName == null || rawName.isBlank()) {
+                    rawName = authenticatedUser.getEmail();
+                }
+                String displayName = rawName.contains("@") ? rawName.substring(0, rawName.indexOf('@')) : rawName;
 
                 String token = authenticationService.tokenGeneration(rawName);
 
@@ -113,14 +129,14 @@ public class AuthController {
                 session.removeAttribute("OTP_TIME");
 
                 return ResponseEntity.ok(Map.of(
-                        "message", "Xác thực và tạo tài khoản thành công!",
+                        "message", "Verification and account creation successful!",
                         "token", token,
-                        "username", rawName
+                        "username", displayName
                 ));
             }
-            return ResponseEntity.badRequest().body(Map.of("message", "Không tìm thấy dữ liệu đăng ký!"));
+            return ResponseEntity.badRequest().body(Map.of("message", "Registration data not found!"));
         } else {
-            return ResponseEntity.badRequest().body(Map.of("message", "Mã OTP không chính xác!"));
+            return ResponseEntity.badRequest().body(Map.of("message", "Incorrect OTP code!"));
         }
     }
 
@@ -133,14 +149,14 @@ public class AuthController {
 
         Optional<User> userOpt = userRepository.findByEmail(email);
         if (userOpt.isEmpty()) {
-            return ResponseEntity.badRequest().body(Map.of("message", "Email này chưa được đăng ký trong hệ thống!"));
+            return ResponseEntity.badRequest().body(Map.of("message", "This email is not registered in the system!"));
         }
 
         User user = userOpt.get();
         if ("GOOGLE".equals(user.getProvider())) {
             return ResponseEntity.status(409).body(Map.of(
                     "type", "GOOGLE_ACCOUNT",
-                    "message", "Tài khoản của bạn được liên kết với Google. Vui lòng sử dụng tính năng khôi phục mật khẩu của Google."
+                    "message", "Your account is linked with Google. Please use Google's password recovery feature."
             ));
         }
 
@@ -152,10 +168,10 @@ public class AuthController {
             emailService.sendOtpEmail(email, otp);
             return ResponseEntity.ok(Map.of(
                     "type", "LOCAL_ACCOUNT",
-                    "message", "Mã OTP đã được gửi đến email của bạn."
+                    "message", "An OTP code has been sent to your email."
             ));
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(Map.of("message", "Lỗi khi gửi email, vui lòng thử lại sau."));
+            return ResponseEntity.internalServerError().body(Map.of("message", "Error sending email, please try again later."));
         }
     }
 
@@ -170,13 +186,13 @@ public class AuthController {
 
         String sessionOtp = (String) session.getAttribute("RESET_OTP_" + email);
         if (sessionOtp == null || !sessionOtp.equals(otp)) {
-            return ResponseEntity.badRequest().body(Map.of("message", "Mã OTP không chính xác!"));
+            return ResponseEntity.badRequest().body(Map.of("message", "Incorrect OTP code!"));
         }
 
         Long otpTime = (Long) session.getAttribute("RESET_OTP_TIME_" + email);
         if (otpTime == null || System.currentTimeMillis() - otpTime > 300000) {
             session.removeAttribute("RESET_OTP_" + email);
-            return ResponseEntity.badRequest().body(Map.of("message", "Mã OTP đã hết hạn! Vui lòng gửi lại mã."));
+            return ResponseEntity.badRequest().body(Map.of("message", "OTP code has expired! Please request a new one."));
         }
 
         Optional<User> userOpt = userRepository.findByEmail(email);
@@ -186,10 +202,10 @@ public class AuthController {
             session.removeAttribute("RESET_OTP_" + email);
             session.removeAttribute("RESET_OTP_TIME_" + email);
 
-            return ResponseEntity.ok(Map.of("message", "Đặt lại mật khẩu thành công! Bạn có thể đăng nhập ngay bây giờ."));
+            return ResponseEntity.ok(Map.of("message", "Password reset successful! You can now log in."));
         }
 
-        return ResponseEntity.badRequest().body(Map.of("message", "Có lỗi xảy ra, vui lòng thử lại!"));
+        return ResponseEntity.badRequest().body(Map.of("message", "An error occurred, please try again!"));
     }
 
     // ==========================================
@@ -219,6 +235,6 @@ public class AuthController {
         jwtCookie.setMaxAge(0);
         response.addCookie(jwtCookie);
 
-        return ResponseEntity.ok(Map.of("message", "Đăng xuất thành công và đã xóa Session/Cookie"));
+        return ResponseEntity.ok(Map.of("message", "Logout successful and Session/Cookie cleared"));
     }
 }

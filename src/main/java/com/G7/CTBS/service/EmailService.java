@@ -1,9 +1,8 @@
 package com.G7.CTBS.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import jakarta.mail.internet.MimeMessage;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +31,20 @@ public class EmailService {
 
             mailSender.send(message);
         } catch (Exception e) {
-            throw new RuntimeException("Lỗi gửi mail: " + e.getMessage());
+            throw new RuntimeException("Error sending email : " + e.getMessage());
         }
-    }}
+    }
+
+    // Hàm gửi thông báo chung (Giáng chức, Cảnh báo, v.v...)
+    public void sendNotificationEmail(String toEmail, String subject, String messageContent) {
+        try {
+            org.springframework.mail.SimpleMailMessage message = new org.springframework.mail.SimpleMailMessage();
+            message.setTo(toEmail);
+            message.setSubject(subject);
+            message.setText(messageContent);
+            mailSender.send(message);
+        } catch (Exception e) {
+            System.err.println("Could not send notification email to " + toEmail + ": " + e.getMessage());
+        }
+    }
+}

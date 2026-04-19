@@ -54,7 +54,7 @@ public class AdminViewController {
         return "admin/create-showtime";
     }
 
-    @GetMapping("showtimes")
+    @GetMapping("/showtimes")
     public String searchShowtimesPage() {
         return "admin/search-showtime";
     }
@@ -62,5 +62,34 @@ public class AdminViewController {
     @GetMapping("showtimes/update")
     public String updateShowtimesPage() {
         return "admin/update-showtime";
+    }
+    @GetMapping("/users")
+    public String manageUsersPage() {
+        return "admin/manageUsers"; // Sẽ tạo file manageUsers.html
+    }
+
+    @GetMapping("/feedbacks")
+    public String manageFeedbacksPage() {
+        return "admin/manageFeedbacks"; // Sẽ tạo file manageFeedbacks.html
+    }
+
+    @GetMapping("/combos/add")
+    public String addComboPage() {
+        return "admin/addCombo";
+    }
+
+    @GetMapping("/combos")
+    public String searchComboPage() {
+        return "admin/searchCombo";
+    }
+
+    @GetMapping("/combos/edit")
+    public String editComboPage() {
+        return "admin/editCombo";
+    }
+
+    @GetMapping("/theaters")
+    public String theaterManagementPage() {
+        return "admin/theater-management";
     }
 }

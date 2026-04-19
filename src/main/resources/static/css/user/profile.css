@@ -1,0 +1,147 @@
+/* --- NỀN TỔNG THỂ PHỦ FULL TRANG --- */
+body.profile-page {
+    background: url('https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?q=80&w=1920&auto=format&fit=crop') center/cover fixed no-repeat;
+    position: relative;
+    min-height: 100vh;
+    color: #333;
+}
+
+/* Lớp phủ Đen mờ + Hiệu ứng Blur chuẩn Cinematic */
+body.profile-page::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.5); /* Nền đen mờ nhẹ */
+    backdrop-filter: blur(8px); /* Làm nhòe background */
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 0;
+}
+
+/* Ép FontAwesome không bị vỡ trong Bootstrap Form-Floating */
+.form-floating > label i {
+    font-family: "FontAwesome" !important;
+    font-weight: normal !important;
+}
+
+/* --- CONTAINER CHỨA THÔNG TIN --- */
+.profile-container {
+    position: relative;
+    z-index: 2;
+    padding-top: 60px;
+    padding-bottom: 80px;
+}
+
+/* --- CARD ĐỒNG NHẤT --- */
+.profile-card {
+    background-color: #ffffff !important;
+    border-radius: 20px;
+    border: 1px solid rgba(0,0,0,0.03);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2); /* Đổ bóng đậm hơn do nền tối */
+    padding: 35px;
+    height: 100%;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.profile-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+}
+
+/* --- KHU VỰC AVATAR --- */
+.avatar-wrapper {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 15px;
+}
+.avatar-wrapper img {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    border: 6px solid #ffffff;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    object-fit: cover;
+    background-color: #fff;
+    transition: transform 0.3s ease;
+}
+.avatar-upload-btn {
+    position: absolute;
+    bottom: 5px;
+    right: 10px;
+    background-color: #d96c2c;
+    color: #fff;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid #fff;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(217, 108, 44, 0.3);
+    transition: all 0.2s ease;
+}
+.avatar-upload-btn:hover {
+    background-color: #b85a22;
+    transform: scale(1.1);
+}
+
+/* --- TIÊU ĐỀ SECTION --- */
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #2b2b2b;
+    margin-bottom: 30px;
+    position: relative;
+    padding-bottom: 10px;
+}
+.section-title::after {
+    content: '';
+    position: absolute;
+    width: 60px;
+    height: 4px;
+    background-color: #d96c2c;
+    bottom: 0;
+    left: 0;
+    border-radius: 2px;
+}
+
+/* --- FORM & INPUTS --- */
+.form-floating > .form-control, .form-floating > .form-select {
+    background-color: #f8f9fa !important;
+    color: #333 !important;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    font-weight: 500;
+}
+.form-floating > .form-control:focus, .form-floating > .form-select:focus {
+    background-color: #ffffff !important;
+    border-color: #d96c2c;
+    box-shadow: 0 0 0 4px rgba(217, 108, 44, 0.15);
+}
+.form-floating > label {
+    color: #888 !important;
+    font-weight: 500;
+}
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label {
+    color: #d96c2c !important;
+    font-weight: 700;
+}
+
+/* --- NÚT BẤM (BUTTONS) --- */
+.btn-brand {
+    background-color: #d96c2c;
+    color: #ffffff;
+    border-radius: 12px;
+    padding: 14px 30px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    border: none;
+    box-shadow: 0 6px 15px rgba(217, 108, 44, 0.2);
+}
+.btn-brand:hover {
+    background-color: #b85a22;
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(217, 108, 44, 0.4);
+}

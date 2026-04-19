@@ -18,14 +18,18 @@ public class MovieDTO {
     @Size(max = 255, message = "Title cannot exceed 255 characters")
     private String title;
 
-    private String bannerPath;
+    private String bannerPath; // Ảnh ngang
+    private String posterPath; // Ảnh dọc
     private String trailerPath;
 
+    // --- 2. FILE UPLOAD TỪ MÁY TÍNH CỦA ADMIN ---
     private MultipartFile bannerFile;
+    private MultipartFile posterFile;
     private MultipartFile trailerFile;
 
-    private String omdbPosterUrl;
-    private String omdbGenres;
+    private String bannerUrl;
+    private String posterUrl;
+    private String genres;
 
     @NotBlank(message = "Description is required")
     @Size(max = 2000, message = "Description is too long")

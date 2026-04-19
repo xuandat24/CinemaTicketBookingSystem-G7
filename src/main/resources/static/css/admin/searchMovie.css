@@ -1,25 +1,101 @@
-.table-card {
+/* =========================================
+   SEARCH MOVIE - MODERN CINEMA TECH THEME
+========================================= */
+
+/* --- 1. TIÊU ĐỀ & KHỐI CHỨA (TECH CARDS) --- */
+.page-header-tech {
+    border-left: 5px solid #3b82f6; /* Vạch nhấn màu xanh biển */
+    padding-left: 15px;
+}
+
+.tech-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+    border: 1px solid #e2e8f0;
+    animation: fadeIn 0.4s ease-out;
+    margin-bottom: 25px;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- 2. BỘ LỌC (FILTERS & INPUTS) --- */
+.form-label-tech {
+    font-weight: 700; color: #64748b; font-size: 0.75rem;
+    text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; display: block;
+}
+
+.input-tech {
+    background-color: #f8fafc !important; border: 1px solid #cbd5e1 !important;
+    border-radius: 8px !important; padding: 10px 15px !important;
+    color: #1e293b !important; font-weight: 500; font-size: 0.9rem !important;
+    transition: all 0.3s ease !important;
+}
+.input-tech:focus {
+    background-color: #ffffff !important; border-color: #3b82f6 !important;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15) !important;
+}
+
+/* --- 3. BẢNG DỮ LIỆU NỔI KHỐI (3D DATA TABLE) --- */
+.table-tech {
+    width: 100%; border-collapse: separate; border-spacing: 0 12px; margin-top: -10px;
+}
+.table-tech thead th {
+    border: none; color: #64748b; font-weight: 700; text-transform: uppercase;
+    font-size: 0.8rem; letter-spacing: 1px; padding: 10px 20px; background: transparent;
+}
+/* Style cho từng hàng của bảng */
+.table-tech tbody tr {
+    background: #ffffff;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     border-radius: 12px;
-    border: none;
+}
+/* Hiệu ứng nổi bần bật khi hover vào hàng */
+.table-tech tbody tr:hover {
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 0 12px 25px rgba(59, 130, 246, 0.15);
+    position: relative; z-index: 10;
+}
+.table-tech tbody td {
+    border: none; padding: 15px 20px; vertical-align: middle; background: #ffffff;
+}
+/* Bo góc cho hàng */
+.table-tech tbody td:first-child { border-radius: 12px 0 0 12px; border-left: 4px solid transparent; transition: 0.3s; }
+.table-tech tbody tr:hover td:first-child { border-left: 4px solid #3b82f6; }
+.table-tech tbody td:last-child { border-radius: 0 12px 12px 0; }
+
+/* --- 4. NÚT BẤM (TECH BUTTONS) --- */
+.tech-btn {
+    border-radius: 8px !important; padding: 8px 20px !important; font-weight: 700 !important;
+    transition: all 0.3s ease !important; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.5px;
+}
+.tech-btn-primary {
+    background: #3b82f6 !important; border: none !important; color: #fff !important;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+.tech-btn-primary:hover {
+    background: #2563eb !important; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+}
+.tech-btn-outline {
+    background: transparent !important; border: 2px solid #cbd5e1 !important; color: #64748b !important;
+}
+.tech-btn-outline:hover {
+    border-color: #64748b !important; color: #1e293b !important; background: #f1f5f9 !important;
 }
 
-.table-card .card-header {
-    background-color: #ffffff;
-    border-bottom: 2px solid #f4f6f9;
-    padding: 1.2rem 1.5rem;
-    border-radius: 12px 12px 0 0;
+/* --- 5. PHÂN TRANG (PAGINATION) --- */
+.pagination-tech .page-item .page-link {
+    border-radius: 8px; margin: 0 4px; border: 1px solid #e2e8f0; color: #1e293b;
+    font-weight: 600; transition: all 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.02);
 }
-
-.custom-thead {
-    background-color: #f8f9fa;
-    color: #495057;
-    font-weight: 600;
-    text-transform: uppercase;
-    font-size: 0.85rem;
-    letter-spacing: 0.5px;
+.pagination-tech .page-item.active .page-link {
+    background: #3b82f6; border-color: #3b82f6; color: #fff; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
 }
-
-.table-hover tbody tr:hover {
-    background-color: #f8f9fc;
-    transition: background-color 0.2s ease;
+.pagination-tech .page-item .page-link:hover:not(.active) {
+    background: #f1f5f9; border-color: #cbd5e1; transform: translateY(-1px);
 }

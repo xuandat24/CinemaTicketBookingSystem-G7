@@ -14,6 +14,10 @@ public class SeatAvailabilityResponseDTO {
     private Long roomId;
     private String roomName;
     private Long movieId;
+    private String movieTitle;
+    private String bannerPath;
+    private Integer duration;
+    private String genre;
     private LocalDateTime startTime;
     private Double basePrice;
     private List<SeatAvailabilitySeatDTO> seats;

@@ -1,5 +1,6 @@
 package com.G7.CTBS.dto;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
@@ -20,29 +21,38 @@ public class UserDTO {
     private Long userId;
     private Long roleId;
 
-    @NotBlank(message = "First Name không được để trống")
+    // ĐÃ THÊM: Chặn số, chặn ký tự đặc biệt và giới hạn 50 ký tự chống tràn Database
+    @NotBlank(message = "First Name cannot be empty")
+    @Pattern(regexp = "^[\\p{L}\\s]+$", message = "First Name can only contain letters!")
+    @Size(max = 50, message = "First Name must not exceed 50 characters")
     private String firstName;
 
-    @NotBlank(message = "Last Name không được để trống")
+    // ĐÃ THÊM: Chặn số, chặn ký tự đặc biệt và giới hạn 50 ký tự
+    @NotBlank(message = "Last Name cannot be empty")
+    @Pattern(regexp = "^[\\p{L}\\s]+$", message = "Last Name can only contain letters!")
+    @Size(max = 50, message = "Last Name must not exceed 50 characters")
     private String lastName;
-
 
     private String userName;
 
-    @NotBlank(message = "Số điện thoại không được để trống")
+    // Tốt: Bạn đã khóa chặt định dạng sđt 10 số đầu 03/09
+    @NotBlank(message = "Phone Number cannot be empty")
     @Pattern(regexp = "^(03|09)\\d{8}$", message = "Phone numbers must have 10 digits and start with 03 or 09.")
     private String phone;
 
-
+    // ĐÃ THÊM: Ràng buộc chuẩn định dạng Email
+    @Email(message = "Invalid email format")
     private String email;
 
-    @NotBlank(message = "Giới tính không được để trống")
+    @NotBlank(message = "Gender cannot be empty")
     private String gender;
 
-    @NotNull(message = "Ngày sinh không được để trống")
-    @Past(message = "Ngày sinh phải là một ngày trong quá khứ")
+    @NotNull(message = "Date Of Birth cannot be empty")
+    @Past(message = "Date Of Birth must be in the past")
     private LocalDate dob;
 
     // Ngày tạo tài khoản thường chỉ để hiển thị, không validate
     private LocalDateTime createdAt;
+
+    private String avatar; // Đường dẫn ảnh
 }

@@ -1,0 +1,119 @@
+/* =========================================
+   ADMIN DASHBOARD - LIGHT TECH & NEON GLOW THEME
+========================================= */
+:root {
+    --bg-light: #eef2f6; /* Nền sáng xám ngọc trai, cực kỳ dịu mắt */
+    --card-glass: rgba(255, 255, 255, 0.75); /* Kính mờ sáng */
+    --neon-orange: #d96c2c;
+    --neon-orange-glow: rgba(217, 108, 44, 0.35);
+    --neon-blue: #0ea5e9; /* Cyan đổi thành Blue nhạt để nổi trên nền sáng */
+    --neon-blue-glow: rgba(14, 165, 233, 0.35);
+    --text-main: #1e293b; /* Chữ xám đen đậm cho dễ đọc số liệu */
+    --text-muted: #64748b; /* Chữ xám nhạt phụ */
+    --border-glass: rgba(0, 0, 0, 0.06); /* Viền kính mờ tinh tế */
+}
+
+body {
+    background-color: var(--bg-light) !important;
+    background-image:
+            radial-gradient(circle at 15% 30%, rgba(217, 108, 44, 0.05), transparent 25%),
+            radial-gradient(circle at 85% 70%, rgba(14, 165, 233, 0.05), transparent 25%);
+    color: var(--text-main);
+}
+
+/* --- THẺ HIỂN THỊ KÍNH MỜ (LIGHT GLASSMORPHISM) --- */
+.tech-glass-card {
+    background: var(--card-glass);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border-glass);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04); /* Bóng đổ mềm mại */
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+}
+
+/* VẪN GIỮ HIỆU ỨNG HOVER: Bay lên và viền sáng Neon */
+.tech-glass-card:hover {
+    transform: translateY(-8px);
+    border-color: rgba(217, 108, 44, 0.5);
+    box-shadow: 0 15px 40px var(--neon-orange-glow);
+}
+
+/* Thanh đèn LED chạy ngang trên đầu thẻ khi hover */
+.tech-glass-card::before {
+    content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px;
+    background: linear-gradient(90deg, transparent, var(--neon-orange), var(--neon-blue), transparent);
+    opacity: 0; transition: opacity 0.4s ease;
+}
+.tech-glass-card:hover::before { opacity: 1; }
+
+/* --- KPI ICONS (Icon nổi khối 3D trên nền sáng) --- */
+.kpi-icon-wrapper {
+    width: 60px; height: 60px;
+    border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+    background: #ffffff; /* Nền trắng tinh để nổi bật Icon */
+    border: 1px solid var(--border-glass);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+/* Hiệu ứng Glow cho Icon vẫn được giữ nguyên */
+.icon-revenue { color: var(--neon-orange); text-shadow: 0 0 12px var(--neon-orange-glow); }
+.icon-ticket { color: var(--neon-blue); text-shadow: 0 0 12px var(--neon-blue-glow); }
+.icon-movie { color: #eab308; text-shadow: 0 0 12px rgba(234, 179, 8, 0.4); }
+.icon-combo { color: #a855f7; text-shadow: 0 0 12px rgba(168, 85, 247, 0.4); }
+
+/* --- BỘ LỌC THỜI GIAN --- */
+.tech-filter-group .btn {
+    background: #ffffff;
+    border: 1px solid var(--border-glass);
+    color: var(--text-muted);
+    font-weight: 600;
+    padding: 10px 24px;
+    transition: all 0.3s ease;
+}
+.tech-filter-group .btn-check:checked + .btn {
+    background: var(--neon-orange);
+    color: #fff;
+    border-color: var(--neon-orange);
+    box-shadow: 0 0 15px var(--neon-orange-glow);
+}
+
+/* --- BẢNG LẤP ĐẦY (CLEAN TABLE) --- */
+.table-tech { color: var(--text-main); margin-bottom: 0; }
+.table-tech thead th {
+    border-bottom: 1px solid var(--border-glass);
+    color: var(--text-muted);
+    font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+    background: transparent;
+}
+.table-tech tbody tr {
+    transition: all 0.3s ease;
+    border-bottom: 1px solid rgba(0,0,0,0.03);
+}
+.table-tech tbody tr:hover {
+    background: rgba(255, 255, 255, 0.6);
+    transform: scale(1.01);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+}
+.table-tech td { vertical-align: middle; border: none; padding: 16px 12px; }
+
+/* Progress Bar lấp lánh */
+.progress-tech { background-color: rgba(0,0,0,0.06); border-radius: 8px; overflow: hidden; height: 8px; }
+.occupancy-high { background-color: #0ea5e9 !important; box-shadow: 0 0 8px rgba(14,165,233,0.5); }
+.occupancy-medium { background-color: #eab308 !important; box-shadow: 0 0 8px rgba(234,179,8,0.5); }
+.occupancy-low { background-color: #ef4444 !important; box-shadow: 0 0 8px rgba(239,68,68,0.5); }
+
+/* Ô Search Sáng Sủa */
+.search-neon {
+    background: #ffffff !important;
+    border: 1px solid var(--border-glass) !important;
+    color: var(--text-main) !important;
+    transition: 0.3s;
+}
+.search-neon:focus {
+    border-color: var(--neon-blue) !important;
+    box-shadow: 0 0 12px var(--neon-blue-glow) !important;
+}

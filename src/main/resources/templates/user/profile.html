@@ -2,349 +2,128 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <meta content="width=device-width, initial-scale=1" name="viewport">
-    <title>User Profile | Movie Theme</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>User Profile | CTBS Cinema</title>
+
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/css/font-awesome.min.css}">
     <link rel="stylesheet" th:href="@{/css/global.css}">
+    <link rel="stylesheet" th:href="@{/css/user/profile.css}">
+
+    <link href="https://fonts.googleapis.com/css2?family=Platypi:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
-<body class="prof-body">
+<body class="profile-page">
 
 <div th:replace="~{layout/header :: header}"></div>
 
-<div class="container py-5">
-    <div class="row">
+<div class="container profile-container">
+    <div class="row g-4">
         <div class="col-lg-4">
-            <div class="prof-card text-center p-4 mb-4 shadow-sm bg-white" style="border-radius: 20px;">
-                <div class="prof-avatar-wrapper mb-3">
-                    <img alt="Avatar" class="prof-avatar shadow-sm"
-                         id="profile-avatar" src="https://ui-avatars.com/api/?name=User&background=random&size=150"
-                         style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover;">
+            <div class="profile-card text-center">
+                <div class="avatar-wrapper">
+                    <img alt="Avatar" id="profile-avatar" src="https://ui-avatars.com/api/?name=User&background=d96c2c&color=fff&size=160">
+                    <label for="avatarUpload" class="avatar-upload-btn" title="Change Avatar">
+                        <i class="fa fa-camera"></i>
+                    </label>
+                    <input type="file" id="avatarUpload" class="d-none" accept="image/*">
                 </div>
-                <h4 class="fw-bold mb-0" id="display-fullname-top">Đang tải...</h4>
-                <p class="text-muted small" id="display-role-top">Thành viên</p>
-            </div>
 
-            <div class="list-group prof-card shadow-sm mb-4 bg-white" style="border-radius: 20px; overflow: hidden;">
-                <a class="list-group-item list-group-item-action active p-3 border-0" data-bs-toggle="list"
-                   href="#content-settings">
-                    <i class="fa fa-user me-2"></i> Account Info
-                </a>
-                <a class="list-group-item list-group-item-action p-3 border-0" data-bs-toggle="list"
-                   href="#content-history">
-                    <i class="fa fa-ticket me-2"></i> Booking History
-                </a>
+                <h3 class="fw-bold mb-1 text-dark" id="display-fullname-top">Loading...</h3>
+                <p class="text-muted fw-semibold mb-4" id="display-role-top"><i class="fa fa-star text-warning me-1"></i> CTBS Member</p>
+
+                <hr class="text-muted opacity-25 my-4">
+
+                <div class="d-flex flex-column gap-3">
+                    <a class="btn btn-light border fw-bold rounded-3 py-2 text-dark hover-shadow" href="/forgot-password">
+                        <i class="fa fa-key me-2 text-secondary"></i> Change Password
+                    </a>
+                    <button class="btn btn-outline-danger fw-bold rounded-3 py-2" id="btn-delete-account">
+                        <i class="fa fa-user-times me-2"></i> Delete Account
+                    </button>
+                </div>
             </div>
         </div>
 
         <div class="col-lg-8">
-            <div class="tab-content">
-                <div class="tab-pane fade show active" id="content-settings" role="tabpanel">
-                    <div class="prof-card p-4 shadow-sm bg-white" style="border-radius: 20px;">
-                        <h4 class="fw-bold mb-4">Account Settings</h4>
+            <div class="profile-card">
+                <h3 class="section-title"><i class="fa fa-pencil-square-o text-secondary me-2"></i> Edit Profile Details</h3>
 
-                        <form id="profileForm">
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label class="form-label small fw-bold">First Name</label>
-                                    <input class="form-control" id="prof-firstname" type="text">
-                                    <div class="text-danger small mt-1 error-text fw-bold" id="firstNameError"></div>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label small fw-bold">Last Name</label>
-                                    <input class="form-control" id="prof-lastname" type="text">
-                                    <div class="text-danger small mt-1 error-text fw-bold" id="lastNameError"></div>
-                                </div>
+                <form id="profile-form">
+                    <div class="row g-4 mt-1">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input class="form-control" id="firstName" name="firstName" placeholder="First Name" type="text">
+                                <label for="firstName"><i class="fa fa-id-card me-1"></i> First Name *</label>
                             </div>
+                            <small class="text-danger fw-bold mt-1 d-block error-message" id="firstNameError"></small>
+                        </div>
 
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label class="form-label small fw-bold">Giới tính</label>
-                                    <select class="form-control" id="prof-gender">
-                                        <option value="Nam">Nam</option>
-                                        <option value="Nữ">Nữ</option>
-                                        <option value="Khác">Khác</option>
-                                    </select>
-                                    <div class="text-danger small mt-1 error-text fw-bold" id="genderError"></div>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label small fw-bold">Date of Birth</label>
-                                    <input type="date" class="form-control bg-light" id="dob" name="dob">
-                                    <div class="text-danger small mt-1 error-text fw-bold" id="dobError"></div>
-                                </div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input class="form-control" id="lastName" name="lastName" placeholder="Last Name" type="text">
+                                <label for="lastName"><i class="fa fa-id-card me-1"></i> Last Name *</label>
                             </div>
+                            <small class="text-danger fw-bold mt-1 d-block error-message" id="lastNameError"></small>
+                        </div>
 
-                            <div class="mb-3">
-                                <label class="form-label small fw-bold">Phone Number</label>
-                                <input class="form-control" id="prof-phone" type="text">
-                                <div class="text-danger small mt-1 error-text fw-bold" id="phoneError"></div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label small fw-bold">Email (Không thể thay đổi)</label>
-                                <input class="form-control" disabled id="prof-email" style="background-color: #e9ecef;"
-                                       type="email">
-                            </div>
-
-                            <div class="mb-4">
-                                <label class="form-label small fw-bold">Username (Không thể thay đổi)</label>
-                                <input class="form-control" disabled id="prof-username"
-                                       style="background-color: #e9ecef;" type="text">
-                            </div>
-
-                            <div class="d-flex justify-content-between align-items-center mt-4">
-                                <button class="btn btn-outline-danger px-4" id="btn-delete-account" type="button">
-                                    <i class="fa fa-trash"></i> Xóa tài khoản
-                                </button>
-                                <button class="btn btn-dark px-5 py-2"
-                                        style="background: #d96c2c; border:none; border-radius: 10px;" type="submit" id="btn-save-profile">
-                                    LƯU THAY ĐỔI
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-                <div class="tab-pane fade" id="content-history" role="tabpanel">
-                    <div class="prof-card p-4 shadow-sm bg-white" style="border-radius: 20px;">
-                        <h4 class="fw-bold mb-4">Booking History</h4>
-                        <div class="booking-list">
-                            <div class="p-3 mb-3 border rounded-3 d-flex align-items-center"
-                                 style="border-left: 5px solid #d96c2c !important;">
-                                <div class="me-3">
-                                    <i class="fa fa-film fa-2x text-muted"></i>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <h6 class="fw-bold mb-0">No transaction found</h6>
-                                    <p class="text-muted small mb-0">Your recent ticket purchases will appear here.</p>
-                                </div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input class="form-control bg-light" id="email" placeholder="Email" readonly type="email">
+                                <label for="email"><i class="fa fa-envelope me-1"></i> Email Address</label>
                             </div>
                         </div>
+
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input class="form-control" id="phone" name="phone" placeholder="Phone Number" type="tel">
+                                <label for="phone"><i class="fa fa-phone me-1"></i> Phone Number *</label>
+                            </div>
+                            <small class="text-danger fw-bold mt-1 d-block error-message" id="phoneError"></small>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input class="form-control" id="dob" name="dob" placeholder="Date of Birth" type="date">
+                                <label for="dob"><i class="fa fa-calendar me-1"></i> Date of Birth *</label>
+                            </div>
+                            <small class="text-danger fw-bold mt-1 d-block error-message" id="dobError"></small>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <select class="form-select" id="gender" name="gender">
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                                <label for="gender"><i class="fa fa-venus-mars me-1"></i> Gender</label>
+                            </div>
+                            <small class="text-danger fw-bold mt-1 d-block error-message" id="genderError"></small>
+                        </div>
+
+                        <div class="col-12 mt-4 text-end">
+                            <button class="btn-brand w-100 fs-5" type="submit">
+                                <i class="fa fa-floppy-o me-2"></i> Save Changes
+                            </button>
+                        </div>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
     </div>
 </div>
 
-<footer th:replace="~{layout/footer :: footer}"></footer>
-<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<div th:replace="~{layout/footer :: footer}"></div>
 
-<script>
-    document.addEventListener("DOMContentLoaded", async function () {
-        const token = localStorage.getItem("jwtToken");
-        if (!token) {
-            window.location.href = "/login";
-            return;
-        }
-
-        // BỘ LỌC CHỐNG HIỂN THỊ CHỮ "null" CỦA GOOGLE
-        const setVal = (attrName, val) => {
-            const el = document.getElementById(attrName) || document.querySelector(`[name="${attrName}"]`);
-            if (el) {
-                if (val !== null && val !== undefined && val !== "null") {
-                    el.value = val;
-                } else {
-                    el.value = ""; // Đảm bảo rỗng nếu dữ liệu bị null
-                }
-            }
-        };
-
-        const getVal = (attrName) => {
-            const el = document.getElementById(attrName) || document.querySelector(`[name="${attrName}"]`);
-            return el ? el.value.trim() : "";
-        };
-
-        // Hàm hỗ trợ lọc chữ null khi ghép họ tên
-        const safeStr = (str) => (str && str !== "null") ? str : "";
-
-        // ==========================================
-        // 1. TẢI DỮ LIỆU TỪ SERVER VÀ ĐỔ VÀO FORM
-        // ==========================================
-        try {
-            const response = await fetch("/api/users/my-profile", {
-                method: "GET",
-                headers: {
-                    "Authorization": "Bearer " + token,
-                    "Content-Type": "application/json"
-                }
-            });
-
-            if (response.ok) {
-                const user = await response.json();
-
-                setVal('prof-email', user.email);
-                setVal('prof-username', user.userName);
-                setVal('prof-firstname', user.firstName);
-                setVal('prof-lastname', user.lastName);
-                setVal('prof-phone', user.phone);
-                setVal('prof-gender', user.gender || "Nam");
-
-                // Xử lý Ngày sinh an toàn
-                if (user.dob && user.dob !== "null") {
-                    let dobStr = "";
-                    if (Array.isArray(user.dob)) {
-                        let y = user.dob[0];
-                        let m = String(user.dob[1]).padStart(2, '0');
-                        let d = String(user.dob[2]).padStart(2, '0');
-                        dobStr = `${y}-${m}-${d}`;
-                    } else if (typeof user.dob === 'string' && user.dob.includes('/')) {
-                        let parts = user.dob.split('/');
-                        if (parts.length === 3) dobStr = `${parts[2]}-${parts[1]}-${parts[0]}`;
-                    } else if (typeof user.dob === 'string') {
-                        dobStr = user.dob.split('T')[0];
-                    }
-                    setVal('dob', dobStr);
-                }
-
-                // Hiển thị tên (chống chữ null)
-                const displayFullName = document.getElementById("display-fullname-top");
-                if (displayFullName) {
-                    const fullName = `${safeStr(user.lastName)} ${safeStr(user.firstName)}`.trim();
-                    displayFullName.innerText = fullName || "Người dùng";
-                }
-
-                const displayRole = document.getElementById("display-role-top");
-                if (displayRole) {
-                    displayRole.innerText = user.roleId === 1 ? "Admin" : "Thành viên";
-                }
-
-            } else if (response.status === 401) {
-                localStorage.removeItem("jwtToken");
-                window.location.href = "/login";
-            }
-        } catch (error) {
-            console.error("Lỗi khi tải dữ liệu:", error);
-        }
-
-        // ==========================================
-        // 2. KÍCH HOẠT NÚT LƯU & XỬ LÝ CẬP NHẬT
-        // ==========================================
-        const profileForm = document.getElementById("profileForm");
-
-        if (profileForm) {
-            profileForm.addEventListener("submit", async function (e) {
-                e.preventDefault();
-
-                document.querySelectorAll('.error-text').forEach(el => el.innerText = '');
-                let hasError = false;
-
-                const firstName = getVal("prof-firstname");
-                const lastName = getVal("prof-lastname");
-                const phone = getVal("prof-phone");
-                const dobVal = getVal("dob");
-
-                if (!firstName) {
-                    document.getElementById("firstNameError").innerText = "First Name không được để trống!";
-                    hasError = true;
-                }
-
-                if (!lastName) {
-                    document.getElementById("lastNameError").innerText = "Last Name không được để trống!";
-                    hasError = true;
-                }
-
-                if (!phone) {
-                    document.getElementById("phoneError").innerText = "Số điện thoại không được để trống!";
-                    hasError = true;
-                } else if (!/^(03|09)\d{8}$/.test(phone)) {
-                    document.getElementById("phoneError").innerText = "SĐT phải có 10 số, bắt đầu bằng 03 hoặc 09!";
-                    hasError = true;
-                }
-
-                const dobErrorDiv = document.getElementById("dobError");
-                if (!dobVal) {
-                    if (dobErrorDiv) dobErrorDiv.innerText = "Vui lòng nhập Ngày Sinh!";
-                    hasError = true;
-                } else {
-                    const yearStr = dobVal.split('-')[0];
-                    const yearNum = parseInt(yearStr, 10);
-                    const currentYear = new Date().getFullYear();
-
-                    if (yearStr.length > 4) {
-                        if (dobErrorDiv) dobErrorDiv.innerText = "Năm sinh không hợp lệ (Không được quá 4 chữ số)!";
-                        hasError = true;
-                    } else if (yearNum < 1900) {
-                        if (dobErrorDiv) dobErrorDiv.innerText = "Năm sinh không tồn tại (Vui lòng nhập năm thật)!";
-                        hasError = true;
-                    } else if (yearNum > currentYear) {
-                        if (dobErrorDiv) dobErrorDiv.innerText = "Năm sinh không được lớn hơn năm hiện tại!";
-                        hasError = true;
-                    }
-                }
-
-                if (hasError) return;
-
-                const updateData = {
-                    firstName: firstName,
-                    lastName: lastName,
-                    phone: phone,
-                    gender: getVal("prof-gender") || "Nam",
-                    dob: dobVal,
-                    email: getVal("prof-email"),
-                    userName: getVal("prof-username")
-                };
-
-                try {
-                    const res = await fetch("/api/users/update-profile", {
-                        method: "PUT",
-                        headers: {
-                            "Authorization": "Bearer " + token,
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify(updateData)
-                    });
-
-                    if (res.ok) {
-                        alert("Cập nhật thông tin thành công!");
-                        location.reload();
-                    } else {
-                        const errorData = await res.json();
-                        if (errorData.errors && errorData.errors.length > 0) {
-                            errorData.errors.forEach(err => {
-                                const errorElement = document.getElementById(err.field + "Error");
-                                if (errorElement) {
-                                    errorElement.innerText = err.defaultMessage;
-                                }
-                            });
-                        } else if (errorData.message) {
-                            alert("LỖI: " + errorData.message);
-                        }
-                    }
-                } catch (error) {
-                    alert("Lỗi kết nối đến máy chủ!");
-                }
-            });
-        }
-
-        // ==========================================
-        // 3. XỬ LÝ NÚT XÓA TÀI KHOẢN
-        // ==========================================
-        const btnDelete = document.getElementById("btn-delete-account");
-        if (btnDelete) {
-            btnDelete.addEventListener("click", async function () {
-                if (confirm("CẢNH BÁO: Bạn có chắc chắn muốn xóa vĩnh viễn tài khoản này?")) {
-                    try {
-                        const res = await fetch("/api/users/delete-profile", {
-                            method: "DELETE",
-                            headers: {"Authorization": "Bearer " + token}
-                        });
-                        if (res.ok) {
-                            alert("Đã xóa tài khoản thành công!");
-                            localStorage.removeItem("jwtToken");
-                            localStorage.removeItem("username");
-                            window.location.href = "/";
-                        } else {
-                            alert("Lỗi khi xóa tài khoản!");
-                        }
-                    } catch (error) {
-                        alert("Lỗi kết nối khi xóa tài khoản!");
-                    }
-                }
-            });
-        }
-    });
-</script>
+<script th:src="@{/js/common.js}"></script>
 <script th:src="@{/js/auth.js}"></script>
+<script th:src="@{/js/profile.js}"></script>
+
 </body>
 </html>

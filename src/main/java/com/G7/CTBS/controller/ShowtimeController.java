@@ -8,7 +8,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import java.time.LocalDateTime;
+import java.util.stream.Collectors;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -85,7 +86,13 @@ public class ShowtimeController {
             @RequestParam Long movieId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
 
-        return showtimeService.getAvailableShowtime(movieId, date);
+        // Lấy danh sách suất chiếu theo ngày từ Database
+        List<ShowtimeResponse> showtimes = showtimeService.getAvailableShowtime(movieId, date);
+
+        // BỘ LỌC THỜI GIAN THỰC: Bỏ qua những suất chiếu có StartTime nhỏ hơn giờ hiện tại
+        return showtimes.stream()
+                .filter(s -> s.getStartTime() != null && s.getStartTime().isAfter(LocalDateTime.now()))
+                .collect(Collectors.toList());
     }
 
     // Get all
@@ -102,11 +109,14 @@ public class ShowtimeController {
             @RequestParam(required = false) Long roomId,
             @RequestParam(required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
-            @RequestParam(required = false) ShowtimeStatus status
+            @RequestParam(required = false) ShowtimeStatus status,
+            @RequestParam(required = false) String keyword
     ) {
         return ResponseEntity.ok(
-                showtimeService.searchShowtime(movieId, roomId, date, status)
+                showtimeService.searchShowtime(movieId, roomId, date, status, keyword)
         );
     }
 
 }
+
+

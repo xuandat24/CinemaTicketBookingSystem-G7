@@ -16,25 +16,26 @@ import java.time.LocalDate;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserCreateRequest {
 
-    @NotBlank(message = "Email không được để trống")
+    @NotBlank(message = "Email cannot be empty")
     @Pattern(regexp = "^[A-Za-z0-9._%+-]+@gmail\\.com$", message = "Hệ thống chỉ chấp nhận tài khoản @gmail.com")
     String email;
 
-    @NotBlank(message = "First Name không được để trống") // Sửa lại message cho đúng trường
+    @NotBlank(message = "First Name cannot be empty") // Sửa lại message cho đúng trường
     String firstName;
 
-    @NotBlank(message = "Last Name không được để trống")
+    @NotBlank(message = "Last Name cannot be empty")
     String lastName;
 
-    @NotBlank(message = "Tên người dùng không được để trống")
-    @Size(min = 6, message = "Tên người dùng phải có ít nhất 6 ký tự")
+    @NotBlank(message = "Username cannot be empty")
+    @Size(min = 6, message = "Username must be at least 6 character long")
     String userName;
 
-    @NotBlank(message = "Mật khẩu không được để trống")
-    @Size(min = 8, message = "Mật khẩu phải có ít nhất 8 ký tự")
+    @NotBlank(message = "Password cannot be empty")
+    @Size(min = 8, message = "Password must contain at least 8 character long")
     @Pattern(
             regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&]).+$",
-            message = "Mật khẩu phải chứa ít nhất 1 chữ hoa, 1 chữ thường, 1 chữ số và 1 kí tự đặc biệt"
+            message = "Password must contain at least one uppercase letter, " +
+                    "one lowercase letter, one digit, and one special character"
     )
     String password;
 
@@ -44,8 +45,8 @@ public class UserCreateRequest {
 
     String provider;
 
-    @NotBlank(message = "Số điện thoại không được để trống")
-    @Pattern(regexp = "^(03|09)\\d{8}$", message = "Số điện thoại phải có 10 chữ số và bắt đầu bằng 03 hoặc 09")
+    @NotBlank(message = "Phone Number cannot be empty")
+    @Pattern(regexp = "^(03|09)\\d{8}$", message = "Phone Number must be 10 digits and start with 03 or 09")
     String phone;
 
 

@@ -1,6 +1,7 @@
 <nav class="navbar navbar-expand-md navbar-light bg-white ticket-header px-4" id="navbar_sticky"
      th:fragment="header" xmlns:th="http://www.thymeleaf.org">
     <div class="container-fluid">
+        <link href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.0/css/flag-icons.min.css" rel="stylesheet"/>
 
         <a class="navbar-brand p-0 brand-premium" th:href="@{/}">
             <i class="fa fa-ticket"></i> CTBS <span>CINEMAS</span>
@@ -12,124 +13,127 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mb-0 mx-auto gap-1">
-                <li class="nav-item">
-                    <a class="nav-link ticket-nav-link" th:href="@{/}" th:classappend="${currentPage == 'home' ? 'active' : ''}">Home</a>
+                <li class="nav-item"><a class="nav-link ticket-nav-link" th:href="@{/}" th:text="#{nav.home}">Home</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link ticket-nav-link" th:href="@{/about}" th:classappend="${currentPage == 'about' ? 'active' : ''}">About Us</a>
+                <li class="nav-item"><a class="nav-link ticket-nav-link" th:href="@{/movies}" th:text="#{nav.movies}">Movies</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link ticket-nav-link" th:href="@{/movies}" th:classappend="${currentPage == 'movies' ? 'active' : ''}">Movies</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link ticket-nav-link" th:href="@{/tvshows}" th:classappend="${currentPage == 'tvshows' ? 'active' : ''}">TV Shows</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link ticket-nav-link" th:href="@{/news}" th:classappend="${currentPage == 'news' ? 'active' : ''}">News</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link ticket-nav-link" th:href="@{/contact}" th:classappend="${currentPage == 'contact' ? 'active' : ''}">Contact</a>
-                </li>
+                <li class="nav-item"><a class="nav-link ticket-nav-link" th:href="@{/contact-us}"
+                                        th:text="#{nav.contact}">Contact</a></li>
             </ul>
 
-            <ul class="navbar-nav mb-0 ms-auto">
-                <li class="nav-item d-flex gap-2" id="navLogin">
-                    <a class="btn-header-ticket" th:href="@{/login}"><i class="fa fa-user-circle"></i> Login</a>
-                    <a class="btn-header-ticket" th:href="@{/register}" style="background: #1a1a24; color: #fff;"><i class="fa fa-user-plus"></i> Register</a>
+            <ul class="navbar-nav mb-0 ms-auto align-items-center">
+
+                <li class="nav-item dropdown me-3">
+                    <a class="nav-link dropdown-toggle text-dark d-flex align-items-center" data-bs-toggle="dropdown"
+                       href="#"
+                       id="langDropdown" role="button">
+                        <span class="fi fi-vn fs-5 rounded-circle shadow-sm" style="border: 1px solid #ddd;"
+                              th:if="${#locale.language == 'vi'}"></span>
+                        <span class="fi fi-jp fs-5 rounded-circle shadow-sm" style="border: 1px solid #ddd;"
+                              th:if="${#locale.language == 'ja'}"></span>
+                        <span class="fi fi-kr fs-5 rounded-circle shadow-sm" style="border: 1px solid #ddd;"
+                              th:if="${#locale.language == 'ko'}"></span>
+                        <span class="fi fi-cn fs-5 rounded-circle shadow-sm" style="border: 1px solid #ddd;"
+                              th:if="${#locale.language == 'zh'}"></span>
+                        <span class="fi fi-mm fs-5 rounded-circle shadow-sm" style="border: 1px solid #ddd;"
+                              th:if="${#locale.language == 'my'}"></span>
+                        <span class="fi fi-gb fs-5 rounded-circle shadow-sm"
+                              style="border: 1px solid #ddd;"
+                              th:if="${#locale.language == 'en' or #locale.language == null}"></span>
+                    </a>
+
+                    <ul aria-labelledby="langDropdown" class="dropdown-menu dropdown-menu-end lang-ticket-menu">
+                        <li><a class="dropdown-item fw-bold lang-ticket-item" th:href="@{''(lang='en')}">
+                            <span class="fi fi-gb me-2"></span> English <i class="fa fa-ticket hover-ticket-icon"></i>
+                        </a></li>
+                        <li><a class="dropdown-item fw-bold lang-ticket-item" th:href="@{''(lang='vi')}">
+                            <span class="fi fi-vn me-2"></span> Tiếng Việt <i
+                                class="fa fa-ticket hover-ticket-icon"></i>
+                        </a></li>
+                        <li><a class="dropdown-item fw-bold lang-ticket-item" th:href="@{''(lang='ja')}">
+                            <span class="fi fi-jp me-2"></span> 日本語 <i class="fa fa-ticket hover-ticket-icon"></i>
+                        </a></li>
+                        <li><a class="dropdown-item fw-bold lang-ticket-item" th:href="@{''(lang='ko')}">
+                            <span class="fi fi-kr me-2"></span> 한국어 <i class="fa fa-ticket hover-ticket-icon"></i>
+                        </a></li>
+                        <li><a class="dropdown-item fw-bold lang-ticket-item" th:href="@{''(lang='zh')}">
+                            <span class="fi fi-cn me-2"></span> 中文 <i class="fa fa-ticket hover-ticket-icon"></i>
+                        </a></li>
+                        <li><a class="dropdown-item fw-bold lang-ticket-item" th:href="@{''(lang='my')}">
+                            <span class="fi fi-mm me-2"></span> မြန်မာ <i class="fa fa-ticket hover-ticket-icon"></i>
+                        </a></li>
+                    </ul>
+                </li>
+                <li class="nav-item" id="nav-login" style="display: none;">
+                    <div class="d-flex gap-2">
+                        <a class="btn-header-ticket" th:href="@{/login}">
+                            <i class="fa fa-user-circle"></i> <span th:text="#{nav.login}">Login</span>
+                        </a>
+                        <a class="btn-header-ticket" style="background: #1a1a24; color: #fff;" th:href="@{/register}">
+                            <i class="fa fa-user-plus"></i> <span th:text="#{nav.register}">Register</span>
+                        </a>
+                    </div>
                 </li>
 
-                <li class="nav-item dropdown d-none" id="navUser">
-                    <a aria-expanded="false" class="nav-link ticket-nav-link dropdown-toggle" data-bs-toggle="dropdown"
-                       href="#" id="userDropdown" role="button">
-                        <i class="fa fa-user-circle me-1 text-orange"></i>
-                        <span id="displayUsername">User</span>
-                    </a>
-                    <ul aria-labelledby="userDropdown" class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item fw-bold" th:href="@{/profile}"><i class="fa fa-user text-muted me-2"></i> My Profile</a></li>
-                        <li><a class="dropdown-item fw-bold" href="#"><i class="fa fa-ticket text-muted me-2"></i> My Tickets</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item text-danger fw-bold" href="#" id="logoutBtn"><i class="fa fa-sign-out me-2"></i> Logout</a></li>
-                    </ul>
+                <li class="nav-item" id="nav-user" style="display: none;">
+                    <div class="dropdown">
+                        <a aria-expanded="false"
+                           class="nav-link ticket-nav-link dropdown-toggle d-flex align-items-center text-dark"
+                           data-bs-toggle="dropdown" href="#" id="userDropdown" role="button">
+
+                            <img alt="Avatar"
+                                 class="rounded-circle object-fit-cover shadow-sm me-1"
+                                 id="display-user-avatar" src="https://ui-avatars.com/api/?name=User&background=d96c2c&color=fff"
+                                 style="width: 32px; height: 32px; border: 2px solid #d96c2c;">
+
+                            <span class="fw-bold ms-1" style="font-size: 1.1rem;">Hi, <span
+                                    id="display-username">User</span></span>
+                        </a>
+                        <ul aria-labelledby="userDropdown" class="dropdown-menu dropdown-menu-end shadow-sm"
+                            style="background-color: #ffffff !important; border: 1px solid #dee2e6 !important; position: absolute !important; min-width: 180px;">
+
+                            <li>
+                                <a class="dropdown-item fw-bold text-dark" th:href="@{/profile}">
+                                    <i class="fa fa-user text-muted me-2"></i>
+                                    <span th:text="#{nav.profile}">Profile</span>
+                                </a>
+                            </li>
+
+                            <li>
+                                <a class="dropdown-item fw-bold text-dark" th:href="@{/my-ticket}">
+                                    <i class="fa fa-ticket text-muted me-2"></i>
+                                    <span th:text="#{nav.my_tickets}">My Tickets</span>
+                                </a>
+                            </li>
+
+                            <li>
+                                <a class="dropdown-item fw-bold text-dark" th:href="@{/booking/history}">
+                                    <i class="fa fa-history text-muted me-2"></i>
+                                    <span th:text="#{nav.transaction_history}">Transaction History</span>
+                                </a>
+                            </li>
+
+                            <li>
+                                <hr class="dropdown-divider" style="border-top-color: #dee2e6 !important;">
+                            </li>
+
+                            <li>
+                                <a class="dropdown-item text-danger fw-bold" href="#" id="btn-logout">
+                                    <i class="fa fa-sign-out me-2"></i>
+                                    <span th:text="#{nav.logout}">Logout</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </li>
             </ul>
         </div>
-
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-
-                // Hàm cắt bỏ đuôi @gmail.com
-                function formatUsername(name) {
-                    if (!name) return "User";
-                    return name.replace("@gmail.com", "");
-                }
-
-                function updateNavbar() {
-                    const token = localStorage.getItem("jwtToken");
-                    const navLogin = document.getElementById("navLogin");
-                    const navUser = document.getElementById("navUser");
-                    const displayUsername = document.getElementById("displayUsername");
-
-                    if (token) {
-                        const savedUsername = localStorage.getItem("username");
-                        if (savedUsername) {
-                            displayUsername.textContent = "Hi, " + savedUsername;
-                        } else {
-                            fetch('/api/auth/me', {
-                                method: 'GET',
-                                headers: { 'Authorization': 'Bearer ' + token }
-                            })
-                                .then(response => {
-                                    if (!response.ok) throw new Error("Token invalid");
-                                    return response.json();
-                                })
-                                .then(data => {
-                                    const formattedName = formatUsername(data.username);
-                                    displayUsername.textContent = "Hi, " + formattedName;
-                                    localStorage.setItem("username", formattedName);
-                                })
-                                .catch(error => {
-                                    console.error("Error fetching user info:", error);
-                                    localStorage.removeItem("jwtToken");
-                                    localStorage.removeItem("username");
-                                    updateNavbar();
-                                });
-                        }
-
-                        if (navLogin) { navLogin.classList.remove('d-flex'); navLogin.classList.add('d-none'); }
-                        if (navUser) { navUser.classList.remove('d-none'); navUser.classList.add('d-flex'); }
-
-                        // FIX LỖI LOGOUT: Tải lại trang hiện tại (F5) thay vì nhảy sang trang đăng nhập
-                        const logoutBtn = document.getElementById("logoutBtn");
-                        if (logoutBtn) {
-                            logoutBtn.addEventListener("click", function (e) {
-                                e.preventDefault();
-                                localStorage.removeItem("jwtToken");
-                                localStorage.removeItem("username");
-                                window.location.reload();
-                            });
-                        }
-                    } else {
-                        if (navLogin) { navLogin.classList.remove('d-none'); navLogin.classList.add('d-flex'); }
-                        if (navUser) { navUser.classList.remove('d-flex'); navUser.classList.add('d-none'); }
-                    }
-                }
-
-                updateNavbar();
-
-                // Xử lý OAuth2 đăng nhập Google/Facebook
-                const urlParams = new URLSearchParams(window.location.search);
-                const token = urlParams.get('token');
-                const user = urlParams.get('username');
-
-                if (token && user) {
-                    localStorage.setItem("jwtToken", token);
-                    let rawUser = decodeURIComponent(user.replace(/\+/g, ' '));
-                    localStorage.setItem("username", formatUsername(rawUser)); // Lưu username đã xóa đuôi email
-                    window.history.replaceState({}, document.title, window.location.pathname);
-                }
-
-                updateNavbar();
-            });
-        </script>
     </div>
+
+
+<script th:inline="javascript">
+    window.I18N = {
+        logoutConfirm: /*[[#{js.logout.confirm}]]*/ "Are you sure you want to logout?"
+    };
+</script>
 </nav>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="booking-modal" class="modal fade" id="bookingModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content shadow-lg border-0">
+            <div class="modal-header bg-dark text-white py-3">
+                <h5 class="modal-title fw-bold">
+                    <i class="fa fa-ticket me-2 text-warning"></i>
+                    Booking: <span id="bookingMovieTitle" class="text-warning"></span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" onclick="resetBooking()"></button>
+            </div>
+
+            <div class="modal-body p-4 bg-light">
+
+                <div id="step-1" class="booking-step">
+                    <h5 class="fw-bold mb-3 text-dark"><i class="fa fa-calendar text-danger me-2"></i> 1. Select Date & Showtime</h5>
+                    <div id="dateSelector" class="d-flex overflow-auto gap-2 mb-4 pb-2" style="white-space: nowrap; scrollbar-width: thin;">
+                    </div>
+                    <div id="showtimeContainer" class="p-4 bg-white border rounded shadow-sm">
+                        <p class="text-muted text-center my-3">Please select a date to view available showtimes.</p>
+                    </div>
+                </div>
+
+                <div id="step-2" class="booking-step d-none">
+                    <h5 class="fw-bold mb-3 text-dark"><i class="fa fa-couch text-danger me-2"></i> 2. Select Your Seats</h5>
+
+                    <div class="d-flex justify-content-center flex-wrap gap-4 mb-3 small fw-bold">
+                        <div class="d-flex align-items-center"><span class="border rounded bg-white me-2" style="width: 20px; height: 20px;"></span> Available</div>
+                        <div class="d-flex align-items-center"><span class="border rounded bg-success me-2" style="width: 20px; height: 20px;"></span> Selected</div>
+                        <div class="d-flex align-items-center"><span class="border rounded bg-secondary me-2" style="width: 20px; height: 20px; opacity: 0.5;"></span> Booked</div>
+                    </div>
+
+                    <div class="text-center mb-5">
+                        <div class="mx-auto bg-secondary opacity-25 rounded-pill mb-2" style="height: 5px; width: 80%;"></div>
+                        <div class="text-muted small fw-bold" style="letter-spacing: 10px;">SCREEN</div>
+                    </div>
+
+                    <div id="seatGrid" class="text-center mb-4 overflow-auto pb-3" style="min-height: 200px;">
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center border-top pt-3">
+                        <button class="btn btn-outline-secondary px-4 fw-bold" onclick="goToStep(1)">Back</button>
+                        <div class="text-end">
+                            <span class="text-muted me-3">Seats Selected: <b id="step2SeatCount" class="text-dark">0</b></span>
+                            <button class="btn btn-danger px-5 fw-bold" onclick="goToStep(3)" id="btnNextToCombo" disabled>Continue</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="step-3" class="booking-step d-none">
+                    <h5 class="fw-bold mb-3 text-dark"><i class="fa fa-utensils text-danger me-2"></i> 3. Select Popcorn & Drinks</h5>
+                    <div class="text-center p-5 bg-white border rounded shadow-sm mb-4">
+                        <i class="fa fa-info-circle fs-2 text-muted mb-3"></i>
+                        <h6 class="text-muted">You can also purchase combos directly at the cinema counter.</h6>
+                    </div>
+                    <div class="d-flex justify-content-between border-top pt-3">
+                        <button class="btn btn-outline-secondary px-4 fw-bold" onclick="goToStep(2)">Back</button>
+                        <button class="btn btn-danger px-5 fw-bold" onclick="goToStep(4)">Proceed to Payment</button>
+                    </div>
+                </div>
+
+                <div id="step-4" class="booking-step d-none">
+                    <h5 class="fw-bold mb-3 text-dark"><i class="fa fa-credit-card text-danger me-2"></i> 4. Order Summary</h5>
+                    <div class="bg-white p-4 rounded border shadow-sm mb-4">
+                        <div class="row fs-5">
+                            <div class="col-sm-6">
+                                <p class="mb-2"><strong>Movie:</strong> <span id="summaryMovieName" class="text-danger fw-bold"></span></p>
+                                <p class="mb-2"><strong>Theater:</strong> <span id="summaryTheater" class="text-dark"></span></p>
+                            </div>
+                            <div class="col-sm-6">
+                                <p class="mb-2"><strong>Showtime:</strong> <span id="summaryTime" class="text-success fw-bold"></span></p>
+                                <p class="mb-2"><strong>Seats:</strong> <span id="summarySeats" class="text-dark"></span></p>
+                            </div>
+                        </div>
+                        <hr class="my-3">
+                        <div class="text-end">
+                            <h4 class="text-muted mb-1">Total Amount:</h4>
+                            <h2 class="text-danger fw-bold"><span id="summaryTotal">0</span> VND</h2>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between border-top pt-3">
+                        <button class="btn btn-outline-secondary px-4 fw-bold" onclick="goToStep(3)">Back</button>
+                        <button class="btn btn-success btn-lg px-5 fw-bold" id="btnConfirmBooking" onclick="submitBooking()">
+                            Confirm & Pay Now
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+</html>

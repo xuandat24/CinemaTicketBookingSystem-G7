@@ -25,6 +25,7 @@
     gap: 8px;
     font-weight: 600;
     color: #2b5e96;
+    margin-top: 24px;
     margin-bottom: 12px;
 }
 
@@ -402,6 +403,10 @@
 }
 
 @media screen and (max-width: 576px) {
+    .seat-breadcrumb {
+        margin-top: 16px;
+    }
+
     .seat-grid {
         --layout-scale: 0.65;
     }
@@ -411,4 +416,51 @@
         height: 24px;
         font-size: 10px;
     }
+}
+/* =========================================
+   CINEMA SCREEN & SEAT GRID FIX
+========================================= */
+.seat-layout-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.seat-grid {
+    --layout-scale: 1;
+    --layout-global-shift-x: 0px;
+    display: grid;
+    grid-template-columns: repeat(12, 36px);
+    column-gap: 12px;
+    row-gap: 4px;
+    justify-content: center; /* SỬA LỖI 1: Đổi từ start thành center để căn giữa */
+    justify-items: center;
+    width: max-content;
+    margin: 0 auto;
+    padding: 20px 45px; /* SỬA LỖI 2: Thêm khoảng trống 2 bên để dãy ghế A1 và A12 không bị cắt mất khi uốn cong */
+}
+
+.seat {
+    width: 32px;
+    height: 26px;
+    border-radius: 6px;
+    background: #f3f3f3;
+    border: 1px solid #ddd;
+    color: #333;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+    transform: translateX(calc((var(--layout-global-shift-x) + var(--seat-shift-x, 0px)) * var(--layout-scale)));
+    transition: filter 0.2s ease, box-shadow 0.2s ease; /* Thêm transition cho hiệu ứng */
+}
+
+/* KHÔI PHỤC HIỆU ỨNG: Nổi bật ghế khi rê chuột (Hover 3D) */
+.seat:not(.booked):not(.hold):not(.prebook):hover {
+    filter: brightness(1.1) contrast(1.2);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    z-index: 10;
 }

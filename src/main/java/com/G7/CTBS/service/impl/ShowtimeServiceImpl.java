@@ -49,15 +49,10 @@ public class ShowtimeServiceImpl implements ShowtimeService {
         TheaterRoom room = theaterRoomRepository.findById(request.getTheaterRoomId())
                 .orElseThrow(() -> new ResourceNotFoundException("Theater room not found"));
 
-        // 3. Validate start time
-        if (request.getStartTime().isBefore(LocalDateTime.now())) {
-            throw new InvalidShowtimeException("Showtime must be in the future");
-        }
+        // 3. VÁ LỖI THỜI GIAN: Tính chính xác Giờ kết thúc = Giờ bắt đầu + Thời lượng phim + 15p dọn dẹp
+        LocalDateTime endTime = request.getStartTime().plusMinutes(movie.getDuration()).plusMinutes(15);
 
-        // 4. Calculate end time (startTime + movie duration)
-        LocalDateTime endTime = request.getStartTime().plusMinutes(movie.getDuration());
-
-        // 5. Check schedule conflict in the same room
+        // 4. Check schedule conflict in the same room
         boolean conflict = showtimeRepository
                 .existsByTheaterRoomRoomIdAndStatusAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
                         room.getRoomId(),
@@ -66,10 +61,9 @@ public class ShowtimeServiceImpl implements ShowtimeService {
                         request.getStartTime());
 
         if(conflict)
-            throw new ShowtimeConflictException(
-                    "Showtime overlaps with another show in this room");
+            throw new ShowtimeConflictException("The screening room is busy at this time (including 15 minutes for room cleaning). Please choose a different time!");
 
-        // 6. Create Showtime entity
+        // 5. Create Showtime entity
         Showtime showtime = new Showtime();
         showtime.setMovie(movie);
         showtime.setTheaterRoom(room);
@@ -78,8 +72,16 @@ public class ShowtimeServiceImpl implements ShowtimeService {
         showtime.setFormat(request.getFormat());
         showtime.setBasePrice(request.getPrice());
 
+        // 6. VÁ LỖI NGHIÊM TRỌNG: Gán trạng thái ACTIVE để thuật toán Check trùng lịch nhận diện được!
+        showtime.setStatus(ShowtimeStatus.ACTIVE);
+
         // 7. Save to database
         Showtime savedShowtime = showtimeRepository.save(showtime);
+
+        if (movie.getStatus().equalsIgnoreCase("Coming Soon")) {
+            movie.setStatus("Now Playing");
+            movieRepository.save(movie);
+        }
 
         // 8. Response DTO
         return responseDTO(savedShowtime, movie, room);
@@ -93,6 +95,23 @@ public class ShowtimeServiceImpl implements ShowtimeService {
         boolean hasBooking =
                 bookingRepository.existsByShowtimeShowtimeId(showtimeId);
 
+        // =========================================================
+        // CHỐT CHẶN 1: Không cho phép sửa suất chiếu đã diễn ra trong quá khứ
+        if (showtime.getStartTime().isBefore(LocalDateTime.now())) {
+            throw new IllegalArgumentException("Error: Unable to edit the start or end of a showtime!");
+        }
+
+        // CHỐT CHẶN 2: Không cho phép dời lịch mới về thời điểm trong quá khứ
+        if (request.getStartTime().isBefore(LocalDateTime.now())) {
+            throw new IllegalArgumentException("Error: The new showtime cannot be in the past!");
+        }
+        // =========================================================
+
+        // If it has booking → block all
+        if (hasBooking) {
+            throw new ShowtimeHasBookingException(
+                    "Unable to update showtimes because tickets have already been booked!");
+        }
         // If it has booking → block all
         if (hasBooking) {
             throw new ShowtimeHasBookingException(
@@ -102,12 +121,8 @@ public class ShowtimeServiceImpl implements ShowtimeService {
         Movie movie = showtime.getMovie();
         TheaterRoom room = showtime.getTheaterRoom();
 
-        if (request.getStartTime().isBefore(LocalDateTime.now())) {
-            throw new InvalidShowtimeException("Updated showtime must be in the future");
-        }
-
-        LocalDateTime newEndTime =
-                request.getStartTime().plusMinutes(movie.getDuration());
+        // VÁ LỖI THỜI GIAN UPDATE: Bắt buộc cộng thêm 15p dọn phòng
+        LocalDateTime newEndTime = request.getStartTime().plusMinutes(movie.getDuration()).plusMinutes(15);
 
         boolean conflict =
                 showtimeRepository
@@ -119,8 +134,7 @@ public class ShowtimeServiceImpl implements ShowtimeService {
                                 request.getStartTime());
 
         if (conflict) {
-            throw new ShowtimeConflictException(
-                    "Updated showtime conflicts with existing schedule");
+            throw new ShowtimeConflictException("Update failed! This showtime clashes with another movie's schedule.");
         }
 
         // Update full
@@ -230,7 +244,8 @@ public class ShowtimeServiceImpl implements ShowtimeService {
             Long movieId,
             Long roomId,
             LocalDate date,
-            ShowtimeStatus status
+            ShowtimeStatus status,
+            String keyword
     ) {
 
         List<Showtime> showtimes = showtimeRepository.findAll();
@@ -256,6 +271,13 @@ public class ShowtimeServiceImpl implements ShowtimeService {
         if (status != null) {
             showtimes = showtimes.stream()
                     .filter(s -> s.getStatus() == status)
+                    .toList();
+        }
+
+        if (keyword != null && !keyword.isEmpty()) {
+            showtimes = showtimes.stream()
+                    .filter(s -> s.getMovie().getTitle().toLowerCase()
+                            .contains(keyword.toLowerCase()))
                     .toList();
         }
 

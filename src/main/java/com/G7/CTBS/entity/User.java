@@ -58,6 +58,9 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Booking> bookings;
 
+    @Column(length = 255)
+    private String avatar; // Cột lưu đường dẫn ảnh đại diện
+
     public String getFullName() {
         return lastName + " " + firstName;
     }

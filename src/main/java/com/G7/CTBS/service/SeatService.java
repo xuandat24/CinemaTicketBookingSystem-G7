@@ -2,25 +2,31 @@ package com.G7.CTBS.service;
 
 import com.G7.CTBS.dto.SeatAvailabilityResponseDTO;
 import com.G7.CTBS.dto.SeatAvailabilitySeatDTO;
+import com.G7.CTBS.entity.Movie;
 import com.G7.CTBS.entity.Seat;
-import com.G7.CTBS.entity.Showtime; // Đã đổi sang dùng Showtime chính thức
+import com.G7.CTBS.entity.Showtime;
 import com.G7.CTBS.entity.TheaterRoom;
 import com.G7.CTBS.repository.BookingSeatRepository;
 import com.G7.CTBS.repository.SeatRepository;
-import com.G7.CTBS.repository.ShowtimeRepository; // Đã đổi sang dùng ShowtimeRepository
+import com.G7.CTBS.repository.ShowtimeRepository;
 import com.G7.CTBS.repository.TheaterRoomRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class SeatService {
 
-    // ĐÃ SỬA: Tiêm (Inject) ShowtimeRepository thay vì ShowtimesRecordRepository
     private final ShowtimeRepository showtimeRepository;
     private final TheaterRoomRepository theaterRoomRepository;
     private final SeatRepository seatRepository;
@@ -28,12 +34,9 @@ public class SeatService {
 
     @Transactional(readOnly = true)
     public SeatAvailabilityResponseDTO getSeatAvailabilityByShowtimeId(Long showtimeId) {
-
-        // ĐÃ SỬA: Tìm kiếm bằng Entity Showtime
         Showtime showtime = showtimeRepository.findById(showtimeId)
                 .orElseThrow(() -> new EntityNotFoundException("Showtime not found"));
 
-        // ĐÃ SỬA: Lấy ID phòng chiếu thông qua mối quan hệ TheaterRoom
         Long roomId = showtime.getTheaterRoom() != null ? showtime.getTheaterRoom().getRoomId() : null;
         if (roomId == null) {
             throw new EntityNotFoundException("Theater room not found");
@@ -43,7 +46,6 @@ public class SeatService {
                 .orElseThrow(() -> new EntityNotFoundException("Theater room not found"));
 
         Set<Long> bookedSeatIds = new HashSet<>(bookingSeatRepository.findBookedSeatIdsByShowtimeId(showtimeId));
-
         List<SeatAvailabilitySeatDTO> seatDTOs = seatRepository.findByRoom_RoomId(room.getRoomId())
                 .stream()
                 .sorted(Comparator.comparingInt(this::seatRowOrder)
@@ -51,16 +53,35 @@ public class SeatService {
                 .map(seat -> toSeatAvailabilityDTO(seat, bookedSeatIds.contains(seat.getSeatId())))
                 .toList();
 
+        Movie movie = showtime.getMovie();
+
         return SeatAvailabilityResponseDTO.builder()
                 .showtimeId(showtime.getShowtimeId())
                 .roomId(room.getRoomId())
                 .roomName(room.getRoomName())
-                // ĐÃ SỬA: Lấy ID phim thông qua mối quan hệ Movie
-                .movieId(showtime.getMovie() != null ? showtime.getMovie().getMovieId() : null)
+                .movieId(movie != null ? movie.getMovieId() : null)
+                .movieTitle(movie != null ? movie.getTitle() : null)
+                .bannerPath(movie != null ? movie.getBannerPath() : null)
+                .duration(movie != null ? movie.getDuration() : null)
+                .genre(extractGenre(movie))
                 .startTime(showtime.getStartTime())
                 .basePrice(showtime.getBasePrice())
                 .seats(seatDTOs)
                 .build();
+    }
+
+    private String extractGenre(Movie movie) {
+        if (movie == null || movie.getCategories() == null || movie.getCategories().isEmpty()) {
+            return null;
+        }
+
+        return movie.getCategories().stream()
+                .map(category -> category != null ? category.getName() : null)
+                .filter(Objects::nonNull)
+                .map(String::trim)
+                .filter(name -> !name.isEmpty())
+                .distinct()
+                .collect(Collectors.joining(", "));
     }
 
     private SeatAvailabilitySeatDTO toSeatAvailabilityDTO(Seat seat, boolean isBooked) {

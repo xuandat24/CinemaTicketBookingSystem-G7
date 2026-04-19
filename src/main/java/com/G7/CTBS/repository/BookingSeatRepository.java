@@ -10,6 +10,13 @@ import java.util.List;
 
 @Repository
 public interface BookingSeatRepository extends JpaRepository<BookingSeat, Long> {
-    @Query(value = "SELECT seat_id FROM booking_seats WHERE showtime_id = :showtimeId", nativeQuery = true)
+
+    @Query(value = """
+            SELECT bs.seat_id
+            FROM booking_seats bs
+            INNER JOIN bookings b ON b.booking_id = bs.booking_id
+            WHERE bs.showtime_id = :showtimeId
+              AND UPPER(ISNULL(b.status, '')) IN ('CONFIRMED', 'SUCCESS')
+            """, nativeQuery = true)
     List<Long> findBookedSeatIdsByShowtimeId(@Param("showtimeId") Long showtimeId);
 }

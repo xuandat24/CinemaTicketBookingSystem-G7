@@ -1,8 +1,92 @@
-.tag-badge {
-    cursor: pointer;
-    font-size: 0.9rem;
-    padding: 8px 12px;
+/* =========================================
+   ADD MOVIE - UNIFIED TECH THEME & RAINBOW
+========================================= */
+
+/* --- 1. KHU VỰC TÌM KIẾM (API EXPLORER) --- */
+.tmdb-search-box {
+    background: #ffffff; border-radius: 16px; padding: 25px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.04); border: 1px solid #e2e8f0; margin-bottom: 25px;
 }
-.tag-badge:hover {
-    background-color: #dc3545 !important;
+.search-tmdb-input {
+    border: 2px solid #cbd5e1; border-radius: 12px; padding: 15px 20px;
+    font-size: 1.05rem; font-weight: 500; color: #1e293b; transition: all 0.3s ease;
+}
+.search-tmdb-input:focus {
+    border-color: #0ea5e9; box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.15);
+}
+
+/* --- 2. HIỆU ỨNG CẦU VỒNG CHO THẺ PHIM TMDB --- */
+#apiResults .card {
+    border-radius: 12px !important;
+    border: none !important;
+    transition: transform 0.3s ease;
+    position: relative;
+}
+#apiResults .card:hover {
+    transform: translateY(-10px) scale(1.02);
+    z-index: 10;
+}
+#apiResults .card::after {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    border-radius: 12px; z-index: -1; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+}
+#apiResults .card:hover::after {
+    opacity: 1;
+    animation: rainbowGlow 2s linear infinite;
+}
+@keyframes rainbowGlow {
+    0%   { box-shadow: 0 0 0 3px #ff0000, 0 0 20px 5px rgba(255,0,0,0.6); }
+    15%  { box-shadow: 0 0 0 3px #ff7300, 0 0 20px 5px rgba(255,115,0,0.6); }
+    30%  { box-shadow: 0 0 0 3px #fffb00, 0 0 20px 5px rgba(255,251,0,0.6); }
+    45%  { box-shadow: 0 0 0 3px #48ff00, 0 0 20px 5px rgba(72,255,0,0.6); }
+    60%  { box-shadow: 0 0 0 3px #00ffd5, 0 0 20px 5px rgba(0,255,213,0.6); }
+    75%  { box-shadow: 0 0 0 3px #002bff, 0 0 20px 5px rgba(0,43,255,0.6); }
+    90%  { box-shadow: 0 0 0 3px #7a00ff, 0 0 20px 5px rgba(122,0,255,0.6); }
+    100% { box-shadow: 0 0 0 3px #ff0000, 0 0 20px 5px rgba(255,0,0,0.6); }
+}
+#apiResults .card img { border-top-left-radius: 12px; border-top-right-radius: 12px; transition: filter 0.3s ease; }
+#apiResults .card:hover img { filter: brightness(0.85); }
+
+
+/* --- 3. KHU VỰC FORM NHẬP LIỆU (CẤU TRÚC ĐÃ ĐƯỢC PHỤC HỒI) --- */
+.setup-form-card {
+    background: #ffffff; border-radius: 20px; padding: 35px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.06); border: 1px solid #e2e8f0;
+    animation: formFadeIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+@keyframes formFadeIn {
+    0% { opacity: 0; transform: translateY(20px) scale(0.98); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Kéo nút Back sang phải chuẩn xác */
+.tech-form-header {
+    border-bottom: 2px solid #10b981; padding-bottom: 15px; margin-bottom: 30px;
+    display: flex; justify-content: space-between; align-items: center;
+}
+.tech-form-header h4 { font-weight: 800; color: #1e293b; margin: 0; text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* Trả lại khung cho ô nhập liệu */
+.form-label-tech { font-weight: 700; color: #475569; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; display: block; }
+.input-tech { background-color: #f8fafc !important; border: 1px solid #cbd5e1 !important; border-radius: 10px !important; padding: 12px 15px !important; color: #1e293b !important; font-weight: 500; transition: all 0.3s ease !important; }
+.input-tech:focus { background-color: #ffffff !important; border-color: #10b981 !important; box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15) !important; }
+
+/* Trả lại màu nền, hiệu ứng cho nút bấm (Fix ảnh số 2) */
+.tech-btn { border-radius: 10px !important; padding: 12px 30px !important; font-weight: 700 !important; transition: all 0.3s ease !important; text-transform: uppercase; letter-spacing: 0.5px; display: inline-flex; align-items: center; justify-content: center; }
+.tech-btn-success { background: #10b981 !important; border: none !important; color: #fff !important; box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3); }
+.tech-btn-success:hover { background: #059669 !important; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4); }
+
+/* Khung Media đẹp mắt */
+.media-upload-card { background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 16px; padding: 20px; height: 100%; transition: all 0.3s ease; }
+.media-upload-card:hover { border-color: #10b981; background: #f0fdf4; }
+
+/* --- 4. "MÀU BAO CHỮ" CHO THỂ LOẠI (TAG CATEGORY) --- */
+#selectedCategoryTags .badge, .tag-badge {
+    font-size: 0.85rem !important; padding: 8px 14px !important; border-radius: 8px !important;
+    background-color: #198754 !important; color: #ffffff !important; font-weight: 600 !important;
+    border: 1px solid rgba(255,255,255,0.2) !important; box-shadow: 0 3px 6px rgba(25, 135, 84, 0.2);
+    transition: all 0.2s ease; display: inline-flex; align-items: center; cursor: pointer; margin: 3px;
+}
+#selectedCategoryTags .badge:hover, .tag-badge:hover {
+    background-color: #dc3545 !important; box-shadow: 0 4px 10px rgba(220, 53, 69, 0.3); transform: translateY(-2px);
 }

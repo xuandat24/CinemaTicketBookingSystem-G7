@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Coupon Management - Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/admin/universal.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/coupon.css}">
+</head>
+<body class="bg-light">
+
+<div th:replace="~{admin/fragments/navbar :: admin-nav}"></div>
+
+<div class="container-fluid px-4 py-4 mb-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="page-header-tech">
+            <h2 class="fw-bold text-dark m-0"><i class="fa-solid fa-ticket text-emerald me-2"></i> Coupon Management</h2>
+            <p class="text-muted mb-0 mt-1">Manage discount codes, vouchers, and promotional campaigns.</p>
+        </div>
+        <a th:href="@{/admin/coupons/add}" class="btn tech-btn tech-btn-emerald">
+            <i class="fa-solid fa-plus me-2"></i> Add New Coupon
+        </a>
+    </div>
+
+    <input type="hidden" id="hiddenSuccessMsg" th:if="${success}" th:value="${success}">
+    <input type="hidden" id="hiddenErrorMsg" th:if="${errorMessage}" th:value="${errorMessage}">
+
+    <div class="stats-row-tech">
+        <div class="stat-card-tech border-start border-4 border-primary">
+            <div class="stat-label-tech"><i class="fa-solid fa-layer-group text-primary me-1"></i> Total Coupons</div>
+            <div class="stat-value-tech text-primary" th:text="${totalCoupons}">0</div>
+        </div>
+        <div class="stat-card-tech border-start border-4 border-success">
+            <div class="stat-label-tech"><i class="fa-solid fa-circle-check text-success me-1"></i> Active</div>
+            <div class="stat-value-tech text-success" th:text="${activeCoupons}">0</div>
+        </div>
+        <div class="stat-card-tech border-start border-4 border-danger">
+            <div class="stat-label-tech"><i class="fa-solid fa-circle-xmark text-danger me-1"></i> Expired</div>
+            <div class="stat-value-tech text-danger" th:text="${expiredCoupons}">0</div>
+        </div>
+    </div>
+
+    <div class="tech-card mb-4" style="background: linear-gradient(to right, #ffffff, #ecfdf5);">
+        <form th:action="@{/admin/coupons}" method="GET" class="row g-3 align-items-end">
+            <div class="col-md-6">
+                <label class="form-label-tech"><i class="fa-solid fa-magnifying-glass text-emerald me-1"></i> Search Code</label>
+                <div class="input-group shadow-sm" style="border-radius: 10px;">
+                    <span class="input-group-text bg-white border-end-0" style="border-radius: 10px 0 0 10px; border-color: #cbd5e1;"><i class="fa-solid fa-qrcode text-muted"></i></span>
+                    <input type="search" class="form-control input-tech border-start-0 ps-0" style="border-radius: 0 10px 10px 0 !important;" placeholder="Type coupon code..." name="keyword" th:value="${keyword}">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label-tech">Status Filter</label>
+                <select class="form-select input-tech" name="active">
+                    <option value="">-- All Status --</option>
+                    <option value="true" th:selected="${active == true}">Active Only</option>
+                    <option value="false" th:selected="${active == false}">Expired Only</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button class="btn tech-btn tech-btn-emerald w-100" type="submit">Filter</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="tech-card p-4">
+        <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+            <h5 class="m-0 text-dark fw-bold"><i class="fa-solid fa-list text-emerald me-2"></i> Coupons List</h5>
+        </div>
+
+        <div class="table-responsive" style="overflow-y: hidden;">
+            <table class="table-tech">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Code</th>
+                    <th>Discount</th>
+                    <th>Min Order</th>
+                    <th>Usage Limit</th>
+                    <th>Expiry Date</th>
+                    <th>Status</th>
+                    <th class="text-end pe-4">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="coupon, stat : ${coupons}">
+                    <td class="fw-bold text-muted">#<span th:text="${stat.count}"></span></td>
+                    <td><span class="coupon-code-badge" th:text="${coupon.code}"></span></td>
+
+                    <td class="fw-bold text-emerald fs-6">
+                        <i class="fa-solid fa-tags me-1"></i>
+                        <span th:text="${coupon.discountType == 'PERCENTAGE' ? coupon.discountValue + '%' : #numbers.formatDecimal(coupon.discountValue, 0, 'COMMA', 0, 'POINT') + ' ₫'}"></span>
+                    </td>
+
+                    <td class="fw-semibold text-secondary" th:text="${coupon.minOrderAmount != null && coupon.minOrderAmount > 0} ? ${#numbers.formatDecimal(coupon.minOrderAmount, 0, 'COMMA', 0, 'POINT')} + ' ₫' : 'None'"></td>
+
+                    <td class="fw-bold">
+                        <span class="text-primary" th:text="${coupon.usedCount != null ? coupon.usedCount : 0}"></span>
+                        <span class="text-muted mx-1">/</span>
+                        <span class="text-dark" th:text="${coupon.maxUsage != null ? coupon.maxUsage : '&infin;'}"></span>
+                    </td>
+
+                    <td class="text-muted fw-semibold">
+                        <i class="fa-regular fa-calendar-xmark me-1"></i>
+                        <span th:text="${coupon.expiryDate != null ? #temporals.format(coupon.expiryDate, 'dd/MM/yyyy') : 'Never'}"></span>
+                    </td>
+
+                    <td>
+                        <span th:if="${coupon.status == 'ACTIVE'}" class="badge bg-success px-2 py-1"><i class="fa-solid fa-check me-1"></i> ACTIVE</span>
+                        <span th:if="${coupon.status == 'EXPIRED'}" class="badge bg-danger px-2 py-1"><i class="fa-solid fa-xmark me-1"></i> EXPIRED</span>
+                    </td>
+
+                    <td class="text-end pe-4">
+                        <a th:href="@{/admin/coupons/edit/{id}(id=${coupon.couponId})}" class="btn tech-btn-outline-emerald me-1" title="Edit">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </a>
+                        <a th:href="@{/admin/coupons/delete/{id}(id=${coupon.couponId})}" class="btn tech-btn-outline-danger" title="Delete" onclick="return confirm('CẢNH BÁO: Bạn có chắc chắn muốn xóa Coupon này không?')">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </a>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(coupons)}">
+                    <td colspan="8" class="text-center text-muted py-5"><i class="fa-solid fa-box-open fs-2 mb-2 text-emerald"></i><br>No coupons found matching your criteria.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/admin/admin-auth.js}"></script>
+<script>
+    // Đọc thông báo từ Backend Spring Boot và bắn ra Toast siêu đẹp
+    document.addEventListener("DOMContentLoaded", () => {
+        const successMsg = document.getElementById("hiddenSuccessMsg");
+        const errorMsg = document.getElementById("hiddenErrorMsg");
+
+        if (successMsg && successMsg.value && typeof showToast === 'function') {
+            showToast(successMsg.value, "success");
+        }
+        if (errorMsg && errorMsg.value && typeof showToast === 'function') {
+            showToast(errorMsg.value, "error");
+        }
+    });
+</script>
+</body>
+</html>

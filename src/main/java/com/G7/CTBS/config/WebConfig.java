@@ -1,14 +1,10 @@
 package com.G7.CTBS.config;
 
-import jakarta.servlet.MultipartConfigElement;
 import org.apache.catalina.connector.Connector;
-import org.apache.catalina.core.StandardContext;
-import org.springframework.boot.servlet.MultipartConfigFactory;
 import org.springframework.boot.tomcat.servlet.TomcatServletWebServerFactory;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.util.unit.DataSize;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -21,20 +17,31 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // Get the absolute path to the physical upload directories
+        // Lấy đường dẫn tuyệt đối cho banners
         Path bannerUploadDir = Paths.get("./uploads/banners");
         String bannerUploadPath = bannerUploadDir.toFile().getAbsolutePath();
 
+        // Lấy đường dẫn tuyệt đối cho trailers
         Path trailerUploadDir = Paths.get("./uploads/trailers");
         String trailerUploadPath = trailerUploadDir.toFile().getAbsolutePath();
 
-        // Grant permission for /banners/** to access the physical uploads/banners/ directory
-        registry.addResourceHandler("/banners/**")
-                .addResourceLocations("file:/" + bannerUploadPath + "/");
+        // ĐÃ SỬA: Lấy đường dẫn tuyệt đối chuẩn xác cho avatars
+        Path avatarUploadDir = Paths.get("./uploads/avatars");
+        String avatarUploadPath = avatarUploadDir.toFile().getAbsolutePath();
 
-        // Grant permission for /trailers/** to access the physical uploads/trailers/ directory
-        registry.addResourceHandler("/trailers/**")
-                .addResourceLocations("file:/" + trailerUploadPath + "/");
+        Path comboUploadDir = Paths.get("./uploads/combos");
+        String comboUploadPath = comboUploadDir.toFile().getAbsolutePath();
+
+        // Cấp quyền truy cập các thư mục
+        registry.addResourceHandler("/banners/**").addResourceLocations("file:/" + bannerUploadPath + "/");
+
+        registry.addResourceHandler("/trailers/**").addResourceLocations("file:/" + trailerUploadPath + "/");
+
+        // ĐÃ SỬA: Ánh xạ chuẩn bằng đường dẫn tuyệt đối
+        registry.addResourceHandler("/avatars/**").addResourceLocations("file:/" + avatarUploadPath + "/");
+
+        registry.addResourceHandler("/combos/**").addResourceLocations("file:/" + comboUploadPath + "/");
+
     }
 
     @Bean

@@ -1,0 +1,40 @@
+/* =========================================
+   GIAO DIỆN TRANG CONTACT US
+========================================= */
+.contact-header {
+    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=2070') center/cover;
+    color: white;
+    padding: 100px 0;
+    text-align: center;
+}
+
+.contact-card {
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    padding: 40px;
+    margin-top: -60px;
+}
+
+.contact-card .form-control-lg {
+    font-size: 15px;
+    padding: 15px 20px;
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+}
+
+.contact-card .form-control-lg:focus {
+    border-color: #d96c2c;
+    box-shadow: 0 0 0 0.25rem rgba(217, 108, 44, 0.25);
+}
+
+.contact-card .btn-custom {
+    background-color: #d96c2c;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.contact-card .btn-custom:hover {
+    background-color: #c05c23;
+    transform: translateY(-2px);
+}

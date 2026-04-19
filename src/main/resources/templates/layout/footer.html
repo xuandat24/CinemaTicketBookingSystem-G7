@@ -1,100 +1,65 @@
 <div xmlns:th="http://www.thymeleaf.org" th:fragment="footer">
 
-    <!-- =======================================================
-       MAIN FOOTER (CHÂN TRANG CHÍNH)
-    ======================================================= -->
     <footer class="main-footer">
         <div class="container">
             <div class="row gy-5">
-                <!-- Cột 1: Logo & Giới thiệu -->
                 <div class="col-lg-4 col-md-6">
                     <a class="navbar-brand p-0 brand-premium footer-brand" th:href="@{/}">
                         <i class="fa fa-ticket"></i> CTBS <span>CINEMAS</span>
                     </a>
-                    <p class="footer-about-text mt-3">
+                    <p class="footer-about-text mt-3" th:text="#{footer.about_text}">
                         Experience the magic of cinema. We bring you the latest blockbusters, cozy seating, and a premium VIP experience.
                     </p>
                     <div class="footer-social-icons mt-4">
-                        <a href="#" title="Facebook"><i class="fa fa-facebook"></i></a>
-                        <a href="#" title="Instagram"><i class="fa fa-instagram"></i></a>
-                        <a href="#" title="Twitter"><i class="fa fa-twitter"></i></a>
-                        <a href="#" title="YouTube"><i class="fa fa-youtube-play"></i></a>
+                        <a href="https://www.facebook.com/cgvcinemavietnam/" target="_blank" rel="noopener noreferrer" title="Facebook"><i class="fa fa-facebook"></i></a>
+                        <a href="https://www.instagram.com/cgvcinemasvietnam/" target="_blank" rel="noopener noreferrer" title="Instagram"><i class="fa fa-instagram"></i></a>
+                        <a href="https://twitter.com/CGV_ID" target="_blank" rel="noopener noreferrer" title="Twitter"><i class="fa fa-twitter"></i></a>
+                        <a href="https://www.youtube.com/user/CGVietnam" target="_blank" rel="noopener noreferrer" title="YouTube"><i class="fa fa-youtube-play"></i></a>
                     </div>
                 </div>
 
-                <!-- Cột 2: Danh mục phim -->
                 <div class="col-lg-2 col-md-6">
-                    <h5 class="footer-title">Categories</h5>
-                    <ul class="footer-links">
-                        <li><a href="#">Action</a></li>
-                        <li><a href="#">Adventure</a></li>
-                        <li><a href="#">Animation</a></li>
-                        <li><a href="#">Comedy</a></li>
-                        <li><a href="#">Sci-Fi</a></li>
+                    <h5 class="footer-title" th:text="#{footer.categories}">Categories</h5>
+                    <ul class="footer-links list-unstyled">
+                        <li class="mb-2"><a th:href="@{/movies}"><i class="fa fa-angle-right me-2"></i><span th:text="#{footer.action}">Action</span></a></li>
+                        <li class="mb-2"><a th:href="@{/movies}"><i class="fa fa-angle-right me-2"></i><span th:text="#{footer.comedy}">Comedy</span></a></li>
                     </ul>
                 </div>
 
-                <!-- Cột 3: Link nhanh -->
                 <div class="col-lg-3 col-md-6">
-                    <h5 class="footer-title">Quick Links</h5>
-                    <ul class="footer-links">
-                        <li><a th:href="@{/about}">About Us</a></li>
-                        <li><a th:href="@{/movies}">All Movies</a></li>
-                        <li><a href="#">Terms & Conditions</a></li>
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a th:href="@{/contact}">Contact Us</a></li>
+                    <h5 class="footer-title" th:text="#{footer.quick_links}">Quick Links</h5>
+                    <ul class="footer-links list-unstyled">
+                        <li class="mb-2"><a th:href="@{/movies}"><i class="fa fa-angle-right me-2"></i><span th:text="#{footer.movies}">Movies</span></a></li>
+                        <li class="mb-2"><a th:href="@{/contact-us}"><i class="fa fa-angle-right me-2"></i><span th:text="#{footer.contact_us}">Contact Us</span></a></li>
+                        <li class="mb-2"><a th:href="@{/terms}"><i class="fa fa-angle-right me-2"></i><span th:text="#{footer.terms}">Terms & Conditions</span></a></li>
                     </ul>
                 </div>
 
-                <!-- Cột 4: Địa chỉ -->
                 <div class="col-lg-3 col-md-6">
-                    <h5 class="footer-title">Our Address</h5>
-                    <ul class="footer-contact">
-                        <li><i class="fa fa-map-marker"></i><span>FPT University, District 9, HCMC</span></li>
-                        <li><i class="fa fa-phone"></i><span>(+84) 123 456 789</span></li>
-                        <li><i class="fa fa-envelope"></i><span>support@ctbs.com</span></li>
+                    <h5 class="footer-title" th:text="#{footer.contact_info}">Contact Info</h5>
+                    <ul class="footer-contact list-unstyled">
+                        <li class="mb-2">
+                            <a href="https://maps.app.goo.gl/X7DVxPKpezhRCfUt5" target="_blank" rel="noopener noreferrer" class="text-decoration-none text-muted" style="transition: color 0.3s;" onmouseover="this.style.color='#d96c2c'" onmouseout="this.style.color='inherit'">
+                                <i class="fa fa-map-marker me-2 text-primary"></i> <span>2G6M+4R8 Khu Công Nghệ Cao Hòa Lạc, FPT Software, Tân Xá, Hòa Lạc, Hà Nội, Việt Nam</span>
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="tel:+1234567890" class="text-decoration-none text-muted" style="transition: color 0.3s;" onmouseover="this.style.color='#d96c2c'" onmouseout="this.style.color='inherit'">
+                                <i class="fa fa-phone me-2 text-primary"></i> <span>+0399999999</span>
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="mailto:support@ctbscinemas.com" class="text-decoration-none text-muted" style="transition: color 0.3s;" onmouseover="this.style.color='#d96c2c'" onmouseout="this.style.color='inherit'">
+                                <i class="fa fa-envelope me-2 text-primary"></i> <span>support@fpt.vn.com</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
         </div>
     </footer>
 
-    <!-- =======================================================
-       COMPACT CONTACT FORM (FORM LIÊN HỆ GỌN)
-    ======================================================= -->
-    <section class="compact-contact-section">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-8">
-                    <div class="text-center mb-4">
-                        <h3 class="text-white fw-bold">Get In Touch</h3>
-                        <p class="text-white-50">Have a question or feedback? Drop us a line!</p>
-                    </div>
-                    <form action="#" class="contact-form-compact">
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <input type="text" class="form-control" placeholder="Your Name">
-                            </div>
-                            <div class="col-md-6">
-                                <input type="email" class="form-control" placeholder="Your Email Address">
-                            </div>
-                            <div class="col-12">
-                                <textarea class="form-control" rows="4" placeholder="Your Message..."></textarea>
-                            </div>
-                            <div class="col-12 text-center">
-                                <button type="submit" class="btn-submit-compact">Send Message</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- =======================================================
-       BOTTOM BAR (BẢN QUYỀN)
-    ======================================================= -->
     <div class="footer-bottom text-center">
-        <p class="mb-0">© 2024 CTBS Cinemas. All Rights Reserved. Designed by G7.</p>
+        <p class="mb-0">© 2026 CTBS Cinemas. All Rights Reserved. Designed by G7.</p>
     </div>
 </div>

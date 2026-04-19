@@ -26,7 +26,6 @@ public class Booking {
     private Showtime showtime;
 
     private String bookingCode;
-    private Double finalPrice;
     private String status; // VD: PENDING, CONFIRMED, CANCELLED
     private LocalDateTime createTime;
 
@@ -38,4 +37,13 @@ public class Booking {
 
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
     private List<BookingCombo> bookingCombos;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "couponId")
+    private Coupon coupon;
+
+    private Double originalPrice;   // Tổng tiền gốc (Ghế + Combo)
+    private Double discountAmount;
+    private Double finalPrice;
+    private String couponCode; // Lưu thêm Code dạng String để dự phòng nếu Coupon bị xóa
+
 }

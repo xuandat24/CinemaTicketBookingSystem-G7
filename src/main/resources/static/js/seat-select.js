@@ -18,12 +18,17 @@
     const timerEl = document.getElementById("countdown-timer");
     const continueBtn = document.getElementById("continue-btn");
     const theaterRoomLabelEl = document.getElementById("theater-room-label");
+    const movieTitleEl = document.getElementById("movie-title");
+    const moviePosterEl = document.getElementById("movie-poster");
+    const movieGenreEl = document.getElementById("movie-genre");
+    const movieDurationEl = document.getElementById("movie-duration");
+    const movieCinemaEl = document.getElementById("movie-cinema");
 
     const queryParams = new URLSearchParams(window.location.search);
     const showtimeId = queryParams.get("showtimeId");
     const roomIdParam = queryParams.get("roomId");
     let roomName = (queryParams.get("roomName") || "").trim();
-    const username = (queryParams.get("username") || localStorage.getItem("username") || "").trim();
+    const username = (queryParams.get("username") || sessionStorage.getItem("username") || "").trim();
 
     let basePrice = 100000;
     let showtimeStartTime = null;
@@ -33,6 +38,7 @@
     let seatPriceFactorByCode = new Map();
     let isSeatDataLoaded = false;
 
+    const MAX_SELECTED_SEATS = 9;
     const selected = new Set();
 
     if (showtimeBar) {
@@ -181,6 +187,55 @@
         return safeValue.toLocaleString("en-US") + " VND";
     }
 
+    function resolveBannerUrl(path) {
+        const fallback = "/img/11.jpg";
+        if (!path || typeof path !== "string") return fallback;
+
+        let trimmed = path.trim();
+        if (!trimmed) return fallback;
+
+        trimmed = trimmed.replace(/\\/g, "/");
+
+        // Some records may store "/uploads/banners/..." while WebConfig serves "/banners/**".
+        if (trimmed.startsWith("/uploads/banners/")) {
+            trimmed = trimmed.replace("/uploads/banners/", "/banners/");
+        } else if (trimmed.startsWith("uploads/banners/")) {
+            trimmed = trimmed.replace("uploads/banners/", "/banners/");
+        }
+
+        if (/^https?:\/\//i.test(trimmed)) return trimmed;
+        if (trimmed.startsWith("/")) return trimmed;
+        return "/" + trimmed;
+    }
+
+    function updateMovieInfo(payload) {
+        const title = (payload && payload.movieTitle ? String(payload.movieTitle).trim() : "") || "Movie";
+        const genre = (payload && payload.genre ? String(payload.genre).trim() : "") || "--";
+        const duration = Number(payload && payload.duration);
+        const cinemaName = (roomName && roomName.trim()) ? roomName.trim() : "Room --";
+
+        if (movieTitleEl) {
+            movieTitleEl.textContent = title;
+        }
+        if (movieGenreEl) {
+            movieGenreEl.textContent = genre;
+        }
+        if (movieDurationEl) {
+            movieDurationEl.textContent = Number.isFinite(duration) && duration > 0 ? (duration + " minutes") : "--";
+        }
+        if (movieCinemaEl) {
+            movieCinemaEl.textContent = cinemaName;
+        }
+        if (moviePosterEl) {
+            moviePosterEl.src = resolveBannerUrl(payload ? payload.bannerPath : null);
+            moviePosterEl.alt = title + " poster";
+            moviePosterEl.onerror = function () {
+                moviePosterEl.onerror = null;
+                moviePosterEl.src = "/img/11.jpg";
+            };
+        }
+    }
+
     function updateTheaterRoomLabel() {
         if (!theaterRoomLabelEl) return;
         if (!roomName) {
@@ -206,6 +261,14 @@
         continueBtn.classList.toggle("disabled", disabled);
         continueBtn.setAttribute("aria-disabled", disabled ? "true" : "false");
         continueBtn.tabIndex = disabled ? -1 : 0;
+    }
+
+    function canAddSeats(additionalCount) {
+        return (selected.size + additionalCount) <= MAX_SELECTED_SEATS;
+    }
+
+    function showSeatLimitNotice() {
+        window.alert("You can select up to " + MAX_SELECTED_SEATS + " seats per booking.");
     }
 
     function updateContinueLink() {
@@ -305,6 +368,10 @@
             selected.delete(code);
             el.classList.remove("selected");
         } else {
+            if (!canAddSeats(1)) {
+                showSeatLimitNotice();
+                return;
+            }
             selected.add(code);
             el.classList.add("selected");
         }
@@ -322,6 +389,14 @@
 
         const codes = [code, pairCode];
         const allSelected = codes.every((c) => selected.has(c));
+        if (!allSelected) {
+            const additionalNeeded = codes.filter((c) => !selected.has(c)).length;
+            if (!canAddSeats(additionalNeeded)) {
+                showSeatLimitNotice();
+                return;
+            }
+        }
+
         codes.forEach((c) => {
             const el = seatGrid.querySelector("[data-seat='" + c + "']");
             if (!el) return;
@@ -428,6 +503,7 @@
                 }
             });
 
+            updateMovieInfo(payload);
             isSeatDataLoaded = true;
             return true;
         } catch (error) {
@@ -460,15 +536,20 @@
         updateSelectedTime(formatTimeLabel(showtimeStartTime));
     }
 
-    function startCountdown(initialSeconds) {
-        if (!timerEl) return;
-        let remaining = initialSeconds;
+    function startCountdown(durationInSeconds) {
+        let timer = durationInSeconds;
         function tick() {
-            const min = String(Math.floor(remaining / 60)).padStart(2, "0");
-            const sec = String(remaining % 60).padStart(2, "0");
-            timerEl.textContent = min + ":" + sec;
-            if (remaining > 0) {
-                remaining -= 1;
+            let minutes = parseInt(timer / 60, 10);
+            let seconds = parseInt(timer % 60, 10);
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+            if (timerEl) {
+                timerEl.textContent = minutes + ":" + seconds;
+            }
+            if (--timer < 0) {
+                // ĐÃ SỬA: Thông báo và đá văng về trang chủ thay vì reload
+                alert("Đã hết thời gian giữ ghế!");
+                window.location.href = '/';
             }
         }
         tick();

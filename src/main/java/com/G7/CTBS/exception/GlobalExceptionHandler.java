@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
-
+import org.apache.catalina.connector.ClientAbortException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,7 +33,7 @@ public class GlobalExceptionHandler {
 
         ApiErrorResponse error = ApiErrorResponse.builder()
                 .code(HttpStatus.BAD_REQUEST.value())
-                .message("Dữ liệu đầu vào không hợp lệ")
+                .message("Invalid input data")
                 .errors(details)
                 .build();
 
@@ -111,7 +112,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
         ApiErrorResponse error = ApiErrorResponse.builder()
                 .code(HttpStatus.BAD_REQUEST.value())
-                .message("Định dạng dữ liệu không hợp lệ. Vui lòng không nhập năm quá 4 chữ số.")
+                .message("Invalid data format. Please ensure the year does not exceed 4 digits.")
                 .build();
 
         return ResponseEntity.badRequest().body(error);
@@ -140,5 +141,10 @@ public class GlobalExceptionHandler {
                 .build();
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+    }
+    @ExceptionHandler(ClientAbortException.class)
+    public void handleClientAbortException(ClientAbortException ex) {
+        // Không làm gì cả, hoặc chỉ in ra một dòng log thân thiện để Console không bị rác
+        System.out.println(">> [INFO] Client disconnected early (Usually due to page navigation or reload).");
     }
 }

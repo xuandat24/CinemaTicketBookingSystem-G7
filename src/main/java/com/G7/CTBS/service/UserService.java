@@ -31,7 +31,7 @@ public class UserService {
 
     public User findById(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy Account với ID: " + id));
+                .orElseThrow(() -> new RuntimeException("Account not found with ID: " + id));
     }
 
     // =========================================================
@@ -51,13 +51,13 @@ public class UserService {
     public User create(UserCreateRequest req) {
 
         if (repository.existsByuserName(req.getUserName())) {
-            throw new RuntimeException("Tên người dùng đã được sử dụng");
+            throw new RuntimeException("Username is already taken");
         }
         if (repository.existsByEmail(req.getEmail())) {
-            throw new RuntimeException("Email đã được sử dụng");
+            throw new RuntimeException("Email is already in use");
         }
         if (repository.existsByPhone(req.getPhone())) {
-            throw new RuntimeException("Số điện thoại này đã được đăng ký cho một tài khoản khác!");
+            throw new RuntimeException("This phone number is already registered to another account!");
         }
 
         User user = new User();

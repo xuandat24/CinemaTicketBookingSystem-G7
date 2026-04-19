@@ -215,8 +215,9 @@ background-color:#f5d8c7;
 
 .login-brand {
     position: absolute;
-    top: 40px; left: 50px;
+    top: 26px; left: 30px;
     text-decoration: none !important;
+
 }
 .login-brand i { color: #d96c2c; font-size: 26px; }
 .login-brand span { color: #333; font-weight: 800; font-size: 22px; margin-left: 10px; }
@@ -366,7 +367,7 @@ background-color:#d96c2c;
 /* Bên phải: Form */
 .reg-side-right {
     flex: 1.2;
-    padding: 60px;
+    padding: 40px 50px 50px 50px;
     background: #fff;
     position: relative;
 }
@@ -376,8 +377,8 @@ background-color:#d96c2c;
     top: 30px; right: 60px;
     text-decoration: none !important;
 }
-.reg-brand i { color: #d96c2c; font-size: 24px; }
-.reg-brand span { color: #333; font-weight: 800; font-size: 20px; margin-left: 8px; }
+.reg-brand i { color: #d96c2c; font-size: 31px; }
+.reg-brand span { color: #333; font-weight: 800; font-size: 40px; margin-left: 8px; }
 
 .reg-side-right .form-control {
     border-radius: 12px;
@@ -1647,4 +1648,294 @@ body {
 }
 .ticket-header .navbar-toggler-icon {
     filter: invert(40%) sepia(80%) saturate(1350%) hue-rotate(345deg) brightness(90%) contrast(90%);
+}
+
+/* =======================================================
+   GLOBAL FOOTER LIGHT THEME (ĐỒNG BỘ ÁP DỤNG MỌI TRANG)
+======================================================= */
+.main-footer {
+    background-color: #ffffff !important;
+    border-top: 1px solid #e9ecef !important;
+}
+.main-footer .footer-brand,
+.main-footer .footer-title {
+    color: #1a1a24 !important;
+}
+.main-footer .footer-about-text,
+.main-footer .footer-links a,
+.main-footer .footer-contact span,
+.main-footer .footer-contact i {
+    color: #475569 !important;
+}
+.main-footer .footer-links a:hover {
+    color: #d96c2c !important;
+}
+.main-footer .footer-social-icons a {
+    background: #f1f5f9 !important;
+    color: #475569 !important;
+    border-radius: 50%;
+}
+.main-footer .footer-social-icons a:hover {
+    background: #d96c2c !important;
+    color: #ffffff !important;
+}
+.footer-bottom {
+    background-color: #f8f9fa !important;
+    color: #6c757d !important;
+    border-top: 1px solid #e9ecef !important;
+}
+
+/* =======================================================
+   🔥 BẢN VÁ LỖI TỐI THƯỢNG - FIX DỨT ĐIỂM MỌI LỖI 🔥
+======================================================= */
+
+/* 1. TRỊ DỨT ĐIỂM LỖI NỀN ĐEN TOÀN TRANG (HOMEPAGE, CHỮ TRẮNG) */
+body {
+    background-color: #ffffff !important; /* Trả lại nền trắng/sáng gốc cho toàn bộ web */
+    color: #333 !important; /* Trả lại màu chữ chuẩn */
+    padding-top: 75px !important; /* Chừa không gian cho thanh Navbar */
+}
+/* Các trang đặc thù có nền xám nhạt cho sang trọng */
+.login-body, .reg-body, .prof-body {
+    background-color: #f4f7f6 !important;
+}
+
+/* 2. FIX LỖI FORM LOGIN/REGISTER BỊ ĐEN VÀ LÒI Ô VUÔNG Ở GÓC */
+.login-card, .reg-card {
+    background-color: #ffffff !important; /* Ép thẻ cha phải có màu trắng */
+    border-radius: 20px !important; /* Bo góc khối cha */
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1) !important;
+    overflow: visible !important; /* Bắt buộc visible để dropdown ngôn ngữ không bị cắt đuôi */
+    border: none !important;
+}
+.login-side-left, .reg-side-left {
+    border-radius: 20px 0 0 20px !important; /* Khớp tuyệt đối góc trái */
+    overflow: hidden !important;
+}
+.login-side-right, .reg-side-right {
+    border-radius: 0 20px 20px 0 !important; /* Khớp tuyệt đối góc phải */
+    background-color: transparent !important; /* Giúp lấy nền trắng từ thẻ cha, triệt tiêu góc đen */
+}
+@media (max-width: 768px) {
+    .login-side-left, .reg-side-left { border-radius: 20px 20px 0 0 !important; }
+    .login-side-right, .reg-side-right { border-radius: 0 0 20px 20px !important; }
+}
+
+/* 3. FIX LỖI DROPDOWN HOMEPAGE BỊ ẢNH CAROUSEL CHE KHUẤT TÀNG HÌNH */
+#navbar_sticky, .ticket-header {
+    position: fixed !important;
+    z-index: 99999 !important; /* Đẩy Navbar lên layer cao nhất vũ trụ */
+    overflow: visible !important;
+}
+.ticket-header .dropdown-menu {
+    position: absolute !important;
+    z-index: 999999 !important; /* Ép menu thả xuống phải đè lên mọi hình ảnh/slider */
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important; /* Canh giữa tên người dùng */
+    background-color: #ffffff !important;
+    border-radius: 12px !important;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.12) !important;
+    padding: 8px 0 !important;
+    display: none;
+    border: none !important;
+}
+
+/* Ép hiển thị mượt mà khi di chuột */
+.ticket-header .dropdown-menu.show,
+.ticket-header .dropdown:hover .dropdown-menu {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    animation: dropDownBounce 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+@keyframes dropDownBounce {
+    0% { opacity: 0; transform: translate(-50%, 15px) !important; }
+    100% { opacity: 1; transform: translate(-50%, 0) !important; }
+}
+.ticket-header .dropdown-menu::after {
+    content: ''; position: absolute; top: -20px; left: 0; width: 100%; height: 20px; background: transparent; z-index: -1;
+}
+
+/* =======================================================
+   CÁC HIỆU ỨNG TICKET (GIỮ NGUYÊN BẢN GỐC CHUẨN CỦA BẠN)
+======================================================= */
+/* MENU NGÔN NGỮ */
+.lang-ticket-menu {
+    border: 2px dashed #e9ecef !important;
+    min-width: 210px !important;
+}
+.lang-ticket-menu::before {
+    content: ''; position: absolute; top: -8px; left: 50%; margin-left: -8px;
+    width: 14px; height: 14px; background-color: #ffffff;
+    border-left: 2px dashed #e9ecef; border-top: 2px dashed #e9ecef;
+    transform: rotate(45deg); z-index: 0;
+}
+.lang-ticket-item {
+    border-radius: 8px !important;
+    transition: all 0.3s ease !important;
+    position: relative;
+    overflow: hidden;
+    margin: 0 8px 6px 8px !important;
+    display: flex !important;
+    align-items: center;
+    padding: 10px 15px !important;
+    color: #1a1a24 !important;
+    background-color: transparent !important;
+    font-size: 15px;
+    font-weight: bold;
+    z-index: 1;
+}
+.lang-ticket-item:last-child { margin-bottom: 0 !important; }
+.lang-ticket-item:hover {
+    background-color: #d96c2c !important;
+    color: #ffffff !important;
+    transform: translateX(4px);
+}
+.lang-ticket-item .hover-ticket-icon {
+    position: absolute; right: 15px; opacity: 0; transform: rotate(-30deg) scale(0.5);
+    transition: all 0.3s ease; color: #ffffff !important; font-size: 16px; display: block !important;
+}
+.lang-ticket-item:hover .hover-ticket-icon {
+    opacity: 1; transform: rotate(0) scale(1);
+}
+
+/* MENU USERNAME */
+:root {
+    --dark-orange: #bf4c0a;
+    --light-orange-bg: rgba(191, 76, 10, 0.08);
+}
+#userDropdown + .dropdown-menu {
+    border: 2px dashed rgba(191, 76, 10, 0.4) !important;
+    min-width: 200px !important;
+}
+#userDropdown + .dropdown-menu::before {
+    content: ''; position: absolute; top: -8px; left: 50%; margin-left: -8px;
+    width: 14px; height: 14px; background-color: #ffffff;
+    border-left: 2px dashed rgba(191, 76, 10, 0.4); border-top: 2px dashed rgba(191, 76, 10, 0.4);
+    transform: rotate(45deg); z-index: 0;
+}
+#userDropdown + .dropdown-menu .dropdown-item {
+    padding: 10px 20px !important;
+    font-weight: 600 !important;
+    color: #4a4a4a !important;
+    transition: all 0.3s ease !important;
+    position: relative;
+    z-index: 1;
+    display: flex !important;
+    align-items: center !important;
+    overflow: hidden;
+    border-radius: 8px !important;
+    margin: 0 8px 4px 8px !important;
+    width: calc(100% - 16px) !important;
+}
+#userDropdown + .dropdown-menu .dropdown-item:hover {
+    background-color: var(--light-orange-bg) !important;
+    color: var(--dark-orange) !important;
+    transform: translateX(4px);
+}
+#userDropdown + .dropdown-menu .dropdown-item:hover i.fa-user,
+#userDropdown + .dropdown-menu .dropdown-item:hover i.fa-sign-out {
+    color: var(--dark-orange) !important;
+}
+#userDropdown + .dropdown-menu .dropdown-item::after {
+    content: "\f145";
+    font-family: "FontAwesome", "Font Awesome 5 Free", "Font Awesome 6 Free" !important;
+    font-weight: 900 !important;
+    margin-left: auto;
+    color: var(--dark-orange);
+    opacity: 0;
+    transform: translateX(-15px);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+#userDropdown + .dropdown-menu .dropdown-item:hover::after {
+    opacity: 1;
+    transform: translateX(0);
+}
+#userDropdown + .dropdown-menu .dropdown-divider {
+    border-top: 1px solid rgba(191, 76, 10, 0.15) !important;
+    margin: 4px 15px 8px 15px !important;
+}
+/* =======================================================
+   5. CUSTOM LANGUAGE DROPDOWN (ĐỘC LẬP GÓC PHẢI FORM LOGIN/REG)
+======================================================= */
+/* Phục hồi Nút tròn chứa cờ */
+.lang-btn-custom {
+    width: 42px;
+    height: 42px;
+    border-radius: 50% !important;
+    border: 1px solid #e0e0e0 !important;
+    background: #ffffff !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    cursor: pointer;
+    transition: all 0.3s;
+    padding: 0;
+    margin-top: 20px;
+}
+
+.lang-btn-custom:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    transform: translateY(-2px);
+}
+
+.lang-btn-custom .fi {
+    border-radius: 2px;
+    font-size: 1.1rem;
+}
+
+/* GHI ĐÈ: Khử lệnh "Canh Giữa" của Header, ép Menu dạt sang góc phải Form */
+.login-side-right .lang-ticket-menu,
+.reg-side-right .lang-ticket-menu,
+.lang-btn-custom + .dropdown-menu {
+    left: auto !important;
+    right: 0 !important;
+    transform: translateY(0) !important; /* Hủy lệnh translateX(-50%) của Header */
+    transform-origin: top right !important;
+    border-radius: 16px !important;
+    padding: 12px !important;
+    margin-top: 8px !important;
+    min-width: 210px !important;
+    animation: slideDownFadeAuth 0.3s ease forwards !important;
+}
+
+/* GHI ĐÈ: Chỉnh Mũi tên (Caret) chĩa lên nằm ở sát mép phải (không nằm giữa) */
+.login-side-right .lang-ticket-menu::before,
+.reg-side-right .lang-ticket-menu::before,
+.lang-btn-custom + .dropdown-menu::before {
+    left: auto !important;
+    right: 12px !important;
+    margin-left: 0 !important;
+}
+
+/* Hiệu ứng trượt xuống mượt mà dành riêng cho Form Login/Register */
+@keyframes slideDownFadeAuth {
+    from { opacity: 0; transform: translateY(-10px) !important; }
+    to { opacity: 1; transform: translateY(0) !important; }
+}
+/* =======================================================
+   6. FIX LỖI RỚT CHUỘT CHO MENU NGÔN NGỮ LOGIN/REGISTER
+======================================================= */
+/* Xây lại cầu nối tàng hình lấp đầy khoảng hở giữa nút và menu */
+.login-side-right .lang-ticket-menu::after,
+.reg-side-right .lang-ticket-menu::after,
+.lang-btn-custom + .dropdown-menu::after {
+    content: '';
+    position: absolute;
+    top: -25px; /* Vươn hẳn lên 25px để bao trùm toàn bộ khoảng hở */
+    left: 0;
+    width: 100%;
+    height: 25px;
+    background: transparent; /* Trong suốt hoàn toàn */
+    z-index: -1;
+}
+/* =======================================================
+   🔥 FIX LỖI "TÀNG HÌNH" COPYRIGHT FOOTER BỊ CHE KHUẤT 🔥
+======================================================= */
+/* Ép toàn bộ khối Footer phải nổi lên trên mọi lớp kính mờ (blur overlay) */
+.main-footer, .footer-bottom {
+    position: relative !important;
+    z-index: 10 !important;
 }

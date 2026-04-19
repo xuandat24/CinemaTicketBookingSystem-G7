@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Xác nhận mã OTP</title>
+    <title>Verify OTP Code</title>
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
     <style>
         .otp-container { max-width: 400px; margin: 100px auto; padding: 30px; background: #f8f9fa; border-radius: 10px; }
@@ -10,16 +10,16 @@
 </head>
 <body>
 <div class="otp-container text-center shadow">
-    <h3 class="mb-4">Xác nhận Email</h3>
-    <p>Mã xác nhận đã được gửi đến Email của bạn. Vui lòng kiểm tra và nhập vào bên dưới.</p>
+    <h3 class="mb-4">Email Verification</h3>
+    <p>A verification code has been sent to your email. Please check and enter it below.</p>
 
     <form id="otpForm">
         <input type="text" id="otpCode" class="form-control form-control-lg text-center mb-3"
-               placeholder="Nhập 6 số" maxlength="6" required>
+               placeholder="Enter 6 digits" maxlength="6" required>
 
         <div id="errorMsg" class="text-danger mb-3"></div>
 
-        <button type="submit" class="btn btn-primary w-100">Xác nhận đăng ký</button>
+        <button type="submit" class="btn btn-primary w-100">Verify Account</button>
     </form>
 </div>
 
@@ -38,21 +38,22 @@
             if(response.ok) {
                 const data = await response.json();
 
-                // LƯU CẢ TOKEN VÀ USERNAME VÀO KHO
-                localStorage.setItem("jwtToken", data.token);
-                localStorage.setItem("username", data.username); // BẠN THÊM DÒNG NÀY VÀO LÀ XONG!
+                // ĐÃ SỬA: Lưu vào sessionStorage để đồng bộ với auth.js
+                sessionStorage.setItem("jwtToken", data.token);
+                sessionStorage.setItem("username", data.username);
 
-                alert("Đăng ký thành công!");
-                window.location.href = "/"; // Về trang chủ, auth.js sẽ tự động lấy thông tin ra và hiện tên
+                alert("Registration successful!");
+                // ĐÃ SỬA: Dùng replace để tránh lỗi nút Back của trình duyệt (giống login)
+                window.location.replace("/");
             } else {
-                // ... (phần dưới báo lỗi giữ nguyên)
                 const errorData = await response.json();
-                errorDiv.innerText = errorData.message || "Mã xác nhận không đúng hoặc đã hết hạn!";
+                errorDiv.innerText = errorData.message || "Invalid or expired verification code!";
             }
         } catch (err) {
-            errorDiv.innerText = "Có lỗi xảy ra, vui lòng thử lại!";
+            errorDiv.innerText = "An error occurred, please try again!";
         }
     });
+</script>
 </script>
 </body>
 </html>

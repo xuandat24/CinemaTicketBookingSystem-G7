@@ -11,5 +11,6 @@ import lombok.experimental.FieldDefaults;
 public class AutheticationResponse {
     String token;
     String userName;
-    boolean authenticated;
+    String role; // Add the missing role field
+    boolean authenticated; // This field might be for future use
 }

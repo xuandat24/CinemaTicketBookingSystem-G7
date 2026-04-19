@@ -15,62 +15,78 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 async function loadMovieData() {
     try {
-        const token = localStorage.getItem('jwtToken');
+        const token = sessionStorage.getItem('jwtToken');
         const response = await fetch(`/api/admin/movies/${movieId}`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
-        if (!response.ok) throw new Error("Movie not found");
+
+        if (!response.ok) {
+            throw new Error(`Server returned status ${response.status}`);
+        }
 
         const movie = await response.json();
 
-        // Load data cũ
-        document.getElementById('editMovieId').value = movie.movieId;
-        document.getElementById('movieTitle').value = movie.title;
-        document.getElementById('movieDesc').value = movie.description;
-        document.getElementById('movieDuration').value = movie.duration;
-        document.getElementById('movieReleaseDate').value = movie.releaseDate;
-        document.getElementById('movieStatus').value = movie.status;
+        const setVal = (id, val) => {
+            const el = document.getElementById(id);
+            if (el) el.value = val;
+        };
 
-        // Load data mới
-        document.getElementById('movieDirector').value = movie.director || '';
-        document.getElementById('movieActors').value = movie.actors  || '';
-        document.getElementById('movieRating').value = movie.rating || 0.0;
-        document.getElementById('movieLanguage').value = movie.language || 'Unknown';
+        setVal('editMovieId', movie.movieId);
+        setVal('movieTitle', movie.title);
+        setVal('movieDesc', movie.description);
+        setVal('movieDuration', movie.duration);
+        setVal('movieReleaseDate', movie.releaseDate);
+        setVal('movieStatus', movie.status);
+        setVal('movieDirector', movie.director || '');
+        setVal('movieActors', movie.actors || '');
+        setVal('movieRating', movie.rating || 0.0);
+        setVal('movieLanguage', movie.language || 'Unknown');
 
         if (movie.categoryIds) {
             selectedCategoryIds = movie.categoryIds.map(String);
             renderCategoryTags();
         }
 
-        if (movie.bannerPath) {
+        if (movie.bannerPath && document.getElementById('currentBannerContainer')) {
             document.getElementById('currentBannerContainer').classList.remove('d-none');
-            document.getElementById('currentBannerImg').src = movie.bannerPath;
-            document.getElementById('currentBannerPathText').innerText = "Path: " + movie.bannerPath;
+            if(document.getElementById('currentBannerImg')) document.getElementById('currentBannerImg').src = movie.bannerPath;
         }
 
-        if (movie.trailerPath) {
+        if (movie.posterPath && document.getElementById('currentPosterContainer')) {
+            document.getElementById('currentPosterContainer').classList.remove('d-none');
+            if(document.getElementById('currentPosterImg')) document.getElementById('currentPosterImg').src = movie.posterPath;
+        }
+
+        if (movie.trailerPath && document.getElementById('currentTrailerContainer')) {
             document.getElementById('currentTrailerContainer').classList.remove('d-none');
-            const videoElement = document.getElementById('currentTrailerVideo');
-            videoElement.src = movie.trailerPath;
-            videoElement.load();
-            document.getElementById('currentTrailerPathText').innerText = "Path: " + movie.trailerPath;
+            const wrapper = document.getElementById('trailerMediaWrapper');
+
+            if (wrapper) {
+                if (movie.trailerPath.includes('youtube.com') || movie.trailerPath.includes('youtu.be')) {
+                    wrapper.innerHTML = `<iframe style="width: 100%; height: 120px; border-radius: 5px;" src="${movie.trailerPath}" frameborder="0" allowfullscreen></iframe>`;
+                } else {
+                    wrapper.innerHTML = `<video controls style="width: 100%; max-height: 120px; border-radius: 5px; background: #000;"><source src="${movie.trailerPath}" type="video/mp4"></video>`;
+                }
+            }
         }
 
     } catch (error) {
-        alert("Failed to load movie data!");
-        window.location.href = '/admin/movies/search';
+        console.error("Detail Error:", error);
+        alert("Error loading movie data: " + error.message + "\n(Please open F12 -> Console for details)");
     }
 }
 
 async function loadCategoryDropdown() {
-    const token = localStorage.getItem('jwtToken');
+    const token = sessionStorage.getItem('jwtToken');
     const response = await fetch('/api/admin/categories', {
         headers: { 'Authorization': `Bearer ${token}` }
     });
     const categories = await response.json();
     const select = document.getElementById('movieCategorySelect');
-    select.innerHTML = '<option value="">-- Select category to add --</option>';
-    categories.forEach(c => select.innerHTML += `<option value="${c.categoryId}">${c.name}</option>`);
+    if(select) {
+        select.innerHTML = '<option value="">-- Select category to add --</option>';
+        categories.forEach(c => select.innerHTML += `<option value="${c.categoryId}">${c.name}</option>`);
+    }
 }
 
 function addCategoryTag() {
@@ -90,6 +106,8 @@ function removeCategoryTag(id) {
 
 function renderCategoryTags() {
     const container = document.getElementById('selectedCategoryTags');
+    if(!container) return;
+
     container.innerHTML = '';
     const select = document.getElementById('movieCategorySelect');
 
@@ -103,89 +121,121 @@ function renderCategoryTags() {
     });
 }
 
-document.getElementById('editMovieForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    if (selectedCategoryIds.length === 0) return alert("Please add at least one category tag!");
+const editForm = document.getElementById('editMovieForm');
+if (editForm) {
+    const editForm = document.getElementById('editMovieForm');
+    if (editForm) {
+        editForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
 
-    const btnSubmit = document.getElementById('btnUpdate');
-    const originalText = btnSubmit.innerHTML;
-    btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> Updating...';
-    btnSubmit.disabled = true;
+            const errorEle = document.getElementById('formValidationError');
+            errorEle.style.display = 'none'; // Reset error
 
-    const formData = new FormData();
-    formData.append('title', document.getElementById('movieTitle').value);
-    formData.append('description', document.getElementById('movieDesc').value);
-    formData.append('duration', document.getElementById('movieDuration').value);
-    formData.append('releaseDate', document.getElementById('movieReleaseDate').value);
-    formData.append('status', document.getElementById('movieStatus').value);
+            const title = document.getElementById('movieTitle').value.trim();
+            const desc = document.getElementById('movieDesc').value.trim();
+            const duration = document.getElementById('movieDuration').value;
+            const releaseDate = document.getElementById('movieReleaseDate').value;
+            const status = document.getElementById('movieStatus').value;
+            const language = document.getElementById('movieLanguage').value.trim();
+            const director = document.getElementById('movieDirector').value.trim();
+            const actors = document.getElementById('movieActors').value.trim();
+            const rating = document.getElementById('movieRating').value;
 
-    // Gửi data mới xuống BE
-    formData.append('director', document.getElementById('movieDirector').value);
-    formData.append('actors', document.getElementById('movieActors').value);
-    formData.append('rating', document.getElementById('movieRating').value);
-    formData.append('language', document.getElementById('movieLanguage').value);
-    selectedCategoryIds.forEach(id => formData.append('categoryIds', id));
+            // INLINE ERROR
+            if (!title || !desc || !duration || !releaseDate || !status || !language || !director || !actors || rating === "") {
+                errorEle.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> ERROR: Please fill in all required fields!';
+                errorEle.style.display = 'block';
+                return;
+            }
 
-    const bannerFile = document.getElementById('movieBanner').files[0];
-    const trailerFile = document.getElementById('movieTrailer').files[0];
+            if (selectedCategoryIds.length === 0) {
+                errorEle.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> ERROR: Please add at least one category for the movie!';
+                errorEle.style.display = 'block';
+                return;
+            }
 
-    // Validate định dạng
-    if (bannerFile && !bannerFile.type.startsWith('image/')) {
-        alert("Error: Banner must be PNG or JPG!");
-        btnSubmit.innerHTML = originalText; btnSubmit.disabled = false; return;
-    }
-    if (trailerFile && trailerFile.type !== 'video/mp4') {
-        alert("Lỗi: Trailer must be MP4 file!");
-        btnSubmit.innerHTML = originalText; btnSubmit.disabled = false; return;
-    }
+            const btnSubmit = document.getElementById('btnUpdate');
+            const originalText = btnSubmit.innerHTML;
+            btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> Updating...';
+            btnSubmit.disabled = true;
 
-    if (bannerFile) formData.append('bannerFile', bannerFile);
-    if (trailerFile) formData.append('trailerFile', trailerFile);
+            const formData = new FormData();
+            formData.append('movieId', document.getElementById('editMovieId').value);
+            formData.append('title', title);
+            formData.append('description', desc);
+            formData.append('duration', duration);
+            formData.append('releaseDate', releaseDate);
+            formData.append('status', status);
+            formData.append('director', director);
+            formData.append('actors', actors);
+            formData.append('rating', rating);
+            formData.append('language', language);
 
-    try {
-        const token = localStorage.getItem('jwtToken');
-        const response = await fetch(`/api/admin/movies/${movieId}`, {
-            method: 'PUT',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            },
-            body: formData
+            selectedCategoryIds.forEach(id => formData.append('categoryIds', id));
+
+            const bannerFile = document.getElementById('movieBanner') ? document.getElementById('movieBanner').files[0] : null;
+            const posterFile = document.getElementById('moviePosterFile') ? document.getElementById('moviePosterFile').files[0] : null;
+            const trailerFile = document.getElementById('movieTrailer') ? document.getElementById('movieTrailer').files[0] : null;
+
+            const bannerUrl = document.getElementById('bannerUrl') ? document.getElementById('bannerUrl').value.trim() : "";
+            const posterUrl = document.getElementById('posterUrl') ? document.getElementById('posterUrl').value.trim() : "";
+            const trailerUrl = document.getElementById('movieTrailerUrl') ? document.getElementById('movieTrailerUrl').value.trim() : "";
+
+            if (bannerFile) formData.append('bannerFile', bannerFile);
+            if (posterFile) formData.append('posterFile', posterFile);
+            if (trailerFile) formData.append('trailerFile', trailerFile);
+
+            if (bannerUrl) formData.append('bannerUrl', bannerUrl);
+            if (posterUrl) formData.append('posterUrl', posterUrl);
+            if (trailerUrl) formData.append('trailerPath', trailerUrl);
+
+            try {
+                const token = sessionStorage.getItem('jwtToken');
+                const response = await fetch(`/api/admin/movies/${movieId}`, {
+                    method: 'PUT',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: formData
+                });
+                const data = await response.json();
+
+                // TOAST FOR SERVER RESPONSE
+                if (response.ok) {
+                    showToast("Movie updated successfully!", "success");
+                    setTimeout(() => { window.location.href = '/admin/movies/search'; }, 1500);
+                } else {
+                    showToast(data.message || "Update failed!", "error");
+                }
+            } catch (error) {
+                showToast("Server connection error!", "error");
+            } finally {
+                btnSubmit.innerHTML = originalText;
+                btnSubmit.disabled = false;
+            }
         });
-        const data = await response.json();
-
-        if (response.ok) {
-            alert("Success: " + data.message);
-            window.location.href = '/admin/movies/search';
-        } else {
-            alert("Error: " + (data.message || "Failed to update movie."));
-        }
-    } catch (error) {
-        alert("Server connection error!");
-    } finally {
-        btnSubmit.innerHTML = originalText;
-        btnSubmit.disabled = false;
     }
-});
 
-document.getElementById('btnDeleteMovie').addEventListener('click', async () => {
-    if(!confirm("DANGER: Are you absolutely sure you want to delete this movie? This action will disable the movie.")) return;
-    try{
-        const token = localStorage.getItem('jwtToken');
-        const response = await fetch(`/api/admin/movies/${movieId}`, {
-            method: 'DELETE',
-            headers: { 'Authorization': `Bearer ${token}` } // Thêm token
+    const btnDelete = document.getElementById('btnDeleteMovie');
+    if (btnDelete) {
+        btnDelete.addEventListener('click', async () => {
+            if(!confirm("WARNING: Are you sure you want to disable this movie?")) return;
+            try {
+                const token = sessionStorage.getItem('jwtToken');
+                const response = await fetch(`/api/admin/movies/${movieId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                const data = await response.json();
+
+                if(response.ok) {
+                    showToast("Movie has been disabled!", "success");
+                    setTimeout(() => { window.location.href = '/admin/movies/search'; }, 1500);
+                } else {
+                    showToast(data.message || "Cannot disable movie!", "error");
+                }
+            } catch (error) {
+                showToast("Server connection error!", "error");
+            }
         });
-
-        const data = await response.json();
-
-        if(response.ok){
-            alert("Success: " + data.message);
-            window.location.href = '/admin/movies/search';
-        } else {
-            alert("Error: " + (data.message || "Failed to delete movie"));
-        }
-    } catch (error) {
-        alert("There is some error when trying to delete movie");
-        console.error("Delete movie error:", error);
     }
-});
+}
