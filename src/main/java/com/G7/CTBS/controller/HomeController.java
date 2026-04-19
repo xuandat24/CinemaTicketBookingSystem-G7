@@ -79,6 +79,11 @@ public class HomeController {
         return "contact-us";
     }
 
+    @GetMapping({"/terms", "/terms-payment"})
+    public String termsPaymentPage() {
+        return "terms-payment";
+    }
+
     // ĐÃ SỬA CHÍNH XÁC Ở ĐÂY: Trả về đúng thư mục user/
     @GetMapping("/forgot-password")
     public String forgotPasswordPage() {

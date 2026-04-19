@@ -35,7 +35,7 @@ public class SecurityConfig {
 
                         // 2. CÁC ĐƯỜNG DẪN PUBLIC BẮT BUỘC
                         .requestMatchers("/login", "/register","/forgot-password", "/verify-otp", "/api/auth/**").permitAll()
-                        .requestMatchers("/", "/index", "/index.html", "/about","/contact-us").permitAll()
+                        .requestMatchers("/", "/index", "/index.html", "/about","/contact-us", "/terms", "/terms-payment").permitAll()
                         .requestMatchers("/movies", "/movies/**", "/detail", "/detail.html", "/detail/**","/movie-seats","/booking").permitAll()
                         .requestMatchers("/showtimes", "/api/showtimes/**", "/showtimes/**").permitAll() // Đã khôi phục để không lỗi Lịch chiếu
                         .requestMatchers("/api/public/**").permitAll()

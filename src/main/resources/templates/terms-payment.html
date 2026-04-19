@@ -1,0 +1,95 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Terms of Payment - CTBS Cinema</title>
+
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/css/font-awesome.min.css}" rel="stylesheet">
+    <link th:href="@{/css/global.css}" rel="stylesheet">
+
+    <style>
+        .terms-page { padding: 48px 0 64px; background: #f7f8fb; min-height: 70vh; }
+        .terms-card { background: #fff; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,.06); padding: 28px; }
+        .terms-card h1 { font-size: 2rem; margin-bottom: 20px; }
+        .terms-card p, .terms-card li { font-size: 1rem; line-height: 1.7; color: #1f2937; }
+        .terms-card ol { padding-left: 22px; margin-top: 10px; }
+        .terms-card .indent-note { margin-left: 18px; }
+    </style>
+</head>
+<body class="bg-light">
+
+<div th:replace="~{layout/header :: header}"></div>
+
+<section class="terms-page">
+    <div class="container">
+        <div class="terms-card">
+            <h1>TERMS OF PAYMENT</h1>
+
+            <p>Welcome to CTBS CINEMAS's E-ticketing system!</p>
+
+            <p>
+                At the moment the promotions for students, seniors and children are not applied in the E-ticketing system.
+                If you want to take advantage of these promotions and discounts, please buy your tickets at our BOX OFFICE counters instead.
+            </p>
+
+            <p>Thank you very much and we hope you have wonderful cinematic experiences at CTBS CINEMAS!</p>
+
+            <p><strong>Several notes to keep in mind before making online payments:</strong></p>
+
+            <ol>
+                <li>
+                    Your debit or credit card's online payment service must have been activated, and the card's balance must be enough to make the payment.
+                    You need to fill in the card information as it is (the account holder's name, the card number, the expiration date, the CVC and OTP numbers, etc.)
+                </li>
+                <li>
+                    Purchased tickets are non-cancellable, non-exchangeable and non-refundable for any reasons.
+                    We only issue refunds if your card has been billed but our system has not registered your reservation,
+                    and you have not received a ticket reservation confirmation.
+                </li>
+                <li>
+                    Within 30 minutes after you have made a successful payment, we will send you a ticket reservation confirmation via email.
+                    If you need help or have any questions and complaints, please contact Facebook Fanpage CTBS Cinemas within 60 minutes
+                    after you have made a successful payment. After this timeframe, we would not resolve any complaints.
+                </li>
+                <li>
+                    We are not responsible for cases in which you fill in the wrong email, phone number and as a result do not receive the
+                    ticket reservation confirmation. Please check your information carefully before making a payment.
+                    We neither resolve nor take responsibility for cases in which we have emailed you the ticket reservation confirmation but
+                    for some reason you cannot go see the film (noshow).
+                </li>
+                <li>
+                    Please check your reservation confirmation carefully and remember your reservation code.
+                    To receive your ticket from our BOX OFFICE counters, you also need to bring a form of identification
+                    (such as your national ID card, your student card, your passport, etc.)
+                </li>
+                <li>
+                    According to the regulations of the Cinema Department, certain films are not for audience under the age of 13, or 16, or 18.
+                    When you receive your tickets at the BOX OFFICE counters, the staff might ask you for proof that you are old enough
+                    to watch an age-restricted film. Please keep this in mind when you purchase your tickets.
+                </li>
+                <li>
+                    In some cases of force majeure, the movie session can be cancelled to ensure the best safety for customers.
+                    The transaction amount will be refunded directly to your bank account which was used to buy tickets online.
+                    We will contact you through your contact information in the Member info. description, to get your confirmation.
+                    Depending on your bank account and payment procedures, the refund process may get the different period following:
+                    <div class="indent-note">ATM cards: maximum 1 working week</div>
+                    <div class="indent-note">Visa Credit Card, Master Card, JCB Card: maximum 1 working month</div>
+                    <div class="indent-note">Vietcombank's cards: maximum 48 working hours</div>
+                </li>
+            </ol>
+        </div>
+    </div>
+</section>
+
+<div th:replace="~{layout/footer :: footer}"></div>
+
+<script th:src="@{/js/jquery-3.7.1.min.js}"></script>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/auth.js}"></script>
+<script th:src="@{/js/common.js}"></script>
+
+</body>
+</html>
