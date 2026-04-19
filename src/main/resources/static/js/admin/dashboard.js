@@ -89,7 +89,7 @@ function renderDashboard(data) {
         data: {
             labels: data.topMovies.labels,
             datasets: [{
-                label: 'Revenue (VND)',
+                label: 'Revenue (Million VND)',
                 data: data.topMovies.data,
                 backgroundColor: barColors,
                 borderRadius: 6,
@@ -98,8 +98,28 @@ function renderDashboard(data) {
         },
         options: {
             responsive: true, maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: { x: { grid: { display: false } }, y: { beginAtZero: true } }
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const value = Number(context.parsed.y || 0);
+                            return `Revenue (Million VND): ${value.toLocaleString('vi-VN', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: { grid: { display: false } },
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return `${Number(value).toLocaleString('vi-VN')}M`;
+                        }
+                    }
+                }
+            }
         }
     });
 
