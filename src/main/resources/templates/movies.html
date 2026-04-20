@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="#{movies.title}">Movies - CTBS Cinema</title>
+
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" >
+    <link th:href="@{/css/font-awesome.min.css}" rel="stylesheet" >
+    <link th:href="@{/css/global.css}" rel="stylesheet">
+    <link th:href="@{/css/list.css}" rel="stylesheet">
+    <link th:href="@{/css/user/movies.css}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Platypi:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+
+    <script th:src="@{/js/jquery-3.7.1.min.js}"></script>
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</head>
+<body class="bg-light"> <div th:replace="~{layout/header :: header}"></div>
+
+<section class="pt-5 pb-4 bg-white shadow-sm">
+    <div class="container-xl">
+        <div class="row text-center">
+            <div class="col-md-12">
+                <h2 class="fw-bold text-dark" th:text="#{movies.heading}">All Movies</h2>
+                <h6 class="mb-0 mt-2 fw-normal">
+                    <a class="text-primary text-decoration-none fw-bold" th:href="@{/}" th:text="#{movies.breadcrumb.home}">Home</a>
+                    <span class="mx-2 text-muted">/</span> <span class="text-muted" th:text="#{movies.breadcrumb.movies}">Movies</span>
+                </h6>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="trend" class="p_3 mt-4">
+    <div class="container-xl">
+        <div class="row mb-4 bg-light p-3 rounded shadow-sm align-items-center">
+
+            <div class="col-md-3 col-sm-6 mb-3 mb-md-0">
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0"><i class="fa fa-search text-muted"></i></span>
+                    <input type="text" id="searchTitle" class="form-control border-start-0 filter-element" th:placeholder="#{movies.filter.search}" placeholder="Search title...">
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-6 mb-3 mb-md-0">
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0"><i class="fa fa-globe text-muted"></i></span>
+                    <select id="filterLanguage" class="form-select filter-element">
+                        <option value="" th:text="#{movies.filter.all_languages}">-- All Languages --</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-md-2 col-sm-4 mb-2 mb-md-0">
+                <select id="filterCategory" class="form-select filter-element">
+                    <option value="" th:text="#{movies.filter.all_categories}">-- All Categories --</option>
+                </select>
+            </div>
+
+            <div class="col-md-2 col-sm-4 mb-2 mb-md-0">
+                <select id="filterStatus" class="form-select filter-element">
+                    <option value="" th:text="#{movies.filter.all_status}">-- All Status --</option>
+                    <option value="Coming Soon" th:text="#{movies.status.coming_soon}">Coming Soon</option>
+                    <option value="Now Playing" th:text="#{movies.status.now_playing}">Now Playing</option>
+                    <option value="Pending" th:text="#{movies.status.pending}">Pending</option>
+                </select>
+            </div>
+
+            <div class="col-md-2 col-sm-4 mb-2 mb-md-0">
+                <select id="sortBy" class="form-select filter-element">
+                    <option value="releaseDateDesc" selected th:text="#{movies.sort.newest}">Newest Releases</option>
+                    <option value="releaseDateAsc" th:text="#{movies.sort.oldest}">Oldest Releases</option>
+                    <option value="nameAsc" th:text="#{movies.sort.az}">Title (A-Z)</option>
+                    <option value="nameDesc" th:text="#{movies.sort.za}">Title (Z-A)</option>
+                </select>
+            </div>
+
+            <div class="col-12 text-end mt-2">
+                <button type="button" id="resetFiltersBtn" class="btn btn-outline-secondary btn-sm px-3">
+                    <i class="fa fa-refresh me-1"></i> <span th:text="#{movies.btn.reset}">Reset</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="row trend_2" id="movieListContainer">
+            <div class="col-12 text-center py-5">
+                <div class="spinner-border text-primary" role="status"></div>
+                <p class="mt-2 text-muted" th:text="#{movies.loading}">Loading movies...</p>
+            </div>
+        </div>
+
+        <div class="row mt-4 mb-5">
+            <div class="col-md-12 d-flex justify-content-center">
+                <ul class="pagination shadow-sm" id="paginationContainer">
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div th:replace="~{layout/footer :: footer}"></div>
+
+<script th:src="@{/js/auth.js}"></script>
+<script th:src="@{/js/common.js}"></script>
+<script th:src="@{/js/movies.js}"></script>
+</body>
+</html>

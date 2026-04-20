@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="#{profile.title}">User Profile | CTBS Cinema</title>
+
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+    <link rel="stylesheet" th:href="@{/css/user/profile.css}">
+
+    <link href="https://fonts.googleapis.com/css2?family=Platypi:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body class="profile-page">
+
+<div th:replace="~{layout/header :: header}"></div>
+
+<div class="container profile-container">
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="profile-card text-center">
+                <div class="avatar-wrapper">
+                    <img alt="Avatar" id="profile-avatar" src="https://ui-avatars.com/api/?name=User&background=d96c2c&color=fff&size=160">
+                    <label for="avatarUpload" class="avatar-upload-btn" th:title="#{profile.avatar.change}" title="Change Avatar">
+                        <i class="fa fa-camera"></i>
+                    </label>
+                    <input type="file" id="avatarUpload" class="d-none" accept="image/*">
+                </div>
+
+                <h3 class="fw-bold mb-1 text-dark" id="display-fullname-top" th:text="#{profile.loading}">Loading...</h3>
+                <p class="text-muted fw-semibold mb-4" id="display-role-top">
+                    <i class="fa fa-star text-warning me-1"></i> <span th:text="#{profile.role.member}">CTBS Member</span>
+                </p>
+
+                <hr class="text-muted opacity-25 my-4">
+
+                <div class="d-flex flex-column gap-3">
+                    <a class="btn btn-light border fw-bold rounded-3 py-2 text-dark hover-shadow" href="/forgot-password">
+                        <i class="fa fa-key me-2 text-secondary"></i> <span th:text="#{profile.btn.change_password}">Change Password</span>
+                    </a>
+                    <button class="btn btn-outline-danger fw-bold rounded-3 py-2" id="btn-delete-account">
+                        <i class="fa fa-user-times me-2"></i> <span th:text="#{profile.btn.delete_account}">Delete Account</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="profile-card">
+                <h3 class="section-title">
+                    <i class="fa fa-pencil-square-o text-secondary me-2"></i> <span th:text="#{profile.heading.edit}">Edit Profile Details</span>
+                </h3>
+
+                <form id="profile-form">
+                    <div class="row g-4 mt-1">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input class="form-control" id="firstName" name="firstName" th:placeholder="#{profile.label.first_name}" placeholder="First Name" type="text">
+                                <label for="firstName"><i class="fa fa-id-card me-1"></i> <span th:text="#{profile.label.first_name}">First Name *</span></label>
+                            </div>
+                            <small class="text-danger fw-bold mt-1 d-block error-message" id="firstNameError"></small>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input class="form-control" id="lastName" name="lastName" th:placeholder="#{profile.label.last_name}" placeholder="Last Name" type="text">
+                                <label for="lastName"><i class="fa fa-id-card me-1"></i> <span th:text="#{profile.label.last_name}">Last Name *</span></label>
+                            </div>
+                            <small class="text-danger fw-bold mt-1 d-block error-message" id="lastNameError"></small>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input class="form-control bg-light" id="email" th:placeholder="#{profile.label.email}" placeholder="Email" readonly type="email">
+                                <label for="email"><i class="fa fa-envelope me-1"></i> <span th:text="#{profile.label.email}">Email Address</span></label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input class="form-control" id="phone" name="phone" th:placeholder="#{profile.label.phone}" placeholder="Phone Number" type="tel">
+                                <label for="phone"><i class="fa fa-phone me-1"></i> <span th:text="#{profile.label.phone}">Phone Number *</span></label>
+                            </div>
+                            <small class="text-danger fw-bold mt-1 d-block error-message" id="phoneError"></small>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input class="form-control" id="dob" name="dob" th:placeholder="#{profile.label.dob}" placeholder="Date of Birth" type="date">
+                                <label for="dob"><i class="fa fa-calendar me-1"></i> <span th:text="#{profile.label.dob}">Date of Birth *</span></label>
+                            </div>
+                            <small class="text-danger fw-bold mt-1 d-block error-message" id="dobError"></small>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <select class="form-select" id="gender" name="gender">
+                                    <option value="Male" th:text="#{profile.gender.male}">Male</option>
+                                    <option value="Female" th:text="#{profile.gender.female}">Female</option>
+                                    <option value="Other" th:text="#{profile.gender.other}">Other</option>
+                                </select>
+                                <label for="gender"><i class="fa fa-venus-mars me-1"></i> <span th:text="#{profile.label.gender}">Gender</span></label>
+                            </div>
+                            <small class="text-danger fw-bold mt-1 d-block error-message" id="genderError"></small>
+                        </div>
+
+                        <div class="col-12 mt-4 text-end">
+                            <button class="btn-brand w-100 fs-5" type="submit">
+                                <i class="fa fa-floppy-o me-2"></i> <span th:text="#{profile.btn.save}">Save Changes</span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{layout/footer :: footer}"></div>
+
+<script th:src="@{/js/common.js}"></script>
+<script th:src="@{/js/auth.js}"></script>
+<script th:src="@{/js/profile.js}"></script>
+
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <title>Đăng nhập | CTBS Movie</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/4.1.5/css/flag-icons.min.css"/>
+</head>
+<body class="login-body">
+<div class="login-wrapper auth-wrapper">
+    <div class="login-card">
+        <div class="login-side-left">
+            <div class="login-slideshow">
+                <div class="login-slide active" style="background-image: url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=2070')"></div>
+                <div class="login-slide" style="background-image: url('https://images.unsplash.com/photo-1478720568477-152d9b164e26?q=80&w=2070')"></div>
+                <div class="login-slide" style="background-image: url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=2025')"></div>
+                <div class="login-slideshow-overlay">
+                    <h2 class="fw-bold text-white">CTBS MOVIE</h2>
+                    <p class="text-white-50">Unlimited movies, TV shows, and more</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="login-side-right">
+
+            <div class="d-flex justify-content-between align-items-center w-100" style="margin-bottom: 2rem;">
+
+                <a class="login-brand" th:href="@{/}" style="margin: 0 !important; padding: 0 !important; display: flex !important; align-items: center !important; line-height: 1 !important;">
+                    <i class="fa fa-ticket" style="margin-right: 8px;"></i> <span>CTBS MOVIE</span>
+                </a>
+
+                <div class="dropdown" style="position: absolute; top: 3px; right: 30px; z-index: 999;">
+                    <button class="lang-btn-custom" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="width: 42px; height: 42px; padding: 0; display: flex; align-items: center; justify-content: center;">
+                        <span th:if="${#locale.language == 'vi'}" class="flag-icon flag-icon-vn fs-5"></span>
+                        <span th:if="${#locale.language == 'ja'}" class="flag-icon flag-icon-jp fs-5"></span>
+                        <span th:if="${#locale.language == 'ko'}" class="flag-icon flag-icon-kr fs-5"></span>
+                        <span th:if="${#locale.language == 'zh'}" class="flag-icon flag-icon-cn fs-5"></span>
+                        <span th:if="${#locale.language == 'my'}" class="flag-icon flag-icon-mm fs-5"></span>
+                        <span th:if="${#locale.language == 'en' or #locale.language == null}" class="flag-icon flag-icon-gb fs-5"></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end lang-ticket-menu">
+                        <li><a class="dropdown-item fw-bold lang-ticket-item" th:href="@{''(lang='en')}"><span class="flag-icon flag-icon-gb me-2"></span> English <i class="fa fa-ticket hover-ticket-icon"></i></a></li>
+                        <li><a class="dropdown-item fw-bold lang-ticket-item" th:href="@{''(lang='vi')}"><span class="flag-icon flag-icon-vn me-2"></span> Tiếng Việt <i class="fa fa-ticket hover-ticket-icon"></i></a></li>
+                        <li><a class="dropdown-item fw-bold lang-ticket-item" th:href="@{''(lang='ja')}"><span class="flag-icon flag-icon-jp me-2"></span> 日本語 <i class="fa fa-ticket hover-ticket-icon"></i></a></li>
+                        <li><a class="dropdown-item fw-bold lang-ticket-item" th:href="@{''(lang='ko')}"><span class="flag-icon flag-icon-kr me-2"></span> 한국어 <i class="fa fa-ticket hover-ticket-icon"></i></a></li>
+                        <li><a class="dropdown-item fw-bold lang-ticket-item" th:href="@{''(lang='zh')}"><span class="flag-icon flag-icon-cn me-2"></span> 中文 <i class="fa fa-ticket hover-ticket-icon"></i></a></li>
+                        <li><a class="dropdown-item fw-bold lang-ticket-item" th:href="@{''(lang='my')}"><span class="flag-icon flag-icon-mm me-2"></span> မြန်မာ <i class="fa fa-ticket hover-ticket-icon"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <div class="d-flex align-items-center mb-1">
+                    <h2 class="fw-bold m-0" th:text="#{auth.login.title}">Sign In</h2>
+                    <div class="login-cute-camera ms-3">
+                        <div class="login-cam-body">
+                            <div class="login-cam-lens"></div>
+                            <div class="login-cam-roll" style="left:0"></div>
+                            <div class="login-cam-roll" style="left:12px"></div>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-muted small m-0" th:text="#{auth.login.subtitle}">Welcome back! Please enter your details.</p>
+            </div>
+
+            <form id="loginForm">
+                <div class="mb-3">
+                    <label class="form-label small fw-bold" th:text="#{auth.login.username_email}">Username or Email</label>
+                    <input class="form-control shadow-none" id="username" th:placeholder="#{auth.login.username_email}" required type="text">
+                </div>
+
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <label class="form-label small fw-bold m-0" th:text="#{auth.login.password}">Password</label>
+                        <a class="small text-decoration-none col_oran" th:href="@{/forgot-password}" th:text="#{auth.login.forgot}">Forgot password?</a>
+                    </div>
+                    <div style="position: relative;">
+                        <input class="form-control shadow-none" id="password" th:placeholder="#{auth.login.password}" required type="password" style="padding-right: 40px;">
+                        <i class="fa fa-eye-slash" id="toggleLoginPassword" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #aaa; font-size: 18px; z-index: 10;" title="Hiện/Ẩn mật khẩu"></i>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin: 15px 0 25px 0; font-size: 14px;">
+                    <label style="cursor: pointer; display: flex; align-items: center; gap: 5px; color: #555; font-weight: 500; margin: 0;">
+                        <input id="rememberMe" style="width: 16px; height: 16px; margin: 0; cursor: pointer;" type="checkbox">
+                        <span th:text="#{auth.login.remember}">Remember Me</span>
+                    </label>
+                    <a style="color: #d96c2c; text-decoration: none; font-weight: 500;" th:href="@{/}">
+                        <i class="fa fa-home"></i> <span th:text="#{auth.login.back_home}">Back to Home</span>
+                    </a>
+                </div>
+
+                <button class="login-btn-submit w-100 mb-3" type="submit" th:text="#{auth.login.btn_submit}">SIGN IN</button>
+
+                <div class="login-divider"><span th:text="#{auth.login.or}">OR</span></div>
+
+                <a class="login-btn-google w-100" th:href="@{/oauth2/authorization/google}">
+                    <img alt="Google" src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png">
+                    <span th:text="#{auth.login.google}">Sign in with Google</span>
+                </a>
+
+                <p class="text-center mt-4 mb-3 small text-muted">
+                    <span th:text="#{auth.login.no_account}">Don't have an account?</span>
+                    <a class="fw-bold text-dark text-decoration-none" th:href="@{/register}" th:text="#{auth.login.register_link}">Sign up for free</a>
+                </p>
+            </form>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{layout/footer :: footer}"></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/auth.js}"></script>
+</body>
+</html>

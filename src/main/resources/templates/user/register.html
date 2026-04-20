@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <title>Register | CTBS Movie</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/4.1.5/css/flag-icons.min.css"/>
+</head>
+<body class="reg-body">
+<div class="reg-wrapper auth-wrapper">
+    <div class="reg-card">
+        <div class="reg-side-left d-none d-md-flex">
+            <div class="reg-overlay"></div>
+            <div class="reg-content">
+                <div class="reg-badge" th:text="#{auth.reg.new_member}">NEW MEMBER</div>
+                <h1 class="text-white fw-bold" th:utext="#{auth.reg.join}">JOIN THE<br>COMMUNITY</h1>
+                <p class="text-white-50 mt-3" th:text="#{auth.reg.subtitle1}">Get your all-access pass to the best cinematic experience.</p>
+                <div class="movie-ticket-animation">
+                    <div class="ticket"><i class="fa fa-ticket"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="reg-side-right">
+
+            <div class="mt-5 pt-4 mb-4">
+                <a class="reg-brand" th:href="@{/}" style="position: static !important; display: inline-block !important; margin-bottom: 12px !important; padding: 0 !important;">
+                    <i class="fa fa-ticket"></i> <span>CTBS MOVIE</span>
+                </a>
+
+                <div class="dropdown" style="position: absolute; top: 30px; right: 30px; z-index: 999;">
+                    <button class="lang-btn-custom" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span th:if="${#locale.language == 'vi'}" class="flag-icon flag-icon-vn fs-5"></span>
+                        <span th:if="${#locale.language == 'ja'}" class="flag-icon flag-icon-jp fs-5"></span>
+                        <span th:if="${#locale.language == 'ko'}" class="flag-icon flag-icon-kr fs-5"></span>
+                        <span th:if="${#locale.language == 'zh'}" class="flag-icon flag-icon-cn fs-5"></span>
+                        <span th:if="${#locale.language == 'my'}" class="flag-icon flag-icon-mm fs-5"></span>
+                        <span th:if="${#locale.language == 'en' or #locale.language == null}" class="flag-icon flag-icon-gb fs-5"></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end lang-ticket-menu">
+                        <li><a class="dropdown-item fw-bold lang-ticket-item" th:href="@{''(lang='en')}"><span class="flag-icon flag-icon-gb me-2"></span> English <i class="fa fa-ticket hover-ticket-icon"></i></a></li>
+                        <li><a class="dropdown-item fw-bold lang-ticket-item" th:href="@{''(lang='vi')}"><span class="flag-icon flag-icon-vn me-2"></span> Tiếng Việt <i class="fa fa-ticket hover-ticket-icon"></i></a></li>
+                        <li><a class="dropdown-item fw-bold lang-ticket-item" th:href="@{''(lang='ja')}"><span class="flag-icon flag-icon-jp me-2"></span> 日本語 <i class="fa fa-ticket hover-ticket-icon"></i></a></li>
+                        <li><a class="dropdown-item fw-bold lang-ticket-item" th:href="@{''(lang='ko')}"><span class="flag-icon flag-icon-kr me-2"></span> 한국어 <i class="fa fa-ticket hover-ticket-icon"></i></a></li>
+                        <li><a class="dropdown-item fw-bold lang-ticket-item" th:href="@{''(lang='zh')}"><span class="flag-icon flag-icon-cn me-2"></span> 中文 <i class="fa fa-ticket hover-ticket-icon"></i></a></li>
+                        <li><a class="dropdown-item fw-bold lang-ticket-item" th:href="@{''(lang='my')}"><span class="flag-icon flag-icon-mm me-2"></span> မြန်မာ <i class="fa fa-ticket hover-ticket-icon"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="reg-header mb-4 mt-2">
+                <h2 class="fw-bold m-0" th:text="#{auth.reg.title}">Create Account</h2>
+                <p class="text-muted small mt-1 m-0" th:text="#{auth.reg.subtitle2}">Welcome new member CTBS</p>
+            </div>
+
+            <form id="registerForm"
+                  th:data-err-firstname="#{js.reg.err.firstname}"
+                  th:data-err-lastname="#{js.reg.err.lastname}"
+                  th:data-err-username="#{js.reg.err.username}"
+                  th:data-err-email="#{js.reg.err.email}"
+                  th:data-err-gender="#{js.reg.err.gender}"
+                  th:data-err-phone="#{js.reg.err.phone}"
+                  th:data-err-phone-format="#{js.reg.err.phone_format}"
+                  th:data-err-dob="#{js.reg.err.dob}"
+                  th:data-err-dob-invalid="#{js.reg.err.dob_invalid}"
+                  th:data-err-dob-min="#{js.reg.err.dob_min}"
+                  th:data-err-dob-future="#{js.reg.err.dob_future}"
+                  th:data-err-pwd="#{js.reg.err.pwd}"
+                  th:data-err-pwd-length="#{js.reg.err.pwd_length}"
+                  th:data-err-pwd-match="#{js.reg.err.pwd_match}"
+                  th:data-err-network="#{js.reg.err.network}"
+                  th:data-success="#{js.reg.success}">
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label small fw-bold" th:text="#{auth.reg.firstname}">First Name</label>
+                        <input class="form-control shadow-none" id="firstName" th:placeholder="#{auth.reg.firstname}" type="text">
+                        <div class="text-danger small mt-1 error-text fw-bold" id="firstNameError"></div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label small fw-bold" th:text="#{auth.reg.lastname}">Last Name</label>
+                        <input class="form-control shadow-none" id="lastName" th:placeholder="#{auth.reg.lastname}" type="text">
+                        <div class="text-danger small mt-1 error-text fw-bold" id="lastNameError"></div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-bold" th:text="#{auth.reg.username}">UserName</label>
+                    <input class="form-control shadow-none" id="userName" th:placeholder="#{auth.reg.username}" type="text">
+                    <div class="text-danger small mt-1 error-text fw-bold" id="userNameError"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-bold" th:text="#{auth.reg.phone}">Phone Number</label>
+                    <input class="form-control shadow-none" id="phoneNumber" th:placeholder="#{auth.reg.phone}" type="text">
+                    <div class="text-danger small mt-1 error-text fw-bold" id="phoneError"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-bold" th:text="#{auth.reg.email}">Email</label>
+                    <input class="form-control shadow-none" id="email" th:placeholder="#{auth.reg.email}" type="email">
+                    <div class="text-danger small mt-1 error-text fw-bold" id="emailError"></div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label small fw-bold" th:text="#{auth.reg.gender}">Gender</label>
+                        <select class="form-select shadow-none" id="gender">
+                            <option value="" th:text="#{auth.reg.choose_gender}">Choose Gender:</option>
+                            <option value="Male" th:text="#{profile.gender.male}">Male</option>
+                            <option value="Female" th:text="#{profile.gender.female}">Female</option>
+                            <option value="Other" th:text="#{profile.gender.other}">Other</option>
+                        </select>
+                        <div class="text-danger small mt-1 error-text fw-bold" id="genderError"></div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label small fw-bold" th:text="#{auth.reg.dob}">Date of Birth</label>
+                        <input class="form-control shadow-none" id="dob" type="date">
+                        <div class="text-danger small mt-1 error-text fw-bold" id="dobError"></div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-bold" th:text="#{auth.reg.password}">Password</label>
+                    <div style="position: relative;">
+                        <input type="password" id="password" class="form-control shadow-none" th:placeholder="#{auth.reg.password_hint}" style="padding-right: 40px;">
+                        <i class="fa fa-eye-slash" id="toggleRegPassword" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #888; font-size: 18px; z-index: 10;" title="Hiện/Ẩn mật khẩu"></i>
+                    </div>
+                    <div id="passwordError" class="text-danger small mt-1 error-text fw-bold"></div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label small fw-bold" th:text="#{auth.reg.confirm_password}">Confirm Password</label>
+                    <input class="form-control shadow-none" id="confirmPassword" th:placeholder="#{auth.reg.confirm_password}" type="password">
+                    <div class="text-danger small mt-1 error-text fw-bold" id="confirmPasswordError"></div>
+                </div>
+
+                <button class="reg-btn-submit w-100 mb-3" type="submit" th:text="#{auth.reg.btn_submit}">GET STARTED</button>
+
+                <div class="reg-divider mb-3"><span th:text="#{auth.login.or}">OR</span></div>
+
+                <a class="reg-btn-google w-100 mb-3" th:href="@{/oauth2/authorization/google}">
+                    <img alt="Google" src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png">
+                    <span th:text="#{auth.reg.google}">Sign up with Google</span>
+                </a>
+
+                <p class="text-center mt-4 mb-4 pb-2 small text-muted">
+                    <span th:text="#{auth.reg.has_account}">Already have an account?</span>
+                    <a class="fw-bold col_oran text-decoration-none" th:href="@{/login}" th:text="#{auth.reg.login_link}">Log in here</a>
+                </p>
+            </form>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{layout/footer :: footer}"></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/auth.js}"></script>
+</body>
+</html>

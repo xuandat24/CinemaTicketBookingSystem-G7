@@ -1,0 +1,288 @@
+/* =========================================
+   ADMIN SIDEBAR - SLATE MODERN THEME (SÁNG & GỌN GÀNG)
+========================================= */
+:root {
+    --sidebar-bg: #1e293b; /* SÁNG HƠN: Đổi từ Xám Đen sang Xám Xanh (Slate 800) sang trọng */
+    --sidebar-hover: #334155; /* Xám Xanh nhạt khi hover */
+    --sidebar-text: #cbd5e1; /* Chữ trắng xám sáng dễ đọc */
+    --sidebar-active-text: #ffffff; /* Chữ trắng tinh */
+    --brand-color: #d96c2c; /* Cam thương hiệu */
+}
+
+/* Khung chính */
+.admin-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    height: 100vh;
+    background-color: var(--sidebar-bg);
+    color: var(--sidebar-active-text);
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+/* Logo CTBS Admin */
+.admin-sidebar .brand-logo {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.4rem;
+    color: #fff;
+    font-weight: 900;
+    padding: 20px 15px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.admin-sidebar .brand-logo i {
+    color: var(--brand-color);
+    margin-right: 8px;
+    transform: rotate(-15deg);
+}
+
+/* Phần Menu cuộn */
+.sidebar-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 0;
+}
+
+.sidebar-content::-webkit-scrollbar {
+    width: 5px;
+}
+
+.sidebar-content::-webkit-scrollbar-thumb {
+    background: #475569;
+    border-radius: 10px;
+}
+
+/* Ô Search */
+.sidebar-search form .input-group-text,
+.sidebar-search form .form-control {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: #fff !important;
+}
+
+.sidebar-search form .form-control::placeholder {
+    color: #94a3b8 !important;
+}
+
+.sidebar-search form .form-control:focus {
+    box-shadow: 0 0 0 2px rgba(217, 108, 44, 0.3) !important;
+    border-color: var(--brand-color) !important;
+}
+
+/* =========================================
+   HIỆU ỨNG GỘP MENU (DROPDOWN/ACCORDION)
+========================================= */
+/* Tiêu đề nhóm nhỏ (Tùy chọn) */
+.admin-sidebar .section-title {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    color: #94a3b8;
+    font-weight: 800;
+    margin: 15px 25px 5px 25px;
+    letter-spacing: 1px;
+}
+
+/* Nút bấm Menu Chính */
+.admin-sidebar a.menu-item {
+    color: var(--sidebar-text);
+    text-decoration: none;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Đẩy mũi tên sang phải */
+    margin: 4px 15px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+    font-weight: 500;
+    border-left: 3px solid transparent; /* Chờ hiệu ứng hover */
+}
+
+/* Hiệu ứng Hover xịn xò: Sáng đèn lề trái */
+.admin-sidebar a.menu-item:hover,
+.admin-sidebar a.menu-item[aria-expanded="true"] {
+    background-color: var(--sidebar-hover);
+    color: var(--sidebar-active-text);
+    border-left: 3px solid var(--brand-color);
+}
+
+.admin-sidebar a.menu-item i.menu-icon {
+    width: 26px;
+    font-size: 1.1rem;
+    transition: color 0.3s;
+}
+
+.admin-sidebar a.menu-item:hover i.menu-icon,
+.admin-sidebar a.menu-item[aria-expanded="true"] i.menu-icon {
+    color: var(--brand-color);
+}
+
+/* Mũi tên xổ xuống (Caret) */
+.caret-icon {
+    font-size: 0.8rem;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Xoay mũi tên 180 độ khi mở Menu */
+.admin-sidebar a.menu-item[aria-expanded="true"] .caret-icon {
+    transform: rotate(180deg);
+    color: var(--brand-color);
+}
+
+/* Sub-menu (Menu con bên trong) */
+.submenu {
+    margin: 0 15px 10px 30px;
+    padding-left: 15px;
+    border-left: 1px dashed rgba(255, 255, 255, 0.15); /* Đường gạch dọc nối các menu con */
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.submenu a {
+    color: #94a3b8;
+    text-decoration: none;
+    font-size: 0.85rem;
+    padding: 8px 12px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.submenu a i {
+    width: 20px;
+    font-size: 0.9rem;
+}
+
+.submenu a:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateX(5px); /* Trượt sang phải nhẹ */
+}
+
+.submenu a:hover i {
+    color: var(--brand-color);
+}
+
+
+/* =========================================
+   THẺ PROFILE ADMIN Ở ĐÁY
+========================================= */
+.sidebar-profile-card {
+    padding: 15px 20px;
+    background: #0f172a; /* Nền tối hơn tạo chiều sâu */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.sp-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    overflow: hidden;
+}
+
+.sp-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--brand-color);
+}
+
+.sp-text {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.sp-name {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #f8fafc;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sp-email {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Nút Logout */
+.sp-logout-btn {
+    background: none;
+    border: none;
+    color: #ef4444;
+    font-size: 1.25rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 8px;
+    border-radius: 8px;
+}
+
+.sp-logout-btn:hover {
+    background: rgba(239, 68, 68, 0.1);
+    color: #f87171;
+    transform: scale(1.1);
+}
+
+body {
+    margin-left: 280px !important;
+    background-color: #f4f6f9;
+    padding-top: 20px;
+}
+
+/* =========================================
+   ACTIVE MENU STATE (ĐÁNH DẤU MỤC ĐANG CHỌN)
+========================================= */
+/* Khi Menu chính được chọn */
+.admin-sidebar a.menu-item.active {
+    background-color: var(--brand-color, #d96c2c) !important;
+    color: #ffffff !important;
+    border-color: var(--brand-color, #d96c2c) !important;
+    box-shadow: 0 4px 15px rgba(217, 108, 44, 0.4);
+}
+
+.admin-sidebar a.menu-item.active i.menu-icon {
+    color: #ffffff !important;
+}
+
+/* Khi Sub-menu (Menu con) được chọn */
+.submenu a.active {
+    color: var(--brand-color, #d96c2c) !important;
+    background: rgba(217, 108, 44, 0.1);
+    font-weight: 700;
+    border-left: 3px solid var(--brand-color, #d96c2c);
+    padding-left: 12px; /* Bù lại khoảng cách do bị chiếm bởi border */
+    transform: translateX(4px);
+}
+
+.submenu a.active i {
+    color: var(--brand-color, #d96c2c) !important;
+}
+
+/* Hiệu ứng giữ sáng Menu Cha khi Menu Con đang được chọn */
+.admin-sidebar a.menu-item.parent-active {
+    border-left: 3px solid var(--brand-color, #d96c2c);
+    background-color: rgba(0, 0, 0, 0.05); /* Tương thích cả nền sáng/tối */
+}

@@ -1,0 +1,101 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Seat Selection - Mock</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+    <link rel="stylesheet" th:href="@{/css/seat-select.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Platypi:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</head>
+<body class="seat-page-body">
+
+<section id="header">
+    <div th:replace="~{layout/header :: header}"></div>
+</section>
+
+<section class="seat-page">
+    <div class="container-xl">
+        <div class="seat-breadcrumb">
+            <a href="/">Home</a>
+            <span>&gt;</span>
+            <a href="#">Booking</a>
+            <span>&gt;</span>
+            <span class="current">Movie</span>
+        </div>
+
+        <div class="seat-legend-row">
+            <div class="legend-item"><span class="legend-seat available"></span>Available</div>
+            <div class="legend-item"><span class="legend-seat selected"></span>Selected</div>
+            <div class="legend-item"><span class="legend-seat sold"></span>Booked</div>
+        </div>
+
+        <div class="seat-main">
+            <div id="seat-section" class="seat-map">
+                <div id="theater-room-label" class="theater-room-label">Theater Room --</div>
+
+                <div class="screen-wrap">
+                    <div class="screen-arc"></div>
+                    <div class="screen-label">SCREEN</div>
+                </div>
+
+                <div id="seat-grid" class="seat-grid" aria-label="Seat layout"></div>
+            </div>
+
+            <aside class="seat-info">
+                <div class="info-poster">
+                    <img id="movie-poster" th:src="@{/img/11.jpg}" alt="poster">
+                    <span class="age-tag">16+</span>
+                </div>
+                <h3 id="movie-title" class="info-title">Movie</h3>
+                <div class="info-format">2D Subtitled</div>
+
+                <div class="info-list">
+                    <div class="info-row"><i class="fa fa-tags"></i><span class="label">Genre</span><span id="movie-genre" class="value">--</span></div>
+                    <div class="info-row"><i class="fa fa-clock-o"></i><span class="label">Duration</span><span id="movie-duration" class="value">--</span></div>
+                    <div class="info-row"><i class="fa fa-university"></i><span class="label">Room</span><span id="movie-cinema" class="value">Room --</span></div>
+                    <div class="info-row"><i class="fa fa-calendar"></i><span class="label">Show Date</span><span id="selected-date" class="value">--/--</span></div>
+                    <div class="info-row"><i class="fa fa-clock-o"></i><span class="label">Show Time</span><span id="selected-time" class="value">--:--</span></div>
+                    <div class="info-row"><i class="fa fa-ticket"></i><span class="label">Seats</span><span id="selected-seats-side" class="value">Not selected</span></div>
+                </div>
+
+                <div class="info-total">
+                    <span>Total</span>
+                    <strong id="total-price-side">0 VND</strong>
+                </div>
+
+                <a class="info-btn" id="continue-btn" href="/booking">CONTINUE</a>
+            </aside>
+        </div>
+
+        <div class="seat-bottom-bar">
+            <div class="bottom-legend">
+                <div><span class="legend-seat type-normal"></span>Normal Seat</div>
+                <div><span class="legend-seat type-vip"></span>VIP Seat</div>
+                <div><span class="legend-seat type-pair"></span>Pair Seat</div>
+            </div>
+            <div class="bottom-total">
+                <div class="label">Total</div>
+                <div id="total-price-bottom" class="value">0 VND</div>
+            </div>
+            <div class="bottom-timer">
+                <div class="label">Time Remaining</div>
+                <div id="countdown-timer" class="value">05:11</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer th:replace="layout/footer :: footer"></footer>
+
+<script th:src="@{/js/common.js}"></script>
+<script th:src="@{/js/seat-select.js}"></script>
+<script th:src="@{/js/auth.js}"></script>
+</body>
+</html>

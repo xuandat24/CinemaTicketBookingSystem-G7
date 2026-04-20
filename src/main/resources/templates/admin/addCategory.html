@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Category - Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/admin/universal.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/category.css}">
+</head>
+<body class="bg-light">
+<div th:replace="~{admin/fragments/navbar :: admin-nav}"></div>
+
+<div class="container mb-5 mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+            <form id="addCategoryForm" class="setup-form-card">
+
+                <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4">
+                    <h3 class="fw-bold text-dark m-0"><i class="fa-solid fa-folder-plus text-success me-2"></i> Create Category</h3>
+                    <span class="badge bg-success text-white px-3 py-2"><i class="fa-solid fa-shield-halved me-1"></i> Admin</span>
+                </div>
+
+                <div class="mb-4 bg-light p-4 rounded-3 border">
+                    <label for="categoryName" class="form-label-tech">Category Name <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control input-tech" id="categoryName" placeholder="e.g. Action, Sci-Fi, Thriller..." required minlength="2">
+
+                    <div id="nameError" class="text-danger mt-2 small fw-bold" style="display: none;"></div>
+
+                    <small class="text-muted mt-2 d-block fw-semibold"><i class="fa-solid fa-circle-info text-info me-1"></i> Make sure the category name is unique across the system.</small>
+                </div>
+
+                <div class="d-grid gap-3 d-md-flex justify-content-md-end mt-5 pt-3 border-top">
+                    <button type="button" class="btn btn-light border px-4 fw-bold text-muted tech-btn" onclick="window.history.back()">Cancel</button>
+                    <button type="submit" class="btn tech-btn tech-btn-success">
+                        <i class="fa-solid fa-floppy-disk me-2"></i> Save Category
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/admin/admin-auth.js}"></script>
+<script th:src="@{/js/admin/addCategory.js?v=3}"></script>
+</body>
+</html>

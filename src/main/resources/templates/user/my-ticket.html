@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{myticket.title}">My Tickets</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+    <style>
+        .filter-bar { background: #fff; padding: 15px 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #eee; margin-bottom: 20px; }
+        .filter-bar .form-control, .filter-bar .form-select { border-radius: 8px; border: 1px solid #ddd; box-shadow: none; font-size: 14px; }
+        .compact-ticket { display: flex; align-items: center; background: #fff; border-radius: 12px; padding: 12px 20px; margin-bottom: 12px; border: 1px solid #e2e8f0; cursor: pointer; transition: all 0.2s; border-left: 6px solid #d96c2c; }
+        .compact-ticket:hover { transform: translateX(5px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+        .compact-poster { width: 50px; height: 75px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+        .compact-info { flex-grow: 1; padding: 0 20px; }
+        .compact-title { font-size: 17px; font-weight: 800; color: #1e293b; margin: 0 0 6px 0; }
+        .compact-time { font-size: 13px; color: #64748b; margin: 0; }
+        .badge-upcoming { background: #d96c2c; color: #fff; padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; }
+        .badge-expired { background: #94a3b8; color: #fff; padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; }
+        .compact-ticket-wrapper.expired .compact-ticket { opacity: 0.6; filter: grayscale(80%); border-left-color: #94a3b8 !important; }
+        .ticket-card { display: flex; background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.4); position: relative; }
+        .ticket-poster { width: 180px; flex-shrink: 0; }
+        .ticket-poster img { width: 100%; height: 100%; object-fit: cover; }
+        .ticket-body { padding: 24px; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; border-right: 2px dashed #ddd; position: relative; }
+        .ticket-qr-section { width: 200px; padding: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #f8fafc; flex-shrink: 0; }
+        .qr-img { width: 120px; height: 120px; border-radius: 8px; border: 4px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 12px; }
+        @media (max-width: 768px) { .ticket-card { flex-direction: column; } .ticket-poster { width: 100%; height: 150px; } .ticket-body { border-right: none; border-bottom: 2px dashed #ddd; } .ticket-qr-section { width: 100%; } .compact-info { padding: 0 10px; } }
+    </style>
+</head>
+<body class="prof-body">
+<div th:replace="~{layout/header :: header}"></div>
+
+<div class="container py-5 mt-4">
+    <h2 class="fw-bold mb-4">
+        <i class="fa fa-ticket text-danger me-2"></i>
+        <span th:text="#{myticket.heading}">My Tickets</span>
+    </h2>
+
+    <div class="filter-bar row g-3 align-items-end">
+        <div class="col-md-4">
+            <label class="form-label text-muted small fw-bold mb-1" th:text="#{myticket.filter.movie_name}">Movie Name</label>
+            <input type="text" id="filterMovie" class="form-control" th:placeholder="#{myticket.filter.search_placeholder}" placeholder="Search by movie name...">
+        </div>
+        <div class="col-md-4">
+            <label class="form-label text-muted small fw-bold mb-1" th:text="#{myticket.filter.show_date}">Show Date</label>
+            <input type="date" id="filterDate" class="form-control">
+        </div>
+        <div class="col-md-4">
+            <label class="form-label text-muted small fw-bold mb-1" th:text="#{myticket.filter.sort_by}">Sort By</label>
+            <select id="sortTickets" class="form-select">
+                <option value="newest" th:text="#{myticket.sort.newest}">Newest Purchase First</option>
+                <option value="oldest" th:text="#{myticket.sort.oldest}">Oldest Purchase First</option>
+            </select>
+        </div>
+        <div class="col-md-12 d-flex justify-content-end">
+            <button class="btn btn-outline-secondary btn-sm fw-bold px-3" id="resetFiltersBtn" type="button">
+                <i class="fa fa-refresh me-1"></i> <span th:text="#{myticket.btn.reset}">Reset</span>
+            </button>
+        </div>
+    </div>
+
+    <div th:if="${#lists.isEmpty(myTickets)}" class="text-center p-5 bg-white rounded-4 shadow-sm border">
+        <i class="fa fa-ticket fa-4x text-muted opacity-25 mb-3"></i>
+        <h4 class="text-muted fw-bold" th:text="#{myticket.empty.title}">No active tickets found</h4>
+        <p class="text-secondary" th:text="#{myticket.empty.desc}">You haven't bought any tickets or your tickets are still processing.</p>
+        <a href="/" class="btn btn-danger rounded-pill px-4 mt-2 fw-bold" th:text="#{myticket.empty.btn_book}">Book A Movie Now</a>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8 offset-lg-2" id="ticketListContainer">
+
+            <div th:each="ticket, iter : ${myTickets}"
+                 th:data-movie="${ticket.showtime != null && ticket.showtime.movie != null ? ticket.showtime.movie.title.toLowerCase() : ''}"
+                 th:data-date-iso="${ticket.showtime != null && ticket.showtime.startTime != null ? #temporals.format(ticket.showtime.startTime, 'yyyy-MM-dd') : ''}"
+                 th:data-timestamp="${ticket.createTime != null ? #temporals.format(ticket.createTime, 'yyyyMMddHHmmss') : '0'}"
+                 th:classappend="${ticket.showtime != null and ticket.showtime.startTime != null and ticket.showtime.startTime.isBefore(#temporals.createNow()) ? 'expired' : ''}"
+                 class="compact-ticket-wrapper">
+
+                <div class="compact-ticket" data-bs-toggle="modal" th:data-bs-target="'#ticketModal' + ${iter.index}">
+                    <img class="compact-poster" th:src="@{${ticket.showtime != null && ticket.showtime.movie != null && ticket.showtime.movie.posterPath != null ? ticket.showtime.movie.posterPath : '/img/1.jpg'}}">
+                    <div class="compact-info">
+                        <h5 class="compact-title" th:text="${ticket.showtime != null && ticket.showtime.movie != null ? ticket.showtime.movie.title : 'N/A'}">Movie</h5>
+                        <p class="compact-time">
+                            <i class="fa fa-calendar text-danger me-1"></i> <span th:text="${ticket.showtime != null && ticket.showtime.startTime != null ? #temporals.format(ticket.showtime.startTime, 'dd/MM/yyyy') : '-'}"></span>
+                            <span class="text-muted mx-1">|</span>
+                            <i class="fa fa-clock-o text-danger me-1"></i> <span th:text="${ticket.showtime != null && ticket.showtime.startTime != null ? #temporals.format(ticket.showtime.startTime, 'HH:mm') : '-'}"></span>
+                            <span class="text-muted mx-1">|</span>
+                            <i class="fa fa-building text-danger me-1"></i> <span th:text="${ticket.showtime != null && ticket.showtime.theaterRoom != null ? ticket.showtime.theaterRoom.roomName : '-'}"></span>
+                        </p>
+                    </div>
+                    <div class="compact-status">
+                        <span th:if="${ticket.showtime != null and ticket.showtime.startTime != null and ticket.showtime.startTime.isAfter(#temporals.createNow())}" class="badge-upcoming" th:text="#{myticket.badge.upcoming}">UPCOMING</span>
+                        <span th:if="${ticket.showtime != null and ticket.showtime.startTime != null and ticket.showtime.startTime.isBefore(#temporals.createNow())}" class="badge-expired" th:text="#{myticket.badge.expired}">EXPIRED</span>
+                    </div>
+                </div>
+
+                <div class="modal fade" th:id="'ticketModal' + ${iter.index}" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                        <div class="modal-content bg-transparent border-0">
+                            <div class="ticket-card">
+                                <div class="ticket-poster">
+                                    <img th:src="@{${ticket.showtime != null && ticket.showtime.movie != null && ticket.showtime.movie.posterPath != null ? ticket.showtime.movie.posterPath : '/img/1.jpg'}}">
+                                </div>
+                                <div class="ticket-body">
+                                    <h3 class="fw-bold text-dark mb-3" th:text="${ticket.showtime != null && ticket.showtime.movie != null ? ticket.showtime.movie.title : 'N/A'}">Movie</h3>
+                                    <div class="d-flex gap-4 mb-3">
+                                        <div><small class="text-muted text-uppercase fw-bold" th:text="#{myticket.detail.date}">Date</small><br><span class="fw-bold" th:text="${ticket.showtime != null && ticket.showtime.startTime != null ? #temporals.format(ticket.showtime.startTime, 'dd/MM/yyyy') : '-'}"></span></div>
+                                        <div><small class="text-muted text-uppercase fw-bold" th:text="#{myticket.detail.time}">Time</small><br><span class="fw-bold text-danger" th:text="${ticket.showtime != null && ticket.showtime.startTime != null ? #temporals.format(ticket.showtime.startTime, 'HH:mm') : '-'}"></span></div>
+                                        <div><small class="text-muted text-uppercase fw-bold" th:text="#{myticket.detail.room}">Room</small><br><span class="fw-bold" th:text="${ticket.showtime != null && ticket.showtime.theaterRoom != null ? ticket.showtime.theaterRoom.roomName : '-'}"></span></div>
+                                    </div>
+                                    <div class="mb-2">
+                                        <small class="text-muted text-uppercase fw-bold" th:text="#{myticket.detail.seats}">Seats</small><br>
+                                        <span class="text-primary fw-bold fs-5">
+                                            <span th:each="bs, i : ${ticket.bookingSeats}" th:text="${bs.seat != null ? bs.seat.seatCode : ''} + ${!i.last ? ', ' : ''}"></span>
+                                        </span>
+                                    </div>
+                                    <div th:if="${!#lists.isEmpty(ticket.bookingCombos)}">
+                                        <small class="text-muted text-uppercase fw-bold" th:text="#{myticket.detail.combos}">Combos</small><br>
+                                        <span class="text-success fw-bold">
+                                            <span th:each="bc, i : ${ticket.bookingCombos}" th:text="${bc.combo != null ? bc.combo.name : 'Combo'} + ' x' + ${bc.quantity} + ${!i.last ? ' | ' : ''}"></span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="ticket-qr-section">
+                                    <small class="text-muted text-uppercase fw-bold mb-2" th:text="#{myticket.detail.scan}">Scan at Entrance</small>
+                                    <img th:if="${ticket.bookingCode != null}" th:src="@{'https://api.qrserver.com/v1/create-qr-code/?size=150x150&margin=10&data=' + ${ticket.bookingCode}}" class="qr-img">
+                                    <span class="fw-bold text-dark"><span th:text="#{myticket.detail.code}">Code:</span> <span class="fs-5" th:text="${ticket.bookingCode != null ? ticket.bookingCode : 'N/A'}"></span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{layout/footer :: footer}"></footer>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/common.js}"></script>
+<script th:src="@{/js/auth.js}"></script>
+<script th:src="@{/js/user-ticket-history.js?v=2}"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</body>
+</html>

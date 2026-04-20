@@ -1,0 +1,91 @@
+/* =========================================
+   GLOBAL TOAST NOTIFICATION (POP-UP HIỆN ĐẠI)
+========================================= */
+#toast-container {
+    position: fixed !important;
+    top: 30px !important;
+    right: 30px !important;
+    z-index: 999999 !important; /* Đảm bảo luôn nằm trên cùng mọi thành phần */
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    pointer-events: none; /* Tránh cản trở click chuột vào nền */
+}
+
+.tech-toast {
+    pointer-events: auto; /* Cho phép click vào chính pop-up */
+    min-width: 320px;
+    max-width: 450px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+    display: flex;
+    align-items: center;
+    padding: 16px 20px;
+    position: relative;
+    overflow: hidden;
+    transform: translateX(150%);
+    animation: slideInRight 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.35) forwards;
+    border-left: 6px solid transparent;
+}
+
+.tech-toast.hiding {
+    animation: fadeOutRight 0.4s ease forwards;
+}
+
+/* Các trạng thái màu sắc */
+.tech-toast.success { border-left-color: #10b981; }
+.tech-toast.error { border-left-color: #ef4444; }
+.tech-toast.warning { border-left-color: #f59e0b; }
+
+.tech-toast .toast-icon {
+    font-size: 1.8rem;
+    margin-right: 16px;
+}
+.tech-toast.success .toast-icon { color: #10b981; }
+.tech-toast.error .toast-icon { color: #ef4444; }
+.tech-toast.warning .toast-icon { color: #f59e0b; }
+
+.tech-toast .toast-content {
+    flex-grow: 1;
+}
+.tech-toast .toast-title {
+    font-weight: 700;
+    font-size: 1rem;
+    color: #1e293b;
+    margin: 0 0 4px 0;
+}
+.tech-toast .toast-message {
+    color: #64748b;
+    font-size: 0.85rem;
+    margin: 0;
+    line-height: 1.4;
+    font-weight: 500;
+}
+
+/* THANH THỜI GIAN CHẠY LÙI BÊN DƯỚI CÙNG */
+.toast-progress {
+    position: absolute;
+    bottom: 0; left: 0;
+    height: 4px;
+    background: #e2e8f0;
+    width: 100%;
+}
+.toast-progress-bar {
+    height: 100%;
+    width: 100%;
+    background: inherit;
+}
+.tech-toast.success .toast-progress-bar { background: #10b981; }
+.tech-toast.error .toast-progress-bar { background: #ef4444; }
+.tech-toast.warning .toast-progress-bar { background: #f59e0b; }
+
+/* Hiệu ứng chuyển động */
+@keyframes slideInRight {
+    0% { transform: translateX(150%); opacity: 0; }
+    100% { transform: translateX(0); opacity: 1; }
+}
+@keyframes fadeOutRight {
+    0% { transform: translateX(0); opacity: 1; }
+    100% { transform: translateX(150%); opacity: 0; }
+}

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Profile Center | CTBS</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/admin/universal.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/profile-admin.css}">
+</head>
+<body class="profile-page">
+
+<div th:replace="~{admin/fragments/navbar :: admin-nav}"></div>
+
+<div class="container py-5 mb-5 mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+
+            <div class="card tech-card">
+                <div class="card-header tech-header">
+                    <h5 class="mb-0"><i class="fa-solid fa-user-shield me-3 text-warning"></i> Admin Profile Center</h5>
+                </div>
+
+                <div class="card-body p-5">
+
+                    <div class="text-center mb-5 mt-2">
+                        <div class="admin-avatar-wrapper" style="position: relative; display: inline-block;">
+                            <img id="admin-avatar" src="" class="admin-avatar-img" alt="Admin Avatar">
+                            <label for="adminAvatarUpload" title="Change Avatar" style="position: absolute; bottom: 5px; right: 5px; background-color: var(--tech-accent); color: #fff; width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid #fff; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: all 0.3s ease;">
+                                <i class="fa-solid fa-camera"></i>
+                            </label>
+                            <input type="file" id="adminAvatarUpload" class="d-none" accept="image/png, image/jpeg, image/jpg, image/webp">
+                        </div>
+                        <h3 class="fw-bold mb-0 mt-3 display-fullname-tech" style="color: #1e293b;" id="display-fullname">Loading...</h3>
+                        <span class="badge tech-badge-admin mt-2 px-3 py-2 shadow-sm">
+                            <i class="fa-solid fa-crown tech-crown-icon me-2"></i> SYSTEM ADMIN
+                        </span>
+                    </div>
+
+                    <form id="adminProfileForm">
+                        <div class="row mb-4">
+                            <div class="col-md-6 form-group-tech">
+                                <label class="form-label tech-label">First Name <span class="text-danger">*</span></label>
+                                <input class="form-control tech-input" id="prof-firstname" type="text" placeholder="Enter first name">
+                                <i class="fa-solid fa-id-card tech-icon-animate"></i>
+                                <small class="text-danger fw-bold mt-1 d-block error-message" id="firstNameError"></small>
+                            </div>
+                            <div class="col-md-6 form-group-tech">
+                                <label class="form-label tech-label">Last Name <span class="text-danger">*</span></label>
+                                <input class="form-control tech-input" id="prof-lastname" type="text" placeholder="Enter last name">
+                                <i class="fa-solid fa-id-card tech-icon-animate"></i>
+                                <small class="text-danger fw-bold mt-1 d-block error-message" id="lastNameError"></small>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-6 form-group-tech">
+                                <label class="form-label tech-label">Gender</label>
+                                <select class="form-select tech-select" id="prof-gender">
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                                <i class="fa-solid fa-venus-mars tech-icon-animate"></i>
+                                <small class="text-danger fw-bold mt-1 d-block error-message" id="genderError"></small>
+                            </div>
+                            <div class="col-md-6 form-group-tech">
+                                <label class="form-label tech-label">Date of Birth <span class="text-danger">*</span></label>
+                                <input type="date" class="form-control tech-input" id="dob">
+                                <i class="fa-solid fa-calendar-days tech-icon-animate"></i>
+                                <small class="text-danger fw-bold mt-1 d-block error-message" id="dobError"></small>
+                            </div>
+                        </div>
+
+                        <div class="mb-4 form-group-tech">
+                            <label class="form-label tech-label">Phone Number <span class="text-danger">*</span></label>
+                            <input class="form-control tech-input" id="prof-phone" type="text" placeholder="03xxxxxxxx or 09xxxxxxxx">
+                            <i class="fa-solid fa-phone tech-icon-animate"></i>
+                            <small class="text-danger fw-bold mt-1 d-block error-message" id="phoneError"></small>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-6 form-group-tech">
+                                <label class="form-label tech-label">Email <span class="tech-badge-locked ms-2"><i class="fa-solid fa-lock me-1"></i> Locked</span></label>
+                                <input class="form-control tech-input" disabled id="prof-email" type="email">
+                                <i class="fa-solid fa-envelope tech-icon-animate"></i>
+                            </div>
+                            <div class="col-md-6 form-group-tech">
+                                <label class="form-label tech-label">Username <span class="tech-badge-locked ms-2"><i class="fa-solid fa-lock me-1"></i> Locked</span></label>
+                                <input class="form-control tech-input" disabled id="prof-username" type="text">
+                                <i class="fa-solid fa-user tech-icon-animate"></i>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end border-top tech-border pt-4 mt-5">
+                            <button class="btn btn-tech-save px-5 py-2 fw-bold" type="submit" id="btn-save-profile">
+                                <i class="fa-solid fa-floppy-disk me-2"></i> Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/jquery-3.7.1.min.js}"></script>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/common.js}"></script>
+<script th:src="@{/js/admin/admin-auth.js}"></script>
+
+<script th:src="@{/js/admin/admin-profile.js}"></script>
+
+</body>
+</html>

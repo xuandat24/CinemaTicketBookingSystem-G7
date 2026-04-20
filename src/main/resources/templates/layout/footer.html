@@ -1,0 +1,57 @@
+<div xmlns:th="http://www.thymeleaf.org" th:fragment="footer">
+
+    <footer class="main-footer">
+        <div class="container">
+            <div class="row gy-5">
+                <div class="col-lg-4 col-md-6">
+                    <a class="navbar-brand p-0 brand-premium footer-brand" th:href="@{/}">
+                        <i class="fa fa-ticket"></i> CTBS <span>CINEMAS</span>
+                    </a>
+                    <p class="footer-about-text mt-3" th:text="#{footer.about_text}">
+                        Experience the magic of cinema. We bring you the latest blockbusters, cozy seating, and a premium VIP experience.
+                    </p>
+                    <div class="footer-social-icons mt-4">
+                        <a href="https://www.facebook.com/cgvcinemavietnam/" target="_blank" rel="noopener noreferrer" title="Facebook"><i class="fa fa-facebook"></i></a>
+                        <a href="https://www.instagram.com/cgvcinemasvietnam/" target="_blank" rel="noopener noreferrer" title="Instagram"><i class="fa fa-instagram"></i></a>
+                        <a href="https://twitter.com/CGV_ID" target="_blank" rel="noopener noreferrer" title="Twitter"><i class="fa fa-twitter"></i></a>
+                        <a href="https://www.youtube.com/@CGVVietnam" target="_blank" rel="noopener noreferrer" title="YouTube"><i class="fa fa-youtube-play"></i></a>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="footer-title" th:text="#{footer.quick_links}">Quick Links</h5>
+                    <ul class="footer-links list-unstyled">
+                        <li class="mb-2"><a th:href="@{/movies}"><i class="fa fa-angle-right me-2"></i><span th:text="#{footer.movies}">Movies</span></a></li>
+                        <li class="mb-2"><a th:href="@{/contact-us}"><i class="fa fa-angle-right me-2"></i><span th:text="#{footer.contact_us}">Contact Us</span></a></li>
+                        <li class="mb-2"><a th:href="@{/terms-payment}"><i class="fa fa-angle-right me-2"></i><span th:text="#{footer.terms}">Terms & Conditions</span></a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="footer-title" th:text="#{footer.contact_info}">Contact Info</h5>
+                    <ul class="footer-contact list-unstyled">
+                        <li class="mb-2">
+                            <a href="https://maps.app.goo.gl/X7DVxPKpezhRCfUt5" target="_blank" rel="noopener noreferrer" class="text-decoration-none text-muted" style="transition: color 0.3s;" onmouseover="this.style.color='#d96c2c'" onmouseout="this.style.color='inherit'">
+                                <i class="fa fa-map-marker me-2 text-primary"></i> <span>2G6M+4R8 Khu Công Nghệ Cao Hòa Lạc, FPT Software, Tân Xá, Hòa Lạc, Hà Nội, Việt Nam</span>
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="tel:+1234567890" class="text-decoration-none text-muted" style="transition: color 0.3s;" onmouseover="this.style.color='#d96c2c'" onmouseout="this.style.color='inherit'">
+                                <i class="fa fa-phone me-2 text-primary"></i> <span>+0399999999</span>
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="mailto:support@ctbscinemas.com" class="text-decoration-none text-muted" style="transition: color 0.3s;" onmouseover="this.style.color='#d96c2c'" onmouseout="this.style.color='inherit'">
+                                <i class="fa fa-envelope me-2 text-primary"></i> <span>support@fpt.vn.com</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <div class="footer-bottom text-center">
+        <p class="mb-0">© 2026 CTBS Cinemas. Crafted for movie lovers.</p>
+    </div>
+</div>

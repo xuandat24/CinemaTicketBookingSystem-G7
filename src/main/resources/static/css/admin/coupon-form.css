@@ -1,0 +1,131 @@
+/* ===== LAYOUT CORE ===== */
+.admin-content {
+    flex: 1;
+    width: 100%;
+    min-height: 100vh;
+    padding: 2rem;
+    background-color: #f8f9fa;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important; /* Căn giữa theo chiều ngang */
+    justify-content: flex-start !important;
+}
+
+/* ===== PAGE HEADER ===== */
+.page-header {
+    width: 100%;
+    max-width: 640px; /* Khớp với độ rộng của Card */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 auto 25px auto !important; /* Căn giữa header */
+}
+
+.page-header h2 {
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+/* ===== FORM CARD ===== */
+.card {
+    width: 100%;
+    max-width: 640px;
+    border: none !important;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05) !important;
+    background-color: #fff;
+    margin: 0 auto !important; /* Căn giữa card */
+}
+
+.card-body {
+    padding: 30px;
+}
+
+/* ===== FORM ELEMENTS ===== */
+.form-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 8px;
+}
+
+.form-control,
+.form-select {
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    padding: 10px 14px;
+    font-size: 14px;
+    color: #1e293b;
+    transition: all 0.2s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+    outline: none;
+}
+
+/* Row spacing fix */
+.row {
+    margin-right: -10px;
+    margin-left: -10px;
+}
+
+.row > [class*="col-"] {
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+/* ===== ERROR MESSAGE ===== */
+.text-danger.small {
+    margin-top: 5px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+/* ===== BUTTONS ===== */
+.btn {
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 10px 20px;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background-color: #2563eb;
+    border: none;
+    width: 100%; /* Nút bấm dài hết card cho đẹp */
+    margin-top: 10px;
+}
+
+.btn-primary:hover {
+    background-color: #1d4ed8;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+.btn-outline-secondary {
+    border-color: #e2e8f0;
+    color: #64748b;
+    background-color: #fff;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #f1f5f9;
+    color: #1e293b;
+    border-color: #cbd5e1;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .admin-content {
+        padding: 1rem;
+    }
+
+    .card, .page-header {
+        max-width: 100% !important;
+    }
+}

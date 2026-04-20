@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard Center - CTBS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/admin/universal.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/dashboard.css}">
+</head>
+<body>
+
+<div th:replace="~{admin/fragments/navbar :: admin-nav}"></div>
+
+<div class="container-fluid py-5 px-4">
+
+    <div class="d-flex justify-content-between align-items-end mb-5">
+        <div>
+            <h2 class="fw-bold mb-1" style="color: #1e293b; text-shadow: 0 0 15px rgba(217,108,44,0.15);">Cinema Command Center</h2>
+            <p class="mb-0" style="color: #64748b;">Real-time system monitoring and analytics.</p>
+        </div>
+        <div class="d-flex gap-3">
+            <div class="btn-group tech-filter-group rounded-pill" role="group">
+                <input checked class="btn-check" id="btnDay" name="timeFilter" onchange="updateDashboard()" type="radio" value="day">
+                <label class="btn rounded-start-pill" for="btnDay">Today</label>
+
+                <input class="btn-check" id="btnWeek" name="timeFilter" onchange="updateDashboard()" type="radio" value="week">
+                <label class="btn" for="btnWeek">This Week</label>
+
+                <input class="btn-check" id="btnMonth" name="timeFilter" onchange="updateDashboard()" type="radio" value="month">
+                <label class="btn rounded-end-pill" for="btnMonth">This Month</label>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-xl-3 col-md-6">
+            <div class="card tech-glass-card h-100">
+                <div class="card-body p-4 d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="fw-bold mb-1 text-uppercase" style="font-size: 0.8rem; color: #64748b;">Total Revenue</p>
+                        <h3 class="fw-bold mb-0" style="color: #1e293b;"><span id="totalRevenue" data-target="0">0</span> <span class="fs-6" style="color: #d96c2c;">VND</span></h3>
+                    </div>
+                    <div class="kpi-icon-wrapper icon-revenue"><i class="fa-solid fa-wallet"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card tech-glass-card h-100">
+                <div class="card-body p-4 d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="fw-bold mb-1 text-uppercase" style="font-size: 0.8rem; color: #64748b;">Tickets Sold</p>
+                        <h3 class="fw-bold mb-0" style="color: #1e293b;" id="totalTickets" data-target="0">0</h3>
+                    </div>
+                    <div class="kpi-icon-wrapper icon-ticket"><i class="fa-solid fa-ticket-simple"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card tech-glass-card h-100">
+                <div class="card-body p-4 d-flex justify-content-between align-items-center">
+                    <div style="width: 70%;">
+                        <p class="fw-bold mb-1 text-uppercase" style="font-size: 0.8rem; color: #64748b;">Top Movie</p>
+                        <h4 class="fw-bold text-truncate mb-0" style="color: #d96c2c;" id="topMovieName">-</h4>
+                    </div>
+                    <div class="kpi-icon-wrapper icon-movie"><i class="fa-solid fa-film"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card tech-glass-card h-100">
+                <div class="card-body p-4 d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="fw-bold mb-1 text-uppercase" style="font-size: 0.8rem; color: #64748b;">Combos Sold</p>
+                        <h3 class="fw-bold mb-0" style="color: #1e293b;" id="totalCombos" data-target="0">0</h3>
+                    </div>
+                    <div class="kpi-icon-wrapper icon-combo"><i class="fa-solid fa-popcorn"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-xl-8 col-lg-12">
+            <div class="card tech-glass-card h-100">
+                <div class="card-header border-0 bg-transparent pt-4 px-4">
+                    <h5 class="fw-bold mb-0" style="color: #1e293b;"><i class="fa-solid fa-chart-column me-2" style="color: #d96c2c;"></i> Revenue Analytics</h5>
+                </div>
+                <div class="card-body p-4">
+                    <div style="position: relative; height: 320px; width: 100%;">
+                        <canvas id="topMoviesChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4 col-lg-12">
+            <div class="card tech-glass-card h-100">
+                <div class="card-header border-0 bg-transparent pt-4 px-4">
+                    <h5 class="fw-bold mb-0" style="color: #1e293b;"><i class="fa-solid fa-chart-pie me-2" style="color: #0ea5e9;"></i> Combo Distribution</h5>
+                </div>
+                <div class="card-body p-4 d-flex align-items-center justify-content-center">
+                    <div style="position: relative; height: 280px; width: 100%;">
+                        <canvas id="combosChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-xl-4 col-lg-12">
+            <div class="card tech-glass-card h-100">
+                <div class="card-header border-0 bg-transparent pt-4 px-4">
+                    <h5 class="fw-bold mb-0" style="color: #1e293b;"><i class="fa-solid fa-wave-square me-2" style="color: #eab308;"></i> Booking Traffic</h5>
+                </div>
+                <div class="card-body p-4">
+                    <div style="position: relative; height: 300px; width: 100%;">
+                        <canvas id="peakHoursChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-8 col-lg-12">
+            <div class="card tech-glass-card h-100">
+                <div class="card-header border-0 bg-transparent pt-4 px-4 d-flex justify-content-between align-items-end mb-2">
+                    <h5 class="fw-bold mb-0" style="color: #1e293b;"><i class="fa-solid fa-satellite-dish me-2" style="color: #a855f7;"></i> Live Room Occupancy</h5>
+                    <div style="width: 280px;">
+                        <div class="input-group">
+                            <span class="input-group-text search-neon border-end-0 rounded-start-pill px-3">
+                                <i class="fa-solid fa-magnifying-glass text-muted"></i>
+                            </span>
+                            <input class="form-control search-neon border-start-0 rounded-end-pill px-0 focus-ring focus-ring-light"
+                                   id="occupancyMovieSearch" placeholder="Scan movie name..." type="text">
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body px-4 py-2">
+                    <div class="table-responsive">
+                        <table class="table table-tech w-100">
+                            <thead>
+                            <tr>
+                                <th width="30%">Target Movie</th>
+                                <th width="15%">Time Slot</th>
+                                <th width="15%">Sector</th>
+                                <th class="text-center" width="15%">Capacity</th>
+                                <th width="25%">Status Level</th>
+                            </tr>
+                            </thead>
+                            <tbody id="occupancyTableBody">
+                            <tr>
+                                <td class="text-center py-5" colspan="5" style="color: #64748b;">
+                                    <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div> Scanning mainframe data...
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script th:src="@{/js/admin/admin-auth.js}"></script>
+<script th:src="@{/js/admin/dashboard.js}"></script>
+
+</body>
+</html>

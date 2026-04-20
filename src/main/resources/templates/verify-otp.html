@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Verify OTP Code</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <style>
+        .otp-container { max-width: 400px; margin: 100px auto; padding: 30px; background: #f8f9fa; border-radius: 10px; }
+    </style>
+</head>
+<body>
+<div class="otp-container text-center shadow">
+    <h3 class="mb-4">Email Verification</h3>
+    <p>A verification code has been sent to your email. Please check and enter it below.</p>
+
+    <form id="otpForm">
+        <input type="text" id="otpCode" class="form-control form-control-lg text-center mb-3"
+               placeholder="Enter 6 digits" maxlength="6" required>
+
+        <div id="errorMsg" class="text-danger mb-3"></div>
+
+        <button type="submit" class="btn btn-primary w-100">Verify Account</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById("otpForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const otp = document.getElementById("otpCode").value;
+        const errorDiv = document.getElementById("errorMsg");
+
+        try {
+            // Gọi đến API xử lý OTP
+            const response = await fetch("/api/auth/verify-google-otp?otp=" + otp, {
+                method: "POST"
+            });
+
+            if(response.ok) {
+                const data = await response.json();
+
+                // ĐÃ SỬA: Lưu vào sessionStorage để đồng bộ với auth.js
+                sessionStorage.setItem("jwtToken", data.token);
+                sessionStorage.setItem("username", data.username);
+
+                alert("Registration successful!");
+                // ĐÃ SỬA: Dùng replace để tránh lỗi nút Back của trình duyệt (giống login)
+                window.location.replace("/");
+            } else {
+                const errorData = await response.json();
+                errorDiv.innerText = errorData.message || "Invalid or expired verification code!";
+            }
+        } catch (err) {
+            errorDiv.innerText = "An error occurred, please try again!";
+        }
+    });
+</script>
+</script>
+</body>
+</html>

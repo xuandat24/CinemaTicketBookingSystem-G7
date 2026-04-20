@@ -1,0 +1,42 @@
+/* =========================================
+   ADD SHOWTIME - SUCCESS GREEN THEME
+========================================= */
+.setup-form-card {
+    background: #ffffff; border-radius: 20px; padding: 35px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.06); border: 1px solid #e2e8f0;
+    animation: fadeIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.tech-form-header {
+    border-bottom: 2px solid #10b981; /* Vạch viền Xanh Lá */
+    padding-bottom: 15px; margin-bottom: 30px;
+    display: flex; justify-content: space-between; align-items: center;
+}
+.tech-form-header h4 { font-weight: 800; color: #1e293b; margin: 0; text-transform: uppercase; letter-spacing: 0.5px; }
+
+.form-label-tech {
+    font-weight: 700; color: #475569; font-size: 0.85rem;
+    text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; display: block;
+}
+
+.input-tech {
+    background-color: #f8fafc !important; border: 1px solid #cbd5e1 !important; border-radius: 10px !important;
+    padding: 12px 15px !important; color: #1e293b !important; font-weight: 500; transition: all 0.3s ease !important;
+}
+.input-tech:focus {
+    background-color: #ffffff !important; border-color: #10b981 !important;
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15) !important;
+}
+
+/* Nút bấm Xanh lá */
+.tech-btn {
+    border-radius: 10px !important; padding: 12px 30px !important; font-weight: 700 !important;
+    transition: all 0.3s ease !important; text-transform: uppercase; letter-spacing: 0.5px;
+}
+.tech-btn-success { background: #10b981 !important; border: none !important; color: #fff !important; box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3); }
+.tech-btn-success:hover { background: #059669 !important; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4); }

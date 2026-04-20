@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Movie Management - Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/admin/universal.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/searchMovie.css}">
+</head>
+<body class="bg-light">
+
+<div th:replace="~{admin/fragments/navbar :: admin-nav}"></div>
+
+<div class="container-fluid px-4 py-4 mb-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="page-header-tech">
+            <h2 class="fw-bold text-dark m-0">Movie Database Management</h2>
+            <p class="text-muted mb-0 mt-1">Search, filter, and monitor all cinema records.</p>
+        </div>
+        <a th:href="@{/admin/movies/add}" class="btn tech-btn tech-btn-primary">
+            <i class="fa-solid fa-plus me-2"></i> Add New Movie
+        </a>
+    </div>
+
+    <div class="tech-card mb-4" style="background: linear-gradient(to right, #ffffff, #f8fafc);">
+        <div class="d-flex align-items-center mb-3 pb-2 border-bottom">
+            <h6 class="fw-bold text-primary m-0"><i class="fa-solid fa-filter me-2"></i> Advanced Filters</h6>
+        </div>
+        <form id="filterForm" class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label-tech">Search Title</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0" style="border-radius: 8px 0 0 8px; border-color: #cbd5e1;"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+                    <input type="text" class="form-control input-tech border-start-0 ps-0" id="searchTitle" placeholder="Enter movie title...">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label-tech">Language</label>
+                <select class="form-select input-tech" id="filterLanguage">
+                    <option value="">-- All Languages --</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label-tech">Category</label>
+                <select class="form-select input-tech" id="filterCategory">
+                    <option value="">-- All Categories --</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label-tech">Status</label>
+                <select class="form-select input-tech" id="filterStatus">
+                    <option value="">-- All Status --</option>
+                    <option value="Now Playing">Now Playing</option>
+                    <option value="Coming Soon">Coming Soon</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Disabled">Disabled</option>
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label-tech">From Date</label>
+                <input type="date" class="form-control input-tech" id="fromDate">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label-tech">To Date</label>
+                <input type="date" class="form-control input-tech" id="toDate">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label-tech">Sort By</label>
+                <select class="form-select input-tech" id="sortBy">
+                    <option value="idDesc" selected>Newest Added</option>
+                    <option value="idAsc">Oldest Added</option>
+                    <option value="nameAsc">Title (A-Z)</option>
+                    <option value="nameDesc">Title (Z-A)</option>
+                    <option value="releaseDateDesc">Newest Release</option>
+                    <option value="releaseDateAsc">Oldest Release</option>
+                    <option value="durationDesc">Longest Duration</option>
+                    <option value="durationAsc">Shortest Duration</option>
+                </select>
+            </div>
+
+            <div class="col-12 d-flex justify-content-end mt-4 pt-2">
+                <button type="button" id="resetFiltersBtn" class="btn tech-btn tech-btn-outline">
+                    <i class="fa fa-rotate-left me-1"></i> Reset Filters
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="tech-card p-4">
+        <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+            <h5 class="m-0 text-dark fw-bold" id="tableTitle"><i class="fa-solid fa-list me-2 text-primary"></i> Current Movies</h5>
+            <small class="text-muted fw-semibold px-3 py-1 bg-light rounded-pill border" id="tableInfo">Showing 0 to 0 of 0 movies</small>
+        </div>
+
+        <div class="table-responsive" style="overflow-y: hidden;"> <table class="table-tech" id="movieTable">
+            <thead>
+            <tr>
+                <th style="width: 5%;">ID</th>
+                <th style="width: 35%;">Movie Information</th>
+                <th style="width: 15%;">Release Date</th>
+                <th style="width: 20%;">Status</th>
+                <th class="text-end" style="width: 25%;">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        </div>
+
+        <div class="d-flex justify-content-center mt-4 pt-3">
+            <nav aria-label="Page navigation">
+                <ul class="pagination pagination-tech mb-0" id="paginationContainer">
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+</div>
+<script th:src="@{/js/admin/admin-auth.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/admin/searchMovie.js?v=2}"></script>
+
+</body>
+</html>

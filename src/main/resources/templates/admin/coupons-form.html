@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${isEdit} ? 'Edit Coupon - Admin' : 'Add Coupon - Admin'">Coupon Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/admin/universal.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/coupon.css}">
+</head>
+<body class="bg-light">
+
+<div th:replace="~{admin/fragments/navbar :: admin-nav}"></div>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="tech-card">
+
+                <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4" style="border-color: #10b981 !important;">
+                    <h4 class="fw-bold m-0 text-dark" style="text-transform: uppercase;">
+                        <i class="fa-solid fa-ticket text-emerald me-2"></i>
+                        <span th:text="${isEdit} ? 'Update Coupon' : 'Create New Coupon'">Form</span>
+                    </h4>
+                    <span class="badge bg-light text-emerald border px-3 py-2"><i class="fa-solid fa-shield-halved me-1"></i> Admin Zone</span>
+                </div>
+
+                <div id="jsValidationError" class="alert alert-danger fw-bold d-none shadow-sm"><i class="fa-solid fa-triangle-exclamation me-2"></i> <span id="jsErrorText"></span></div>
+                <input id="hiddenServerErrorMsg" th:if="${errorMessage}" th:value="${errorMessage}" type="hidden">
+
+                <form id="couponTechForm" th:action="${isEdit} ? @{/admin/coupons/edit/{id}(id=${couponId})} : @{/admin/coupons/add}" th:object="${coupon}" method="post">
+
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-12">
+                            <label class="form-label-tech">Coupon Code <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control input-tech" id="couponCode" th:field="*{code}" placeholder="e.g. SUMMER25 (Uppercase letters & numbers only)" style="text-transform: uppercase;" required>
+                            <div class="text-danger mt-1 fw-bold d-none field-error-popup-source" style="font-size: 0.8rem;" th:if="${#fields.hasErrors('code')}" th:errors="*{code}"></div>
+                            <small class="text-muted"><i class="fa-solid fa-circle-info text-emerald me-1"></i> Do not use special characters.</small>
+                        </div>
+
+                        <div class="col-md-5">
+                            <label class="form-label-tech">Discount Type <span class="text-danger">*</span></label>
+                            <select class="form-select input-tech" id="discountType" th:field="*{discountType}">
+                                <option value="PERCENTAGE">Percentage (%)</option>
+                                <option value="FIXED">Fixed Amount (VNĐ)</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-7">
+                            <label class="form-label-tech">Discount Value <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0 text-emerald fw-bold"><i class="fa-solid fa-tag"></i></span>
+                                <input type="number" class="form-control input-tech border-start-0 ps-0" id="discountValue" th:field="*{discountValue}" min="1" required placeholder="Enter value...">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label-tech">Min Order Amount (VNĐ)</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0 text-secondary fw-bold">₫</span>
+                                <input type="number" class="form-control input-tech border-start-0 ps-0" id="minOrder" th:field="*{minOrderAmount}" min="0" placeholder="0 or leave empty">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label-tech">Max Usage Limit</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0 text-secondary"><i class="fa-solid fa-users"></i></span>
+                                <input type="number" class="form-control input-tech border-start-0 ps-0" id="maxUsage" th:field="*{maxUsage}" min="1" placeholder="Number of uses...">
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label class="form-label-tech">Expiry Date <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control input-tech" id="expiryDate" th:field="*{expiryDate}" required>
+                            <div class="text-danger mt-1 fw-bold d-none field-error-popup-source" style="font-size: 0.8rem;" th:if="${#fields.hasErrors('expiryDate')}" th:errors="*{expiryDate}"></div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-3 mt-4 pt-4 border-top">
+                        <a th:href="@{/admin/coupons}" class="btn btn-light border px-4 fw-bold text-muted tech-btn">Cancel</a>
+                        <button type="submit" class="btn tech-btn tech-btn-emerald">
+                            <i class="fa-solid fa-floppy-disk me-2"></i> <span th:text="${isEdit} ? 'Update Coupon' : 'Save Coupon'"></span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/admin/admin-auth.js}"></script>
+
+<script>
+    // Xử lý Giao diện Thay đổi Type
+    const typeSelect = document.getElementById('discountType');
+    const valueInput = document.getElementById('discountValue');
+
+    function updatePlaceholder() {
+        if (typeSelect.value === 'PERCENTAGE') {
+            valueInput.placeholder = "Enter percentage (1 - 100%)";
+        } else {
+            valueInput.placeholder = "Enter exact amount in VNĐ (e.g., 50000)";
+        }
+    }
+    typeSelect.addEventListener('change', updatePlaceholder);
+    updatePlaceholder(); // Chạy lần đầu
+
+    // Tường lửa Bảo mật JS (Chặn XSS, Âm, Quá khứ)
+    document.getElementById('couponTechForm').addEventListener('submit', function(e) {
+        const errorBox = document.getElementById('jsValidationError');
+        const errorText = document.getElementById('jsErrorText');
+        errorBox.classList.add('d-none');
+
+        const showError = (msg) => {
+            e.preventDefault();
+            if (typeof showToast === 'function') {
+                showToast(msg, 'error');
+            } else {
+                errorText.textContent = msg;
+                errorBox.classList.remove('d-none');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        };
+
+        // 1. Kiểm tra Code (Chỉ cho phép Chữ, Số, Dấu gạch, viết hoa)
+        const codeInput = document.getElementById('couponCode').value.trim().toUpperCase();
+        const codeRegex = /^[A-Z0-9_\-]+$/;
+        if (!codeRegex.test(codeInput)) {
+            return showError("Mã Coupon KHÔNG hợp lệ! Chỉ được phép chứa chữ cái, số và dấu gạch ngang.");
+        }
+
+        // 2. Kiểm tra Giá trị Discount
+        const type = typeSelect.value;
+        const val = parseFloat(valueInput.value);
+        if (val <= 0) return showError("Giá trị giảm giá phải lớn hơn 0!");
+        if (type === 'PERCENTAGE' && val > 100) return showError("Phần trăm giảm giá không được vượt quá 100%!");
+
+        // 3. Kiểm tra Ngày hết hạn (Không được chọn ngày trong quá khứ)
+        const dateVal = document.getElementById('expiryDate').value;
+        if (dateVal) {
+            const selectedDate = new Date(dateVal);
+            selectedDate.setHours(0,0,0,0);
+            const today = new Date();
+            today.setHours(0,0,0,0);
+
+            if (selectedDate < today) {
+                return showError("Ngày hết hạn không được chọn trong quá khứ!");
+            }
+        }
+    });
+
+    // Convert backend/server-side validation errors to popup toast
+    (function showServerValidationAsPopup() {
+        const hiddenServerError = document.getElementById('hiddenServerErrorMsg');
+        if (hiddenServerError && hiddenServerError.value && typeof showToast === 'function') {
+            showToast(hiddenServerError.value, 'error');
+            return;
+        }
+
+        const firstFieldError = document.querySelector('.field-error-popup-source');
+        if (firstFieldError) {
+            const msg = (firstFieldError.textContent || '').trim();
+            if (msg && typeof showToast === 'function') {
+                showToast(msg, 'error');
+            }
+        }
+    })();
+</script>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Theater Management - Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/admin/universal.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/theaterManagement.css}">
+</head>
+<body class="bg-light">
+
+<div th:replace="~{admin/fragments/navbar :: admin-nav}"></div>
+
+<div class="container-fluid px-4 py-4 mb-5 theater-management-page">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="page-header-tech">
+            <h2 class="fw-bold text-dark m-0">Theater & Seat Monitoring</h2>
+            <p class="text-muted mb-0 mt-1">Select a room, view available showtimes, and inspect real-time seat occupancy.</p>
+        </div>
+    </div>
+
+    <div class="tech-card p-4" style="background: linear-gradient(to right, #ffffff, #f0f9ff);">
+        <div class="row g-3 align-items-center">
+            <div class="col-md-5 col-lg-4">
+                <label class="form-label-tech"><i class="fa-solid fa-door-open me-1 text-primary"></i> Target Theater Room</label>
+                <div class="input-group shadow-sm" style="border-radius: 10px;">
+                    <span class="input-group-text bg-white border-end-0" style="border-radius: 10px 0 0 10px; border: 1px solid #cbd5e1;"><i class="fa-solid fa-location-dot text-info"></i></span>
+                    <select id="roomSelect" class="form-select input-tech border-start-0 ps-0" style="border-radius: 0 10px 10px 0 !important;">
+                        <option value="">-- Choose Theater Room --</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-7 col-lg-8 ps-md-4">
+                <p id="roomHelpText" class="form-text m-0 fw-semibold text-muted"><i class="fa-solid fa-circle-info me-1 text-primary"></i> Select a room to load available showtimes.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="tech-card p-4">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4 border-bottom pb-3">
+            <h5 class="fw-bold m-0 text-dark"><i class="fa-solid fa-calendar-days text-primary me-2"></i> Available Showtimes</h5>
+            <span id="selectedRoomBadge" class="badge bg-primary px-3 py-2 fs-6 shadow-sm"><i class="fa-solid fa-desktop me-1"></i> Room --</span>
+        </div>
+        <div id="showtimeList" class="showtime-list">
+            <div class="placeholder-note"><i class="fa-solid fa-magnifying-glass me-2"></i> Waiting for room selection...</div>
+        </div>
+    </div>
+
+    <div id="seatLayoutSection" class="row g-4 d-none">
+        <div class="col-xl-8">
+            <div class="tech-card p-4 h-100 seat-layout-card">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4 border-bottom pb-3">
+                    <h5 class="fw-bold m-0 text-dark"><i class="fa-solid fa-couch text-primary me-2"></i> Live Seat Map</h5>
+                    <span id="selectedShowtimeMeta" class="badge bg-info-subtle text-info border border-info px-3 py-2 shadow-sm">Showtime --</span>
+                </div>
+
+                <div id="theater-room-label" class="theater-room-label">Theater Room --</div>
+
+                <div class="seat-legend-row shadow-sm">
+                    <div class="legend-item"><span class="legend-seat available"></span>Available</div>
+                    <div class="legend-item"><span class="legend-seat sold"></span>Booked</div>
+                    <div class="legend-item"><span class="legend-seat type-normal"></span>Normal</div>
+                    <div class="legend-item"><span class="legend-seat type-vip"></span>VIP</div>
+                    <div class="legend-item"><span class="legend-seat type-pair"></span>Pair</div>
+                </div>
+
+                <div class="screen-wrap">
+                    <div class="cinema-screen-arc">
+                        <span class="screen-text">CINEMA SCREEN</span>
+                    </div>
+                </div>
+
+                <div id="seat-grid" class="seat-grid" aria-label="Theater room seat layout"></div>
+            </div>
+        </div>
+
+        <div class="col-xl-4">
+            <div class="tech-card p-4 h-100">
+                <h5 class="fw-bold mb-4 border-bottom pb-3"><i class="fa-solid fa-chart-pie text-primary me-2"></i> Seat Occupancy</h5>
+
+                <div class="occupancy-master-card mb-4">
+                    <div class="d-flex justify-content-between align-items-end mb-2">
+                        <div>
+                            <p class="text-muted fw-bold mb-1" style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px;">
+                                <i class="fa-solid fa-users text-primary me-1"></i> Total Occupancy
+                            </p>
+                            <h3 class="fw-black m-0" style="color: #1e293b;">
+                                <span id="bookedValue" class="text-primary">0</span>
+                                <span class="text-muted fs-5 fw-normal mx-1">/</span>
+                                <span id="capacityValue" class="text-secondary fs-4">0</span>
+                            </h3>
+                        </div>
+                        <div class="text-end">
+                            <span id="occupancyPercentage" class="badge bg-primary px-2 py-1 fs-6 shadow-sm">0%</span>
+                        </div>
+                    </div>
+                    <div class="progress shadow-sm" style="height: 10px; border-radius: 10px; background-color: #e2e8f0;">
+                        <div id="occupancyProgressBar" class="progress-bar bg-primary progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;"></div>
+                    </div>
+                </div>
+
+                <div class="occupancy-grid">
+                    <div class="occupancy-card">
+                        <p class="occupancy-label mb-1"><i class="fa-solid fa-chair text-secondary me-1"></i> Normal (Booked / Total)</p>
+                        <p id="normalOverTotal" class="occupancy-value text-secondary mb-0">0 / 0</p>
+                    </div>
+                    <div class="occupancy-card">
+                        <p class="occupancy-label mb-1"><i class="fa-solid fa-crown text-warning me-1"></i> VIP (Booked / Total)</p>
+                        <p id="vipOverTotal" class="occupancy-value text-warning mb-0">0 / 0</p>
+                    </div>
+                    <div class="occupancy-card">
+                        <p class="occupancy-label mb-1"><i class="fa-solid fa-heart text-danger me-1"></i> Pair (Booked / Total)</p>
+                        <p id="pairOverTotal" class="occupancy-value text-danger mb-0">0 / 0</p>
+                    </div>
+                </div>
+
+                <div id="selectedMovieInfo" class="selected-movie-info mt-4">
+                    <i class="fa-solid fa-film me-2"></i> Select a showtime to view movie info.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/admin/admin-auth.js}"></script>
+<script th:src="@{/js/admin/theaterManagementV2.js}"></script>
+</body>
+</html>

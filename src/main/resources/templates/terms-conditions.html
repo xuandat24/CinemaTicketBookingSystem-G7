@@ -1,0 +1,142 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Terms of Service & Privacy Policy - CTBS Cinema</title>
+
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/css/font-awesome.min.css}" rel="stylesheet">
+    <link th:href="@{/css/global.css}" rel="stylesheet">
+
+    <style>
+        .terms-page { padding: 48px 0 64px; background: #f7f8fb; min-height: 70vh; }
+        .terms-card { background: #fff; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,.06); padding: 40px; }
+        .terms-card h1 { font-size: 2.2rem; margin-bottom: 20px; color: #1e293b; }
+        .terms-card h2 { font-size: 1.4rem; color: #d96c2c; margin-top: 40px; margin-bottom: 20px; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px; font-weight: 700; }
+        .terms-card p { font-size: 1.05rem; line-height: 1.7; color: #334155; }
+        .terms-card ol { padding-left: 24px; margin-top: 15px; color: #1e293b; }
+        .terms-card ul { padding-left: 20px; margin-top: 8px; margin-bottom: 15px; color: #475569; }
+        .terms-card li { font-size: 1.05rem; line-height: 1.7; margin-bottom: 10px; }
+        .terms-card li > strong { color: #0f172a; font-size: 1.1rem; display: block; margin-bottom: 5px; }
+        .terms-card .fst-italic { background: #f8fafc; padding: 15px; border-left: 4px solid #d96c2c; border-radius: 4px; }
+    </style>
+</head>
+<body class="bg-light">
+
+<div th:replace="~{layout/header :: header}"></div>
+
+<section class="terms-page">
+    <div class="container">
+        <div class="terms-card">
+            <h1 class="text-center fw-bold">CTBS CINEMAS – TERMS OF SERVICE & PRIVACY POLICY</h1>
+
+            <p class="text-center text-muted mb-5">
+                Welcome to the CTBS Cinemas E-ticketing System. By accessing our platform and purchasing tickets, you agree to be bound by the following Terms of Service, Payment Policies, and Privacy Policy. Please read them carefully before completing any transaction.
+            </p>
+
+            <h2>PART 1: TICKETING & PAYMENT POLICY</h2>
+            <ol>
+                <li><strong>General Booking Rules</strong>
+                    <ul>
+                        <li><strong>Promotions & Discounts:</strong> Currently, special promotions for students, seniors, and children are <strong>not applicable</strong> for online transactions. To utilize these discounts, please purchase your tickets directly at our Box Office counters.</li>
+                        <li><strong>Customer Accuracy:</strong> You are strictly responsible for providing accurate contact information (Email and Phone Number) during checkout. CTBS Cinemas will not resolve complaints or issue refunds if you fail to receive your e-ticket due to incorrect information entry.</li>
+                    </ul>
+                </li>
+                <li><strong>Payment Requirements</strong>
+                    <ul>
+                        <li>To process an online payment, your ATM card, Visa/Mastercard, or E-wallet (e.g., VNPay) must be activated for online transactions with a sufficient balance.</li>
+                        <li>You must input your payment details accurately in the secure payment gateway. CTBS Cinemas does not directly store your full credit card or bank account numbers.</li>
+                    </ul>
+                </li>
+                <li><strong>No Cancellation & Refund Policy</strong>
+                    <ul>
+                        <li>All online ticket purchases are <strong>final</strong>. Tickets are <strong>non-cancellable, non-exchangeable, and non-refundable</strong> for any reason (including "no-shows" where the customer fails to attend the screening).</li>
+                        <li><strong>Exceptions:</strong> Refunds are only issued if:
+                            <ol type="a">
+                                <li>Your bank/wallet account was deducted, but our system failed to register the reservation and no confirmation email was sent.</li>
+                                <li>The movie session is canceled by CTBS Cinemas due to technical issues or force majeure events.</li>
+                            </ol>
+                        </li>
+                    </ul>
+                </li>
+                <li><strong>E-Ticket Confirmation & Dispute Resolution</strong>
+                    <ul>
+                        <li>Within 30 minutes of a successful transaction, an E-ticket confirmation containing your Booking Code and QR Code will be sent to your registered email.</li>
+                        <li>If you do not receive this email, you must contact CTBS Cinemas Customer Support within <strong>60 minutes</strong> of the transaction. Complaints raised after this timeframe will not be resolved.</li>
+                        <li>To redeem physical tickets at the Box Office, you must present the E-ticket QR code and a valid photo ID (National ID/CCCD, Student ID, or Passport).</li>
+                    </ul>
+                </li>
+                <li><strong>Refund Processing Timelines</strong>
+                    <p style="margin-bottom: 8px;">In the rare event of a system failure or a canceled session (force majeure), the refund will be credited back to the original payment method. Processing times depend on your bank:</p>
+                    <ul>
+                        <li><strong>E-wallets / VNPay:</strong> 3 - 5 working days.</li>
+                        <li><strong>Domestic ATM Cards:</strong> 5 - 7 working days.</li>
+                        <li><strong>International Cards (Visa/Mastercard/JCB):</strong> 15 - 30 working days.</li>
+                    </ul>
+                </li>
+            </ol>
+
+            <h2>PART 2: AGE RESTRICTION POLICY</h2>
+
+
+
+            <p>In strict compliance with the Vietnam Cinema Law (effective Jan 1, 2023), CTBS Cinemas enforces the following age classification system. <strong>Staff will check photo IDs at the entrance.</strong> If you fail to prove you meet the age requirement, you will be denied entry, and <strong>no refund will be issued.</strong></p>
+            <ul>
+                <li><strong>P:</strong> General audience (Suitable for all ages).</li>
+                <li><strong>K:</strong> Audiences under 13 must be accompanied by a parent or guardian.</li>
+                <li><strong>T13:</strong> Strictly for audiences aged 13 and above.</li>
+                <li><strong>T16:</strong> Strictly for audiences aged 16 and above.</li>
+                <li><strong>T18:</strong> Strictly for audiences aged 18 and above.</li>
+                <li><strong>C:</strong> Prohibited for dissemination.</li>
+            </ul>
+
+            <h2>PART 3: PRIVACY & DATA PROTECTION POLICY</h2>
+            <p>In compliance with Vietnam’s <strong>Decree 13/2023/ND-CP on Personal Data Protection (PDPD)</strong>, CTBS Cinemas is committed to safeguarding your privacy.</p>
+            <ol>
+                <li><strong>Data We Collect</strong>
+                    <p>When you register an account or book a ticket, we collect basic personal data including: Full Name, Date of Birth, Gender, Phone Number, Email Address, and Booking History.</p>
+                </li>
+                <li><strong>Purpose of Data Processing</strong>
+                    <p style="margin-bottom: 8px;">Your data is processed strictly for the following purposes:</p>
+                    <ul>
+                        <li>Processing and confirming your ticket transactions.</li>
+                        <li>Sending e-tickets, transaction receipts, and scheduling updates.</li>
+                        <li>Providing customer support and resolving transaction disputes.</li>
+                        <li>Verifying age compliance in accordance with the Cinema Law.</li>
+                    </ul>
+                </li>
+                <li><strong>Data Security & Third-Party Sharing</strong>
+                    <ul>
+                        <li>Your data is secured using industry-standard encryption.</li>
+                        <li>We <strong>do not</strong> sell your personal data to third parties.</li>
+                        <li>Your data is only shared with trusted payment gateways (e.g., VNPay) strictly for the purpose of processing your financial transactions, and with competent State authorities if mandated by Vietnamese law.</li>
+                    </ul>
+                </li>
+                <li><strong>Your Rights as a Data Subject</strong>
+                    <p style="margin-bottom: 8px;">Under Decree 13, you hold full rights over your personal data. You have the right to:</p>
+                    <ul>
+                        <li>Access and request a copy of your personal data.</li>
+                        <li>Edit and update inaccurate information via your "User Profile" page.</li>
+                        <li>Request the restriction or complete deletion of your account and personal data from the CTBS Cinemas database.</li>
+                    </ul>
+                </li>
+            </ol>
+
+            <p class="fst-italic text-muted mt-4">
+                *By creating an account or clicking "Pay" on our platform, you explicitly consent to the collection and processing of your personal data as outlined in this policy.*
+            </p>
+        </div>
+    </div>
+</section>
+
+<div th:replace="~{layout/footer :: footer}"></div>
+
+<script th:src="@{/js/jquery-3.7.1.min.js}"></script>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/auth.js}"></script>
+<script th:src="@{/js/common.js}"></script>
+
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="#{nav.contact} + ' - CTBS Cinema'">Contact Us - CTBS Cinema</title>
+
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/css/font-awesome.min.css}" rel="stylesheet">
+    <link th:href="@{/css/global.css}" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/4.1.5/css/flag-icons.min.css"/>
+
+    <link href="https://fonts.googleapis.com/css2?family=Platypi:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+
+    <link th:href="@{/css/user/contact-us.css}" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div th:replace="~{layout/header :: header}"></div>
+
+<div class="contact-header">
+    <h1 class="fw-bold display-4" th:text="#{contact.title}">Contact Us</h1>
+    <p class="lead" th:text="#{contact.subtitle}">We'd love to hear from you. Drop us a message!</p>
+</div>
+
+<div class="container pb-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="contact-card">
+
+                <form id="contactForm">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-secondary"><span th:text="#{contact.fullname}">Your Name</span> <span class="text-danger">*</span></label>
+                            <input type="text" id="fbName" class="form-control form-control-lg" th:placeholder="#{contact.fullname}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-secondary"><span th:text="#{contact.email}">Email Address</span> <span class="text-danger">*</span></label>
+                            <input type="email" id="fbEmail" class="form-control form-control-lg" th:placeholder="#{contact.email}" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-bold text-secondary"><span th:text="#{contact.message}">Message</span> <span class="text-danger">*</span></label>
+                            <textarea id="fbMessage" class="form-control form-control-lg" rows="6" th:placeholder="#{contact.message}" required></textarea>
+                        </div>
+                        <div class="col-12 text-center mt-4">
+                            <button type="submit" id="btnSubmit" class="btn btn-custom btn-lg px-5 py-3 shadow-sm text-white fw-bold">
+                                <i class="fa fa-paper-plane me-2"></i> <span th:text="#{contact.btn_send}">Send Message</span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <div id="successAlert" class="alert alert-success mt-4 d-none text-center py-4" style="border-radius: 12px;">
+                    <i class="fa fa-check-circle fa-3x text-success mb-3"></i>
+                    <h4 class="fw-bold text-success" th:text="#{contact.success_title}">Thank You!</h4>
+                    <p class="mb-0 text-dark" th:text="#{contact.success_msg}">Lời nhắn của bạn đã được gửi thành công. Chúng tôi sẽ phản hồi lại bạn qua Email sớm nhất có thể.</p>
+                    <button class="btn btn-outline-success mt-3" onclick="window.location.reload()" th:text="#{contact.btn_send_another}">Gửi lời nhắn khác</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{layout/footer :: footer}"></div>
+
+<script th:src="@{/js/jquery-3.7.1.min.js}"></script>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+
+<script th:src="@{/js/auth.js}"></script>
+<script th:src="@{/js/common.js}"></script>
+
+<script th:src="@{/js/contact-us.js}"></script>
+
+</body>
+</html>

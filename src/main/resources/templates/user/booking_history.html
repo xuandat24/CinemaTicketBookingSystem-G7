@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="#{history.title}">Transaction History</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <style>
+        .filter-bar { background: #fff; padding: 15px 20px; border-radius: 12px; border: 1px solid #eceff3; margin-bottom: 20px; }
+        .filter-bar .form-control, .filter-bar .form-select { border-radius: 8px; border: 1px solid #ddd; box-shadow: none; font-size: 14px; }
+        .history-wrap { background: #fff; border: 1px solid #eceff3; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02); }
+        .history-head { padding: 18px 22px; background: #fafbfc; border-bottom: 1px solid #eceff3; font-weight: 700; color: #0f172a; font-size: 18px; }
+        .table thead th { font-size: 13px; text-transform: uppercase; color: #64748b; background: #fff; border-bottom: 2px solid #f1f5f9; padding: 15px; }
+        .table td { vertical-align: middle; padding: 15px; color: #334155; font-size: 14px; }
+        .badge-success { background: #dcfce7; color: #0f766e; padding: 6px 12px; border-radius: 6px; font-weight: 600; }
+        .badge-failed { background: #fee2e2; color: #b91c1c; padding: 6px 12px; border-radius: 6px; font-weight: 600; }
+        .badge-pending { background: #fef9c3; color: #b45309; padding: 6px 12px; border-radius: 6px; font-weight: 600; }
+        .tx-code { font-family: monospace; font-size: 15px; font-weight: bold; color: #1d4ed8; background: #eff6ff; padding: 4px 8px; border-radius: 4px; }
+    </style>
+</head>
+<body class="prof-body">
+<div th:replace="~{layout/header :: header}"></div>
+
+<div class="container py-5 mt-4 mb-5">
+
+    <h2 class="fw-bold mb-4">
+        <i class="fa fa-history text-primary me-2"></i>
+        <span th:text="#{history.heading}">Transaction History</span>
+    </h2>
+
+    <div class="filter-bar row g-3 align-items-end">
+        <div class="col-md-4">
+            <label class="form-label text-muted small fw-bold mb-1" th:text="#{history.filter.movie_name}">Movie Name</label>
+            <input class="form-control" id="filterMovie" th:placeholder="#{history.filter.search_placeholder}" placeholder="Search by movie..." type="text">
+        </div>
+        <div class="col-md-4">
+            <label class="form-label text-muted small fw-bold mb-1" th:text="#{history.filter.transaction_date}">Transaction Date</label>
+            <input class="form-control" id="filterDate" type="date">
+        </div>
+        <div class="col-md-4">
+            <label class="form-label text-muted small fw-bold mb-1" th:text="#{history.filter.sort_by}">Sort By</label>
+            <select class="form-select" id="sortTickets">
+                <option value="newest" th:text="#{history.sort.newest}">Newest Transaction</option>
+                <option value="oldest" th:text="#{history.sort.oldest}">Oldest Transaction</option>
+            </select>
+        </div>
+        <div class="col-md-12 d-flex justify-content-end">
+            <button class="btn btn-outline-secondary btn-sm fw-bold px-3" id="resetFiltersBtn" type="button">
+                <i class="fa fa-refresh me-1"></i> <span th:text="#{history.btn.reset}">Reset</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="history-wrap">
+        <div class="history-head" th:text="#{history.records.heading}">Financial Records</div>
+
+        <div class="p-5 text-center text-muted" th:if="${#lists.isEmpty(history)}">
+            <i class="fa fa-file-text-o fa-4x mb-3 opacity-25"></i><br>
+            <h5 class="fw-bold" th:text="#{history.empty}">No transactions found.</h5>
+        </div>
+
+        <div class="table-responsive" th:if="${!#lists.isEmpty(history)}">
+            <table class="table table-hover mb-0">
+                <thead>
+                <tr>
+                    <th th:text="#{history.table.date}">Date</th>
+                    <th th:text="#{history.table.code}">Code</th>
+                    <th th:text="#{history.table.movie}">Movie</th>
+                    <th th:text="#{history.table.seats}">Seats</th>
+                    <th th:text="#{history.table.combos}">Combos</th>
+                    <th th:text="#{history.table.voucher}">Voucher</th>
+                    <th th:text="#{history.table.payment}">Payment</th>
+                    <th th:text="#{history.table.total}">Total</th>
+                    <th th:text="#{history.table.status}">Status</th>
+                </tr>
+                </thead>
+                <tbody id="historyListContainer">
+                <tr class="history-row"
+                    th:each="bill : ${history}"
+                    th:data-date-iso="${bill.createTime != null ? #temporals.format(bill.createTime, 'yyyy-MM-dd') : ''}"
+                    th:data-movie="${bill.showtime != null && bill.showtime.movie != null ? bill.showtime.movie.title.toLowerCase() : ''}"
+                    th:data-timestamp="${bill.createTime != null ? #temporals.format(bill.createTime, 'yyyyMMddHHmmss') : '0'}">
+
+                    <td th:text="${bill.createTime != null ? #temporals.format(bill.createTime, 'dd/MM/yyyy HH:mm') : '-'}"></td>
+                    <td><span class="tx-code" th:text="${bill.bookingCode != null ? bill.bookingCode : 'N/A'}"></span></td>
+                    <td class="fw-bold text-dark" th:text="${bill.showtime != null && bill.showtime.movie != null ? bill.showtime.movie.title : 'N/A'}"></td>
+
+                    <td style="max-width: 150px; white-space: normal;">
+                        <span th:if="${#lists.isEmpty(bill.bookingSeats)}">-</span>
+                        <span class="badge bg-light text-dark border me-1 mb-1" th:each="bs : ${bill.bookingSeats}" th:text="${bs.seat != null ? bs.seat.seatCode : ''}"></span>
+                    </td>
+
+                    <td style="max-width: 180px; white-space: normal;">
+                        <span th:if="${#lists.isEmpty(bill.bookingCombos)}">-</span>
+                        <span class="d-block small text-success fw-bold" th:each="bc : ${bill.bookingCombos}" th:text="${bc.combo != null ? bc.combo.name : #messages.msg('history.combo')} + ' x' + ${bc.quantity}"></span>
+                    </td>
+
+                    <td class="text-center">
+                        <span class="badge bg-warning text-dark border border-warning shadow-sm" th:if="${bill.couponCode != null and bill.couponCode != ''}" th:text="${bill.couponCode}"></span>
+                        <span class="text-muted small" th:unless="${bill.couponCode != null and bill.couponCode != ''}">-</span>
+                    </td>
+
+                    <td>
+                        <img src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-VNPAY-QR.png" style="height: 25px; object-fit: contain;" th:if="${bill.finalPrice != null and bill.finalPrice >= 10000}">
+                        <span class="badge bg-secondary" th:if="${bill.finalPrice != null and bill.finalPrice < 10000}" th:text="#{history.payment.coupon}">COUPON</span>
+                        <span class="badge bg-secondary" th:if="${bill.finalPrice == null}">N/A</span>
+                    </td>
+
+                    <td class="fw-bold text-danger" th:text="${bill.finalPrice != null ? #numbers.formatInteger(bill.finalPrice, 0, 'POINT') + ' VND' : 'N/A'}"></td>
+
+                    <td>
+                        <span class="badge-success" th:if="${bill.status == 'SUCCESS' or bill.status == 'CONFIRMED'}">
+                            <i class="fa fa-check-circle me-1"></i> <span th:text="#{history.status.success}">Success</span>
+                        </span>
+                        <span class="badge-failed" th:if="${bill.status == 'FAILED'}">
+                            <i class="fa fa-times-circle me-1"></i> <span th:text="#{history.status.failed}">Failed</span>
+                        </span>
+                        <span class="badge-pending" th:if="${bill.status == null or bill.status == 'PENDING' or bill.status == 'PROCESSING'}">
+                            <i class="fa fa-clock-o me-1"></i> <span th:text="#{history.status.pending}">Pending</span>
+                        </span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{layout/footer :: footer}"></div>
+<script th:src="@{/js/common.js}"></script>
+<script th:src="@{/js/auth.js}"></script>
+<script th:src="@{/js/user-ticket-history.js?v=2}"></script>
+</body>
+</html>

@@ -1,0 +1,166 @@
+/* =========================================
+   ADMIN PROFILE - MODERN LIGHT TECH THEME
+========================================= */
+:root {
+    --tech-bg: #f8fafc; /* Nền xám xanh cực nhạt, sáng và dịu mắt */
+    --tech-card-bg: #ffffff; /* Thẻ màu trắng tinh */
+    --tech-border: #e2e8f0; /* Viền xám nhạt */
+    --tech-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+    --tech-glow: rgba(217, 108, 44, 0.15); /* Ánh sáng cam nhẹ */
+    --tech-accent: #d96c2c; /* Cam CTBS */
+    --text-main: #1e293b; /* Chữ xám đen đậm */
+    --text-muted: #64748b; /* Chữ xám nhạt cho label */
+}
+
+body.profile-page {
+    background-color: var(--tech-bg) !important;
+    font-family: 'Poppins', sans-serif !important;
+    color: var(--text-main);
+}
+
+/* Ẩn hiệu ứng bụi sao ở nền tối cũ đi */
+body.profile-page::before {
+    display: none !important;
+}
+
+/* Thẻ Profile Sáng Sủa */
+.tech-card {
+    background: var(--tech-card-bg) !important;
+    border: 1px solid var(--tech-border) !important;
+    box-shadow: var(--tech-shadow) !important;
+    border-radius: 20px !important;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.tech-card:hover {
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Dải màu nhấn trên cùng của thẻ */
+.tech-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 4px;
+    background: linear-gradient(90deg, transparent, var(--tech-accent), transparent);
+}
+
+/* Header thẻ */
+.card-header.tech-header {
+    background: #ffffff !important;
+    border-bottom: 1px solid var(--tech-border) !important;
+    padding: 20px 30px !important;
+    border-radius: 20px 20px 0 0;
+}
+
+.card-header.tech-header h5 {
+    font-weight: 800 !important;
+    color: var(--text-main) !important;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.tech-crown-icon {
+    color: #f59e0b !important;
+}
+
+/* Label chuẩn Form */
+.tech-label {
+    color: var(--text-muted) !important;
+    font-weight: 700 !important;
+    font-size: 0.85rem !important;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: block;
+}
+
+/* Input Fields - Sạch sẽ, góc bo tròn */
+.tech-input, .tech-select {
+    background-color: #f1f5f9 !important;
+    border: 1px solid var(--tech-border) !important;
+    color: var(--text-main) !important;
+    border-radius: 10px !important;
+    padding: 12px 15px !important;
+    padding-right: 45px !important; /* Chừa chỗ cho icon không bị đè chữ */
+    transition: all 0.3s ease !important;
+    font-size: 0.95rem !important;
+    font-weight: 500;
+}
+
+.tech-input:focus, .tech-select:focus {
+    background-color: #ffffff !important;
+    border-color: var(--tech-accent) !important;
+    box-shadow: 0 0 0 4px var(--tech-glow) !important;
+}
+
+/* FIX LỖI ICON BỊ LỆCH: Neo icon theo đáy ô nhập liệu */
+.form-group-tech { position: relative; }
+.form-group-tech i.tech-icon-animate {
+    position: absolute;
+    right: 28px;
+    bottom: 15px; /* Neo chặt cách đáy 15px, không phụ thuộc độ cao label */
+    color: #94a3b8;
+    transition: all 0.3s ease;
+    z-index: 5;
+    font-size: 1.1rem;
+}
+
+.tech-input:focus + i.tech-icon-animate,
+.tech-select:focus + i.tech-icon-animate {
+    color: var(--tech-accent);
+}
+
+/* Chế độ Read-only (Khóa) */
+.tech-input:disabled {
+    background-color: #e2e8f0 !important;
+    color: #64748b !important;
+    cursor: not-allowed;
+    border-style: dashed !important;
+}
+.tech-badge-locked {
+    background: #e2e8f0 !important;
+    color: #64748b !important;
+    border-radius: 6px; padding: 3px 8px; font-size: 0.7rem;
+}
+
+/* AVATAR ADMIN ĐẶC QUYỀN (Viền cam nổi bật trên nền sáng) */
+.admin-avatar-img {
+    width: 150px; height: 150px;
+    border-radius: 50%; object-fit: cover;
+    background-color: #fff;
+    border: 4px solid #ffffff;
+    box-shadow: 0 0 0 4px var(--tech-accent), 0 10px 20px rgba(0,0,0,0.1);
+    transition: all 0.4s ease;
+}
+.admin-avatar-wrapper:hover .admin-avatar-img {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 4px #f59e0b, 0 15px 30px rgba(0,0,0,0.15);
+}
+
+.tech-badge-admin {
+    background: #dc3545 !important;
+    color: #fff;
+    border-radius: 6px;
+    letter-spacing: 1px; font-size: 0.85rem;
+}
+
+/* Nút Save Changes */
+.btn-tech-save {
+    background: var(--tech-accent) !important;
+    color: #fff !important;
+    border: none !important;
+    border-radius: 10px !important;
+    font-weight: 700 !important;
+    padding: 12px 35px !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 6px 15px var(--tech-glow);
+
+}
+.btn-tech-save:hover {
+    background-color: #b85a22 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(217, 108, 44, 0.3) !important;
+}

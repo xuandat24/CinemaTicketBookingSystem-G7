@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Booking</title>
+
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+    <link rel="stylesheet" th:href="@{/css/booking.css?v=2}">
+
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+          rel="stylesheet">
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div th:replace="~{layout/header :: header}"></div>
+
+<div class="container mt-4">
+
+    <!-- breadcrumb -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a th:href="@{/}">Home</a>
+            </li>
+            <li class="breadcrumb-item">Booking</li>
+            <li class="breadcrumb-item active">
+                <span th:text="${movieName}">Selected Movie</span>
+            </li>
+        </ol>
+    </nav>
+
+    <div class="row">
+
+        <!-- LEFT SIDE -->
+        <div class="col-md-8">
+
+            <!-- PAYMENT -->
+            <h4><i class="fa fa-user-circle me-2"></i> PAYMENT INFORMATION</h4>
+
+            <div class="card p-3 mb-4">
+                <div class="row">
+
+                    <div class="col-md-4">
+                        <p><b>Name</b></p>
+                        <p th:text="${user != null ? user.firstName + ' ' + user.lastName : 'Guest'}">Guest</p>
+                    </div>
+
+                    <div class="col-md-4">
+                        <p><b>Phone</b></p>
+                        <p th:text="${user != null ? user.phone : '-'}">-</p>
+                    </div>
+
+                    <div class="col-md-4">
+                        <p><b>Email</b></p>
+                        <p th:text="${user != null ? user.email : '-'}">-</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- SEAT -->
+            <h5>SEAT INFORMATION</h5>
+
+            <div class="card p-3 mb-4">
+
+                <div th:if="${seatSummary == null or #lists.isEmpty(seatSummary)}">
+                    Not selected
+                </div>
+
+                <div class="d-flex justify-content-between mb-2"
+                     th:each="seat : ${seatSummary}">
+
+                    <span th:text="${seat.type + ' SEAT'}">VIP SEAT</span>
+
+                    <span>
+    <span th:text="${seat.count}">1</span> x
+    <span th:text="${#numbers.formatInteger(seat.price, 0, 'POINT')}">0</span>
+    =
+    <b th:text="${#numbers.formatInteger(seat.total, 0, 'POINT')}">0</b> VND
+</span>
+
+                </div>
+
+            </div>
+
+            <!-- COMBO -->
+            <h4><i class="fa fa-shopping-basket me-2 text-warning"></i> COMBO PREFERENCES</h4>
+
+            <div class="card p-3 mb-4">
+                <table class="table combo-table">
+
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>Combo name</th>
+                        <th>Description</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr th:each="combo : ${combos}"
+                        th:attr="data-combo-id=${combo.id},data-combo-price=${combo.price}">
+
+                        <td>
+                            <div class="combo-img"
+                                 th:with="
+                                    raw=${combo.image != null ? combo.image.trim() : ''},
+                                    clean=${#strings.startsWith(raw, '/') ? #strings.substring(raw, 1) : raw},
+                                    isHttp=${#strings.startsWith(clean, 'http') or #strings.startsWith(clean, 'data:')},
+                                    isUpload=${#strings.startsWith(clean, 'uploads/combos/') or #strings.startsWith(clean, 'combos/')},
+                                    uploadName=${#strings.startsWith(clean, 'uploads/combos/') ? #strings.substring(clean, 15) : (#strings.startsWith(clean, 'combos/') ? #strings.substring(clean, 7) : clean)},
+                                    isImgPrefix=${#strings.startsWith(clean, 'img/')},
+                                    fileName=${isImgPrefix ? #strings.substring(clean, 4) : clean},
+                                    primary=${isHttp ? clean : (isUpload ? '/combos/' + uploadName : '/img/' + fileName)},
+                                    fallback=${isHttp ? '' : (isUpload ? '/img/' + uploadName : '/combos/' + fileName)}">
+
+                                <img alt="combo"
+                                     class="img-fluid rounded"
+                                     th:if="${raw != ''}"
+                                     th:src="@{${primary}}"
+                                     th:attr="data-fallback=${fallback}"
+                                     onerror="if(this.dataset.fallback){this.src=this.dataset.fallback;this.dataset.fallback='';}else{this.onerror=null;this.src='https://placehold.co/100x100?text=Combo';}">
+
+                                <img alt="combo"
+                                     class="img-fluid rounded"
+                                     src="https://placehold.co/100x100?text=Combo"
+                                     th:unless="${raw != ''}">
+                            </div>
+                        </td>
+                        <td th:text="${combo.name}"></td>
+                        <td th:text="${combo.description}"></td>
+                        <td>
+                            <b th:text="${#numbers.formatInteger(combo.price, 0, 'POINT')}">0</b> VND
+                        </td>
+
+                        <td>
+                            <div class="qty-box">
+                                <button type="button" class="qty-btn minus"
+                                        th:attr="onclick=|changeCombo(${combo.id}, -1)|">-
+                                </button>
+
+                                <span class="qty-number" th:id="'combo' + ${combo.id}">0</span>
+
+                                <button type="button" class="qty-btn plus"
+                                        th:attr="onclick=|changeCombo(${combo.id}, 1)|">+
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- DISCOUNT -->
+            <h4><i class="fa fa-gift me-2 text-danger"></i> DISCOUNT</h4>
+            <div class="card p-3 mb-4">
+                <div class="row align-items-center">
+                    <div class="col-md-3">
+                        <p class="mb-0 fw-bold">Discount Coupon</p>
+                    </div>
+                    <div class="col-md-5">
+                        <input class="form-control" id="couponInput" placeholder="Enter your coupon code" type="text">
+                        <small class="form-text" id="couponMessage"></small>
+                    </div>
+                    <div class="col-md-4 d-flex gap-2">
+                        <button class="redeem-btn btn-primary" onclick="applyCoupon()" type="button">
+                            APPLY
+                        </button>
+                        <button class="btn btn-secondary" id="clearCouponBtn" onclick="clearCoupon()"
+                                style="display: none;"
+                                type="button">
+                            CLEAR
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-3 border-top">
+                    <h6 class="text-muted"><i class="fa fa-ticket me-1"></i> Available Coupons:</h6>
+                    <div class="d-flex flex-column gap-2" id="coupon-list-container"
+                         style="max-height: 250px; overflow-y: auto; padding-right: 5px;">
+                    </div>
+                    <div class="d-none" id="couponDataSource">
+                        <div class="coupon-source"
+                             th:each="cp : ${availableCoupons}"
+                             th:attr="data-code=${cp.code},
+                                      data-discount-type=${cp.discountType},
+                                      data-discount-value=${cp.discountValue},
+                                      data-min-order=${cp.minOrderAmount != null ? cp.minOrderAmount : 0},
+                                      data-description=${cp.description}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- PAYMENT METHOD -->
+            <h4><i class="fa fa-credit-card me-2 text-success"></i> PAYMENT METHOD</h4>
+
+            <div class="payment-method">
+                <label class="payment-item">
+                    <input checked name="payment" type="radio" value="vnpay">
+                    <img alt="VNPay" src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-VNPAY-QR.png"
+                         style="height: 30px; object-fit: contain;">
+                    <span class="ms-2 fw-bold text-dark">VNPay</span>
+                </label>
+            </div>
+
+            <div class="payment-note">
+                <p>* Please review all the information carefully before proceeding to the next step.</p>
+                <p>* Tickets that have been successfully paid for are non-refundable under any circumstances.</p>
+            </div>
+
+        </div>
+
+        <!-- RIGHT SIDE -->
+        <div class="col-md-4 booking-summary">
+
+            <div class="card p-3">
+                <img class="img-fluid mb-3" th:src="@{${poster}}">
+                <h5 th:text="${movieName}"></h5>
+
+                <p class="info-row">
+                    <i class="fa fa-building me-2"></i>
+                    <span class="label">Room</span>
+                    <span th:text="${roomName}">Room --</span>
+                </p>
+
+                <p class="info-row">
+                    <i class="fa fa-calendar me-2"></i>
+                    <span class="label">Date</span>
+                    <span th:text="${showDate}">-</span>
+                </p>
+
+                <p class="info-row">
+                    <i class="fa fa-clock-o me-2"></i>
+                    <span class="label">Time</span>
+                    <span th:text="${showTime}">-</span>
+                </p>
+
+                <p class="info-row">
+                    <i class="fa fa-ticket me-2"></i>
+                    <span class="label">Seat</span>
+                    <span id="seatShow" th:text="${seatDisplay}">Not selected</span>
+                </p>
+
+                <hr>
+
+                <p class="timer-row">
+                    <span class="timer-label">Time remaining:</span>
+                    <span class="countdown" id="timer">10:00</span>
+                </p>
+
+                <hr>
+
+                <!-- PRICE SUMMARY -->
+                <div class="price-row">
+                    <span>Total:</span>
+                    <span id="totalPrice"
+                          th:data-seat-price="${totalPrice}"
+                          th:text="${#numbers.formatInteger(totalPrice, 0, 'POINT')}">
+        0
+    </span>
+                </div>
+
+                <div class="price-row">
+                    <span>Discount:</span>
+                    <span id="discount">0</span>
+                </div>
+
+                <div class="price-row">
+                    <b>Final:</b>
+                    <b id="finalPrice"
+                       th:text="${#numbers.formatInteger(totalPrice, 0, 'POINT')}">
+                        0
+                    </b>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn-prev" onclick="window.history.back()" type="button">PREVIOUS</button>
+                    <button class="btn-next" type="button">NEXT</button>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div aria-hidden="true" class="terms-overlay" id="termsOverlay">
+    <div aria-labelledby="termsTitle" aria-modal="true" class="terms-modal" role="dialog">
+        <div class="terms-header">
+            <h2 class="terms-title" id="termsTitle">TERMS OF PAYMENT</h2>
+            <button aria-label="Close" class="terms-close" id="termsClose" type="button">&times;</button>
+        </div>
+        <div class="terms-body">
+            <p>Welcome to CTBS CINEMAS's E-ticketing system!</p>
+            <p>At the moment the promotions for students, seniors and children are not applied in the E-ticketing
+                system. If you want to take advantage of these promotions and discounts, please buy your tickets at our
+                BOX OFFICE counters instead.</p>
+            <p>Thank you very much and we hope you have wonderful cinematic experiences at CTBS CINEMAS!</p>
+            <p><strong>Several notes to keep in mind before making online payments:</strong></p>
+            <ol>
+                <li>Your debit or credit card's online payment service must have been activated, and the card's balance
+                    must be enough to make the payment. You need to fill in the card information as it is (the account
+                    holder's name, the card number, the expiration date, the CVC and OTP numbers, etc.)
+                </li>
+                <li>Purchased tickets are non-cancellable, non-exchangeable and non-refundable for any reasons. We only
+                    issue refunds if your card has been billed but our system has not registered your reservation, and
+                    you have not received a ticket reservation confirmation.
+                </li>
+                <li>Within 30 minutes after you have made a successful payment, we will send you a ticket reservation
+                    confirmation via email. If you need help or have any questions and complaints, please contact
+                    Facebook Fanpage CTBS Cinemas within 60 minutes after you have made a successful payment. After this
+                    timeframe, we would not resolve any complaints.
+                </li>
+                <li>We are not responsible for cases in which you fill in the wrong email, phone number and as a result
+                    do not receive the ticket reservation confirmation. Please check your information carefully before
+                    making a payment. We neither resolve nor take responsibility for cases in which we have emailed you
+                    the ticket reservation confirmation but for some reason you cannot go see the film (noshow).
+                </li>
+                <li>Please check your reservation confirmation carefully and remember your reservation code. To receive
+                    your ticket from our BOX OFFICE counters, you also need to bring a form of identification (such as
+                    your national ID card, your student card, your passport, etc.)
+                </li>
+                <li>According to the regulations of the Cinema Department, certain films are not for audience under the
+                    age of 13, or 16, or 18. When you receive your tickets at the BOX OFFICE counters, the staff might
+                    ask you for proof that you are old enough to watch an age-restricted film. Please keep this in mind
+                    when you purchase your tickets.
+                </li>
+                <li>In some cases of force majeure, the movie session can be cancelled to ensure the best safety for
+                    customers. The transaction amount will be refunded directly to your bank account which was used to
+                    buy tickets online. We will contact you through your contact information in the Member info.
+                    description, to get your confirmation. Depending on your bank account and payment procedures, the
+                    refund process may get the different period following:
+                    <div style="margin-top: 8px; margin-left: 22px;">
+                        <p class="mb-1">ATM cards: maximum 1 working week</p>
+                        <p class="mb-1">Visa Credit Card, Master Card, JCB Card: maximum 1 working month</p>
+                        <p class="mb-0">Vietcombank's cards: maximum 48 working hours</p>
+                    </div>
+                </li>
+            </ol>
+        </div>
+        <div class="terms-footer">
+            <label class="terms-agree">
+                <input id="agreeCheckbox" type="checkbox">
+                <span>I agree to terms of use and purchase tickets for people of appropriate age.</span>
+            </label>
+            <div class="terms-actions">
+                <button class="terms-pay-btn" disabled id="payButton" type="button">PAY</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="layout/footer :: footer"></div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script th:src="@{/js/auth.js}"></script>
+<script th:src="@{/js/booking.js?v=2}"></script>
+</body>
+</html>
+

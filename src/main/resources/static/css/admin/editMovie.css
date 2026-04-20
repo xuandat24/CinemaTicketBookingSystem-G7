@@ -1,0 +1,66 @@
+/* =========================================
+   EDIT MOVIE - CINEMATIC MODAL ILLUSION
+========================================= */
+
+/* 1. HIỆU ỨNG NỀN MỜ (Ảo giác đang đè lên trang cũ) */
+body.edit-mode-page {
+    background-color: #94a3b8; /* Màu nền giả lập bảng admin */
+    position: relative;
+    min-height: 100vh;
+}
+body.edit-mode-page::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(15, 23, 42, 0.75); /* Phủ lớp kính đen mờ 75% */
+    backdrop-filter: blur(12px); /* Hiệu ứng Blur xóa nhòa nền */
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 0; /* Nằm dưới Form */
+}
+
+/* 2. FORM EDIT NỔI LÊN NHƯ MODAL (POP-UP) */
+.form-section-container {
+    position: relative; z-index: 10;
+    background: #ffffff;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    padding: 35px;
+    /* Hiệu ứng bóng đổ nhiều lớp tạo cảm giác lơ lửng 3D */
+    box-shadow: 0 25px 50px rgba(0,0,0,0.4), 0 0 0 8px rgba(255,255,255,0.05);
+    animation: modalPopUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes modalPopUp {
+    0% { transform: scale(0.95) translateY(30px); opacity: 0; }
+    100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.tech-form-header {
+    border-bottom: 2px solid #3b82f6; padding-bottom: 15px; margin-bottom: 25px;
+    display: flex; justify-content: space-between; align-items: center;
+}
+.tech-form-header h4 { font-weight: 800; color: #1e293b; margin: 0; text-transform: uppercase; }
+
+/* 3. STYLE CHUẨN CHO INPUT & MEDIA */
+.tech-label { font-weight: 700; color: #64748b; font-size: 0.85rem; text-transform: uppercase; margin-bottom: 8px; display: block; }
+.tech-label i { color: #3b82f6; margin-right: 6px; }
+
+.tech-input, .tech-select {
+    background-color: #f8fafc !important; border: 1px solid #e2e8f0 !important;
+    border-radius: 10px !important; padding: 12px 16px !important; color: #1e293b !important; transition: all 0.3s ease !important;
+}
+.tech-input:focus, .tech-select:focus {
+    background-color: #ffffff !important; border-color: #3b82f6 !important; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15) !important;
+}
+
+.media-upload-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 20px; height: 100%; transition: all 0.3s; }
+.media-upload-card:hover { border-color: #cbd5e1; box-shadow: 0 5px 20px rgba(0,0,0,0.03); }
+.preview-container-tech { background: #f1f5f9; border: 2px dashed #cbd5e1; border-radius: 12px; padding: 10px; min-height: 150px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+
+/* 4. NÚT BẤM (TECH BUTTONS) */
+.tech-btn { border-radius: 10px !important; padding: 12px 28px !important; font-weight: 700 !important; text-transform: uppercase; transition: all 0.3s ease !important; }
+.tech-btn-primary { background: #3b82f6 !important; color: #ffffff !important; border: none !important; }
+.tech-btn-primary:hover { background: #2563eb !important; transform: translateY(-2px); box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3) !important; }
+
+.tag-badge { cursor: pointer; font-size: 0.85rem; padding: 6px 12px; border-radius: 6px; background: #1e293b; color: #fff; margin: 3px; display: inline-block; transition: 0.2s;}
+.tag-badge:hover { background-color: #dc3545 !important; transform: scale(1.05); }

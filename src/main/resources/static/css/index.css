@@ -1,0 +1,492 @@
+/* =======================================================
+   1. CHẾ ĐỘ SÁNG PREMIUM (ĐỘC QUYỀN TRANG CHỦ)
+======================================================= */
+body.home-light-theme {
+    background-color: #f0f2f5 !important;
+    color: #1a1a24;
+}
+body.home-light-theme .carousel-caption *,
+body.home-light-theme #footer_t * { color: #ffffff !important; }
+body.home-light-theme h1, body.home-light-theme h2,
+body.home-light-theme h3, body.home-light-theme h5 {
+    color: #111 !important; text-shadow: none !important;
+}
+
+/* =======================================================
+   2. HIỆU ỨNG XUẤT HIỆN KHI LOAD TRANG (FADE-IN UP)
+======================================================= */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* =======================================================
+   3. THIẾT KẾ VÉ CINEMA 3D (PREMIUM MOVIE CARD)
+======================================================= */
+.movie-card {
+    background: #ffffff;
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    margin-bottom: 30px;
+    animation: fadeInUp 0.8s ease backwards;
+    border: 1px solid #eef0f2;
+}
+.col-md-3:nth-child(1) .movie-card { animation-delay: 0.1s; }
+.col-md-3:nth-child(2) .movie-card { animation-delay: 0.2s; }
+.col-md-3:nth-child(3) .movie-card { animation-delay: 0.3s; }
+.col-md-3:nth-child(4) .movie-card { animation-delay: 0.4s; }
+
+.movie-card:hover {
+    transform: translateY(-15px) scale(1.02);
+    box-shadow: 0 25px 50px rgba(217, 108, 44, 0.2);
+    border-color: rgba(217, 108, 44, 0.5);
+}
+
+.movie-poster-wrapper {
+    position: relative;
+    overflow: hidden;
+    height: 380px;
+}
+.movie-poster-wrapper img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 0.7s ease;
+}
+.movie-card:hover .movie-poster-wrapper img {
+    transform: scale(1.12) rotate(-1deg);
+}
+
+/* --- ĐƯỜNG RÃNH XÉ VÉ --- */
+.ticket-divider {
+    height: 30px;
+    background-color: #ffffff;
+    position: relative;
+    z-index: 10;
+}
+.ticket-divider::before {
+    content: ''; position: absolute;
+    top: 50%; left: 0; width: 100%;
+    border-top: 3px dashed #cbd5e1;
+    transform: translateY(-50%);
+    transition: border-color 0.4s;
+}
+.ticket-divider::after {
+    content: ''; position: absolute;
+    top: 50%; left: -15px; width: 30px; height: 30px;
+    background-color: #f0f2f5;
+    border-radius: 50%;
+    transform: translateY(-50%);
+    box-shadow: 100vw 0 0 0 #f0f2f5, inset -4px 0 5px rgba(0,0,0,0.05);
+}
+.movie-card:hover .ticket-divider::before {
+    border-top-color: #d96c2c;
+}
+
+.movie-info {
+    background: #ffffff;
+    z-index: 2; position: relative;
+    padding-bottom: 20px;
+}
+.movie-badge {
+    background: rgba(217, 108, 44, 0.1); color: #d96c2c;
+    padding: 4px 12px; border-radius: 20px; font-size: 12px;
+    font-weight: 700; letter-spacing: 1px;
+}
+.movie-info h5 { font-weight: 800; margin-top: 10px; color: #1a1a24 !important; }
+.text-orange { color: #d96c2c !important; }
+.movie-category, .movie-rating { font-size: 14px; color: #64748b; font-weight: 600; }
+
+/* =======================================================
+   4. HIỆU ỨNG OVERLAY LỚP MỜ VÀ NÚT PLAY
+======================================================= */
+.movie-overlay {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(to bottom, rgba(26,26,36,0.2), rgba(217,108,44,0.85));
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    opacity: 0; backdrop-filter: blur(5px);
+    transition: all 0.4s ease-in-out;
+}
+.movie-card:hover .movie-overlay { opacity: 1; }
+
+.play-btn-circle {
+    width: 65px; height: 65px; background: #ffffff; color: #d96c2c;
+    border-radius: 50%; border: none; font-size: 24px; padding-left: 5px;
+    transform: scale(0.5) translateY(30px); opacity: 0;
+    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 0 20px rgba(255,255,255,0.5);
+}
+.movie-card:hover .play-btn-circle { transform: scale(1) translateY(0); opacity: 1; }
+.play-btn-circle:hover { background: #1a1a24; color: #ffffff; box-shadow: 0 0 30px #ffffff; }
+
+/* =======================================================
+   5. NÚT BOOK TICKET TRUNG TÂM (DẠNG RĂNG CƯA)
+======================================================= */
+.btn-book-now {
+    position: relative; background: #1a1a24; color: #ffffff !important;
+    padding: 12px 30px; font-weight: 800; font-size: 13px; text-transform: uppercase;
+    letter-spacing: 2px; transform: translateY(20px); opacity: 0; transition: all 0.5s ease;
+    border: 1px dashed rgba(255,255,255,0.4);
+    -webkit-mask-image: radial-gradient(circle at 0 50%, transparent 6px, black 7px),
+    radial-gradient(circle at 100% 50%, transparent 6px, black 7px);
+    -webkit-mask-size: 51% 100%; -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: left, right;
+}
+.movie-card:hover .btn-book-now { transform: translateY(0); opacity: 1; transition-delay: 0.1s; }
+.btn-book-now:hover {
+    background: #ffffff; color: #d96c2c !important; border-color: #d96c2c;
+    box-shadow: 0 5px 15px rgba(255,255,255,0.4);
+}
+
+/* =======================================================
+   6. KHỐI PROMO TICKET (VÉ QUẢNG CÁO KHỔNG LỒ) - FIXED
+======================================================= */
+.promo-ticket-wrapper {
+    background: linear-gradient(135deg, #ff9a44, #ff7043); /* Màu cam tươi sáng */
+    border-radius: 24px;
+    position: relative;
+    box-shadow: 0 25px 50px -12px rgba(255, 112, 67, 0.4);
+    margin: 40px 0;
+    overflow: visible; /* Cho phép lỗ tròn tràn ra ngoài */
+}
+
+/* Hiệu ứng "đục lỗ" ở 2 bên bằng pseudo-elements (ổn định hơn mask-image) */
+.promo-ticket-wrapper::before,
+.promo-ticket-wrapper::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 50px;
+    height: 50px;
+    background-color: #f0f2f5; /* PHẢI TRÙNG với màu nền của body */
+    border-radius: 50%;
+    transform: translateY(-50%);
+    z-index: 2; /* Nổi lên trên wrapper */
+}
+.promo-ticket-wrapper::before {
+    left: -25px;
+    box-shadow: inset -5px 0px 8px rgba(0, 0, 0, 0.1);
+}
+.promo-ticket-wrapper::after {
+    right: -25px;
+    box-shadow: inset 5px 0px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Khung nội dung bên trong */
+.promo-ticket-content {
+    /* Không có background, nó sẽ kế thừa từ wrapper */
+    position: relative;
+    z-index: 1;
+}
+
+/* Vạch chia giữa 2 phần của vé */
+.promo-ticket-left {
+    border-right: 3px dashed rgba(255, 255, 255, 0.4);
+}
+
+.btn-ticket-action {
+    display: inline-block;
+    background: #1a1a24;
+    color: #fff !important;
+    padding: 15px 35px;
+    border-radius: 50px;
+    font-weight: 800;
+    font-size: 14px;
+    letter-spacing: 1px;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    white-space: nowrap;
+}
+.btn-ticket-action:hover {
+    background: #fff;
+    color: #d96c2c !important;
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
+}
+.btn-ticket-action i { transition: transform 0.3s ease; }
+.btn-ticket-action:hover i { transform: translateX(4px); }
+
+@media (max-width: 768px) {
+    .promo-ticket-left {
+        border-right: none;
+        border-bottom: 3px dashed rgba(255,255,255,0.4);
+        padding-bottom: 2rem !important;
+    }
+}
+
+/* =======================================================
+   7. KHỐI COMING SOON (THẺ PHIM NGANG)
+======================================================= */
+.coming-soon-card {
+    position: relative; border-radius: 16px; overflow: hidden; height: 280px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08); background: #000; display: block;
+}
+.coming-soon-card img {
+    position: absolute !important; top: 0; left: 0; width: 100% !important;
+    height: 100% !important; object-fit: cover !important; opacity: 0.5;
+    transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1); z-index: 1;
+}
+.coming-soon-card:hover img { opacity: 0.3; transform: scale(1.08); }
+.coming-soon-overlay {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.1) 100%); z-index: 2;
+}
+.coming-soon-info {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0; padding: 30px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    align-items: flex-start; z-index: 3;
+}
+.btn-ticket-outline {
+    background: transparent; border: 2px solid #d96c2c; color: #fff !important;
+    padding: 10px 25px; border-radius: 30px; font-weight: bold; font-size: 14px;
+    transition: all 0.3s ease; text-transform: uppercase;
+}
+.btn-ticket-outline:hover { background: #d96c2c; color: #fff !important; box-shadow: 0 5px 20px rgba(217,108,44,0.5); }
+
+/* =======================================================
+   8. MINI TICKET GÓC PHẢI THẺ PHIM (NOW SHOWING)
+======================================================= */
+.mini-ticket-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: #d96c2c;
+    color: #ffffff !important;
+    padding: 6px 14px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    box-shadow: 0 5px 15px rgba(217, 108, 44, 0.4);
+    transition: all 0.3s ease;
+
+    /* TUYỆT KỸ: Đục lỗ răng cưa mini ở 2 bên cạnh */
+    -webkit-mask-image: radial-gradient(circle at 0 50%, transparent 4px, black 5px),
+    radial-gradient(circle at 100% 50%, transparent 4px, black 5px);
+    -webkit-mask-size: 51% 100%;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: left, right;
+    border: 1px dashed rgba(255,255,255,0.5);
+}
+
+.mini-ticket-btn:hover {
+    background: #1a1a24;
+    color: #d96c2c !important;
+    transform: translateY(-3px) scale(1.05);
+    border-color: #d96c2c;
+}
+/* =======================================================
+   9. HERO BANNER TICKETS (NÚT VÉ RĂNG CƯA KHỔNG LỒ)
+======================================================= */
+/* Biến toàn bộ banner thành một nút bấm có thể click */
+.banner-link-wrapper {
+    display: block;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-decoration: none !important;
+    cursor: pointer;
+}
+
+/* Hiệu ứng ảnh banner khi hover (tùy chọn cho sinh động) */
+.banner-link-wrapper img {
+    transition: transform 0.8s ease;
+}
+.banner-link-wrapper:hover img {
+    transform: scale(1.02); /* Phóng to nhẹ ảnh nền */
+}
+
+/* Nút vé khổng lồ */
+.hero-ticket-btn {
+    display: inline-flex;
+    align-items: center;
+    background: #d96c2c;
+    color: #ffffff !important;
+    padding: 14px 35px;
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    box-shadow: 0 10px 30px rgba(217, 108, 44, 0.4);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+    /* Đục lỗ răng cưa to */
+    -webkit-mask-image: radial-gradient(circle at 0 50%, transparent 8px, black 9px),
+    radial-gradient(circle at 100% 50%, transparent 8px, black 9px);
+    -webkit-mask-size: 51% 100%;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: left, right;
+    border: 2px dashed rgba(255,255,255,0.5);
+}
+
+/* Khi người dùng trỏ chuột vào BẤT KỲ ĐÂU trên Banner -> Nút vé sáng lên */
+body.home-light-theme .banner-link-wrapper:hover .hero-ticket-btn {
+    background: #ffffff !important;
+    color: #d96c2c !important;
+    border-color: #d96c2c !important;
+    transform: translateY(-8px) scale(1.05);
+    box-shadow: 0 15px 40px rgba(255, 255, 255, 0.3);
+}
+
+/* =======================================================
+   10. FIX LỖI CHỮ ĐEN TRÊN BANNER CHÍNH (HERO TEXT)
+======================================================= */
+body.home-light-theme .carousel-caption h1,
+body.home-light-theme .carousel-caption p,
+body.home-light-theme .carousel-caption h6,
+body.home-light-theme .carousel-caption i {
+    color: #ffffff !important;
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.8) !important;
+}
+/* =======================================================
+   11. FIX LỖI CHỮ ĐEN TRONG KHỐI COMING SOON
+======================================================= */
+body.home-light-theme .coming-soon-info h3,
+body.home-light-theme .coming-soon-info p,
+body.home-light-theme .coming-soon-info i {
+    color: #ffffff !important;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9) !important;
+}
+
+/* Tăng độ sáng cho các chữ phụ (như thể loại phim) */
+body.home-light-theme .coming-soon-info .text-white-50 {
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+/* =======================================================
+   12. THANH TRƯỢT NGANG (SLIDER) CHO PHIM
+======================================================= */
+.movie-slider-wrapper {
+    position: relative;
+}
+
+/* Khung chứa các bộ phim nằm ngang */
+.movie-slider {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 24px;
+    padding-bottom: 25px; /* Để chừa chỗ cho hiệu ứng nảy lên (Hover) */
+    padding-top: 10px;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory; /* Hút khựng lại khi trượt */
+    /* Ẩn thanh cuộn mặc định */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+.movie-slider::-webkit-scrollbar {
+    display: none;
+}
+
+/* Kích thước mỗi thẻ phim trong thanh trượt */
+.movie-slider-item {
+    flex: 0 0 auto;
+    width: calc(25% - 18px); /* Hiện 4 phim 1 hàng trên PC */
+    scroll-snap-align: start;
+}
+.coming-soon-slider-item {
+    flex: 0 0 auto;
+    width: calc(50% - 12px); /* Hiện 2 phim 1 hàng cho thẻ ngang */
+    scroll-snap-align: start;
+}
+
+/* Responsive cho điện thoại / Tablet */
+@media (max-width: 992px) {
+    .movie-slider-item { width: calc(33.333% - 16px); }
+    .coming-soon-slider-item { width: 100%; }
+}
+@media (max-width: 768px) {
+    .movie-slider-item { width: calc(50% - 12px); }
+}
+@media (max-width: 576px) {
+    .movie-slider-item { width: 100%; }
+}
+
+/* Nút bấm Trái/Phải để trượt */
+.slider-nav-btn {
+    position: absolute;
+    top: 40%;
+    transform: translateY(-50%);
+    width: 50px; height: 50px;
+    border-radius: 50%;
+    background: #ffffff;
+    color: #d96c2c;
+    border: 2px solid #eef0f2;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.3s ease;
+}
+.slider-nav-btn:hover {
+    background: #d96c2c; color: #ffffff; border-color: #d96c2c;
+    transform: translateY(-50%) scale(1.1);
+}
+.slider-nav-btn.left { left: -25px; }
+.slider-nav-btn.right { right: -25px; }
+
+/* =======================================================
+   13. FOOTER LIGHT THEME (ĐỒNG BỘ VỚI HEADER SÁNG)
+======================================================= */
+
+/* B. CHÂN TRANG CHÍNH (MAIN FOOTER) */
+body.home-light-theme .main-footer {
+    background-color: #ffffff;
+    border-top-color: #cbd5e1; /* Đồng bộ với header */
+}
+body.home-light-theme .main-footer .footer-brand,
+body.home-light-theme .main-footer .footer-title {
+    color: #1a1a24 !important;
+}
+body.home-light-theme .main-footer .footer-about-text,
+body.home-light-theme .main-footer .footer-links a,
+body.home-light-theme .main-footer .footer-contact span {
+    color: #475569;
+}
+body.home-light-theme .main-footer .footer-social-icons a {
+    background: #f1f5f9;
+    color: #475569;
+}
+
+/* C. THANH BẢN QUYỀN (BOTTOM BAR) */
+body.home-light-theme .footer-bottom {
+    background-color: #f8f9fa;
+    color: #6c757d;
+}
+
+/* =======================================================
+   14. COMPACT CONTACT FORM LIGHT THEME
+======================================================= */
+body.home-light-theme .compact-contact-section {
+    background-color: #f8f9fa;
+    border-top-color: #e9ecef;
+}
+
+body.home-light-theme .compact-contact-section h3 {
+    color: #1a1a24 !important;
+}
+
+body.home-light-theme .compact-contact-section p {
+    color: #6c757d !important;
+}
+
+body.home-light-theme .contact-form-compact .form-control {
+    background-color: #ffffff !important;
+    border-color: #dee2e6 !important;
+    color: #212529 !important;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+}
+
+body.home-light-theme .contact-form-compact .form-control:focus {
+    background-color: #ffffff !important;
+}
+
+body.home-light-theme .contact-form-compact .form-control::placeholder {
+    color: #6c757d !important;
+}

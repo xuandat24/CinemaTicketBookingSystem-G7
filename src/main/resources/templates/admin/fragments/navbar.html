@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<nav th:fragment="admin-nav">
+
+    <link rel="stylesheet" th:href="@{/css/admin/sidebar.css}">
+
+    <div class="admin-sidebar">
+
+        <a class="brand-logo" th:href="@{/admin/home}">
+            <i class="fa-solid fa-ticket"></i> CTBS Admin
+        </a>
+
+        <div class="sidebar-content">
+            <div class="sidebar-search px-3 mb-3">
+                <form method="GET" th:action="@{/admin/movies/search}">
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text"><i class="fa-solid fa-magnifying-glass"></i></span>
+                        <input class="form-control shadow-none" name="keyword" placeholder="Search movie..."
+                               type="search">
+                    </div>
+                </form>
+            </div>
+
+            <a class="menu-item" th:href="@{/admin/home}">
+                <div class="d-flex align-items-center"><i class="fa-solid fa-chart-pie menu-icon"></i>
+                    <span>Dashboard</span></div>
+            </a>
+
+            <div class="section-title mt-3">Core Modules</div>
+
+            <a aria-expanded="false" class="menu-item" data-bs-toggle="collapse" href="#menuCinema">
+                <div class="d-flex align-items-center"><i class="fa-solid fa-film menu-icon"></i>
+                    <span>Cinema & Shows</span></div>
+                <i class="fa-solid fa-chevron-down caret-icon"></i>
+            </a>
+            <div class="collapse" id="menuCinema">
+                <div class="submenu">
+                    <a th:href="@{/admin/movies/add}"><i class="fa-solid fa-video"></i> Add Movie</a>
+                    <a th:href="@{/admin/movies/search}"><i class="fa-solid fa-list-ol"></i> View Movies</a>
+                    <a th:href="@{/admin/categories/add}"><i class="fa-solid fa-folder-plus"></i> Add Category</a>
+                    <a th:href="@{/admin/categories}"><i class="fa-solid fa-folder-open"></i> View Categories</a>
+                    <a th:href="@{/admin/showtimes/create}"><i class="fa-solid fa-clock"></i> Add Showtime</a>
+                    <a th:href="@{/admin/showtimes}"><i class="fa-solid fa-calendar-days"></i> View Showtimes</a>
+                    <a th:href="@{/admin/theaters}"><i class="fa-solid fa-door-open"></i> Theater Rooms</a>
+                </div>
+            </div>
+
+            <a aria-expanded="false" class="menu-item" data-bs-toggle="collapse" href="#menuSales">
+                <div class="d-flex align-items-center"><i class="fa-solid fa-gift menu-icon"></i>
+                    <span>Sales & Promos</span></div>
+                <i class="fa-solid fa-chevron-down caret-icon"></i>
+            </a>
+            <div class="collapse" id="menuSales">
+                <div class="submenu">
+                    <a th:href="@{/admin/combos/add}"><i class="fa-solid fa-burger"></i> Add Combo</a>
+                    <a th:href="@{/admin/combos}"><i class="fa-solid fa-utensils"></i> View Combos</a>
+                    <a th:href="@{/admin/coupons/add}"><i class="fa-solid fa-tag"></i> Add Coupon</a>
+                    <a th:href="@{/admin/coupons}"><i class="fa-solid fa-tags"></i> View Coupons</a>
+                </div>
+            </div>
+
+            <a aria-expanded="false" class="menu-item" data-bs-toggle="collapse" href="#menuUsers">
+                <div class="d-flex align-items-center"><i class="fa-solid fa-users-gear menu-icon"></i> <span>Users & Support</span>
+                </div>
+                <i class="fa-solid fa-chevron-down caret-icon"></i>
+            </a>
+            <div class="collapse" id="menuUsers">
+                <div class="submenu">
+                    <a th:href="@{/admin/users}"><i class="fa-solid fa-user-pen"></i> Manage Users</a>
+                    <a th:href="@{/admin/feedbacks}"><i class="fa-solid fa-comments"></i> Feedbacks</a>
+                </div>
+            </div>
+
+            <div class="section-title mt-3">System</div>
+
+            <a class="menu-item" th:href="@{/admin/profile}">
+                <div class="d-flex align-items-center"><i class="fa-solid fa-user-shield menu-icon"></i> <span>My Profile</span>
+                </div>
+            </a>
+        </div>
+
+        <div class="sidebar-profile-card">
+            <div class="sp-info">
+                <img alt="Admin" class="sp-avatar"
+                     id="admin-sidebar-avatar" src="https://ui-avatars.com/api/?name=Ad&background=d96c2c&color=fff">
+                <div class="sp-text">
+                    <span class="sp-name" id="admin-sidebar-name">Loading...</span>
+                    <span class="sp-email" id="admin-sidebar-email">loading...</span>
+                </div>
+            </div>
+            <button class="sp-logout-btn" id="adminLogoutBtn" title="Logout">
+                <i class="fa-solid fa-right-from-bracket"></i>
+            </button>
+        </div>
+
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let currentPath = window.location.pathname;
+            if (currentPath.length > 1 && currentPath.endsWith('/')) {
+                currentPath = currentPath.slice(0, -1);
+            }
+            const menuLinks = document.querySelectorAll('.admin-sidebar a');
+            menuLinks.forEach(link => link.classList.remove('active'));
+            let bestMatch = null;
+            let maxMatchLength = 0;
+            menuLinks.forEach(link => {
+                const href = link.getAttribute('href');
+                if (!href || href === '#' || href.startsWith('#menu')) return;
+                const hrefPath = href.split('?')[0];
+                if (currentPath === hrefPath || (currentPath.startsWith(hrefPath + '/') && hrefPath !== '/admin/home')) {
+                    if (hrefPath.length > maxMatchLength) {
+                        maxMatchLength = hrefPath.length;
+                        bestMatch = link;
+                    }
+                }
+            });
+            if (!bestMatch) {
+                let baseModule = currentPath.substring(0, currentPath.lastIndexOf('/'));
+                menuLinks.forEach(link => {
+                    const href = link.getAttribute('href');
+                    if (!href || href === '#' || href.startsWith('#menu')) return;
+                    if (href.split('?')[0] === baseModule || href.split('?')[0] === baseModule + '/search') bestMatch = link;
+                });
+            }
+            if (bestMatch) {
+                bestMatch.classList.add('active');
+                const parentCollapse = bestMatch.closest('.collapse');
+                if (parentCollapse) {
+                    parentCollapse.classList.add('show');
+                    const parentToggle = document.querySelector(`a[href="#${parentCollapse.id}"]`);
+                    if (parentToggle) {
+                        parentToggle.setAttribute('aria-expanded', 'true');
+                        parentToggle.classList.add('parent-active');
+                    }
+                }
+            }
+        });
+
+        // HỆ THỐNG POP-UP TOAST THÔNG MINH
+        function showToast(message, type = 'success', duration = 3500) {
+            // 1. Tự động tạo Container nếu chưa có (Đảm bảo không bị kẹt trong HTML khác)
+            let container = document.getElementById('toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toast-container';
+                document.body.appendChild(container); // Gắn thẳng vào Body
+            }
+
+            // 2. Setup Icon và Tiêu đề theo Type
+            const toast = document.createElement('div');
+            toast.className = `tech-toast ${type}`;
+
+            let iconClass = 'fa-circle-check';
+            let titleText = 'Success!';
+            if (type === 'error') { iconClass = 'fa-circle-xmark'; titleText = 'Error!'; }
+            if (type === 'warning') { iconClass = 'fa-triangle-exclamation'; titleText = 'Warning!'; }
+
+            // 3. Render HTML cho Pop-up
+            toast.innerHTML = `
+                <i class="fa-solid ${iconClass} toast-icon"></i>
+                <div class="toast-content">
+                    <p class="toast-title">${titleText}</p>
+                    <p class="toast-message">${message}</p>
+                </div>
+                <div class="toast-progress">
+                    <div class="toast-progress-bar" style="transition: width ${duration}ms linear; width: 100%;"></div>
+                </div>
+            `;
+
+            container.appendChild(toast);
+
+            // Kích hoạt thanh tiến trình
+            setTimeout(() => {
+                const progressBar = toast.querySelector('.toast-progress-bar');
+                if (progressBar) progressBar.style.width = '0%';
+            }, 50);
+
+            // Xóa Toast sau khi hết giờ
+            setTimeout(() => {
+                toast.classList.add('hiding');
+                setTimeout(() => toast.remove(), 400);
+            }, duration);
+        }
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let currentPath = window.location.pathname;
+            if (currentPath.length > 1 && currentPath.endsWith('/')) {
+                currentPath = currentPath.slice(0, -1);
+            }
+
+            const menuLinks = document.querySelectorAll('.admin-sidebar a');
+
+            // 1. QUAN TRỌNG: Dọn dẹp sạch sẽ toàn bộ class 'active' đang có (Triệt tiêu lỗi sáng 2 nút)
+            menuLinks.forEach(link => {
+                link.classList.remove('active');
+            });
+
+            let bestMatch = null;
+            let maxMatchLength = 0;
+
+            // 2. Lọc chuỗi dài nhất: Phân biệt chính xác giữa "/admin/combos" và "/admin/combos/add"
+            menuLinks.forEach(link => {
+                const href = link.getAttribute('href');
+                if (!href || href === '#' || href.startsWith('#menu')) return;
+
+                const hrefPath = href.split('?')[0];
+
+                if (currentPath === hrefPath || (currentPath.startsWith(hrefPath + '/') && hrefPath !== '/admin/home')) {
+                    if (hrefPath.length > maxMatchLength) {
+                        maxMatchLength = hrefPath.length;
+                        bestMatch = link;
+                    }
+                }
+            });
+
+            // 3. Fallback thông minh: Dành riêng cho trang Edit (Ví dụ: /admin/combos/edit)
+            // Nếu là trang Edit, thuật toán sẽ tự động giật lùi về /admin/combos và bật sáng nút View
+            if (!bestMatch) {
+                let baseModule = currentPath.substring(0, currentPath.lastIndexOf('/'));
+
+                menuLinks.forEach(link => {
+                    const href = link.getAttribute('href');
+                    if (!href || href === '#' || href.startsWith('#menu')) return;
+                    const hrefPath = href.split('?')[0];
+
+                    if (hrefPath === baseModule || hrefPath === baseModule + '/search') {
+                        bestMatch = link;
+                    }
+                });
+            }
+
+            // 4. Bật sáng DUY NHẤT 1 nút chuẩn xác nhất
+            if (bestMatch) {
+                bestMatch.classList.add('active');
+
+                // Mở thư mục Accordion chứa nút đó
+                const parentCollapse = bestMatch.closest('.collapse');
+                if (parentCollapse) {
+                    parentCollapse.classList.add('show');
+                    const parentToggle = document.querySelector(`a[href="#${parentCollapse.id}"]`);
+                    if (parentToggle) {
+                        parentToggle.setAttribute('aria-expanded', 'true');
+                        parentToggle.classList.add('parent-active');
+                    }
+                }
+            }
+        });
+    </script>
+</nav>
+
+</body>
+</html>
